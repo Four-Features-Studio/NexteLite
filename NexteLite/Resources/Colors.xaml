@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:NexteLite.Resources">
+    <SolidColorBrush x:Key="Color_Button_Default" Color="#373b51">
+    </SolidColorBrush>
+
+    <SolidColorBrush x:Key="Color_Button_Hover" Color="#4A506D">
+
+    </SolidColorBrush>
+    <SolidColorBrush x:Key="Color_Button_Click" Color="#292C3D">
+
+    </SolidColorBrush>
+
+</ResourceDictionary>

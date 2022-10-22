@@ -1,0 +1,146 @@
+﻿<UserControl x:Class="NexteLite.ServerCarousel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NexteLite"
+             mc:Ignorable="d" 
+             Height="394" Width="574">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="CustomStyle_Carousel_Button" TargetType="{x:Type Button}">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="Gray"/>
+                <Setter Property="Opacity" Value="0.7"/>
+                <Setter Property="BorderThickness" Value="3"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}" BorderThickness="0">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="LightGray"/>
+                    </Trigger>
+
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Foreground" Value="DarkGray"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Storyboard x:Key="Move_Left">
+                <DoubleAnimation Storyboard.TargetName="Container" Duration="0:0:0.25" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase Exponent="2"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+            
+            <Storyboard x:Key="Move_Right">
+                <DoubleAnimation Storyboard.TargetName="Container" Duration="0:0:0.25" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase Exponent="2"/>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent" PreviewMouseWheel="Carousel_Scroll">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="60"/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="left_button" Visibility="Collapsed" Style="{DynamicResource CustomStyle_Carousel_Button}" Grid.Column="1" Panel.ZIndex="5" Tag="Left" Click="Carousel_ChageItem">
+            <Image>
+                <Image.Source>
+                    <DrawingImage>
+                        <DrawingImage.Drawing>
+                            <DrawingGroup ClipGeometry="M0,0 V492 H492 V0 H0 Z">
+                                <DrawingGroup Opacity="1">
+                                    <DrawingGroup Opacity="1">
+                                        <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}" Geometry="F1 M492,492z M0,0z M198.608,246.104L382.664,62.04C387.732,56.984 390.52,50.224 390.52,43.016 390.52,35.804 387.732,29.048 382.664,23.984L366.536,7.864C361.476,2.792 354.712,0 347.504,0 340.296,0 333.54,2.792 328.476,7.864L109.328,227.008C104.244,232.088 101.46,238.876 101.48,246.092 101.46,253.34 104.24,260.12 109.328,265.204L328.272,484.136C333.336,489.208 340.092,492 347.304,492 354.512,492 361.268,489.208 366.336,484.136L382.46,468.016C392.952,457.524,392.952,440.444,382.46,429.956L198.608,246.104z" />
+                                    </DrawingGroup>
+                                </DrawingGroup>
+                            </DrawingGroup>
+                        </DrawingImage.Drawing>
+                    </DrawingImage>
+                </Image.Source>
+            </Image>
+        </Button>
+
+        <Grid x:Name="Container" Background="Transparent" Grid.Column="0" Grid.ColumnSpan="5">
+            <Grid.RenderTransform>
+                <TranslateTransform>
+                    
+                </TranslateTransform>
+            </Grid.RenderTransform>
+        </Grid>
+
+        <Button x:Name="right_button" Visibility="Collapsed" Grid.Column="3" Style="{DynamicResource CustomStyle_Carousel_Button}" Panel.ZIndex="5" Tag="Right" Click="Carousel_ChageItem">
+            <Image>
+                <Image.Source>
+                    <DrawingImage>
+                        <DrawingImage.Drawing>
+                            <DrawingGroup ClipGeometry="M0,0 V492 H492 V0 H0 Z">
+                                <DrawingGroup Opacity="1">
+                                    <DrawingGroup Opacity="1">
+                                        <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}" Geometry="F1 M492.004,492.004z M0,0z M382.678,226.804L163.73,7.86C158.666,2.792 151.906,0 144.698,0 137.49,0 130.73,2.792 125.666,7.86L109.542,23.98C99.05,34.484,99.05,51.556,109.542,62.044L293.398,245.9 109.338,429.96C104.274,435.028 101.478,441.784 101.478,448.988 101.478,456.2 104.274,462.956 109.338,468.028L125.462,484.144C130.53,489.212 137.286,492.004 144.494,492.004 151.702,492.004 158.462,489.212 163.526,484.144L382.678,265C387.754,259.916 390.542,253.128 390.526,245.912 390.542,238.668 387.754,231.884 382.678,226.804z" />
+                                    </DrawingGroup>
+                                </DrawingGroup>
+                            </DrawingGroup>
+                        </DrawingImage.Drawing>
+                    </DrawingImage>
+                </Image.Source>
+            </Image>
+        </Button>
+        
+        <!--<Border Grid.Row="1" Height="223" Width="188" Margin="52,28,334,28">
+            <Grid>
+                <Grid.Effect>
+                    <DropShadowEffect BlurRadius="46" Direction="-176">
+
+                    </DropShadowEffect>
+                </Grid.Effect>
+                <Image Stretch="UniformToFill" Source="https://d2ofqe7l47306o.cloudfront.net/games/vitrine/minecraft-portrait-09.jpg"></Image>
+                <Border Background="black" Opacity="0.33"></Border>
+            </Grid>
+        </Border>
+      
+        <Border x:Name="border" Grid.Row="1" Height="279" Width="234" Panel.ZIndex="1">
+            <Grid>
+                <Grid.Effect>
+                    <DropShadowEffect BlurRadius="46" Direction="-176">
+                        
+                    </DropShadowEffect>
+                </Grid.Effect>
+                <Image Stretch="UniformToFill" Source="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b34cc56e-0492-420f-9501-6ac3beb2282c/d7m6vw5-69a8ed98-5964-48f3-8014-564716be5bfb.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvYjM0Y2M1NmUtMDQ5Mi00MjBmLTk1MDEtNmFjM2JlYjIyODJjXC9kN202dnc1LTY5YThlZDk4LTU5NjQtNDhmMy04MDE0LTU2NDcxNmJlNWJmYi5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.5qmBO_ksHPF-z8-zWkvJpiSOrXas5ggyi0Aot_VJAcw"></Image>
+            </Grid>
+        </Border>
+
+        <Border x:Name="border1" Grid.Row="1" Height="223" Width="188" Margin="334,28,52,28" Opacity="1">
+            <Grid>
+                <Grid.Effect>
+                    <DropShadowEffect BlurRadius="46" Direction="-176">
+
+                    </DropShadowEffect>
+                </Grid.Effect>
+                <Image Stretch="UniformToFill" Source="https://cdn.pixabay.com/photo/2017/02/10/00/03/minecraft-2053882_960_720.jpg"></Image>
+                <Border Background="black" Opacity="0.33"></Border>
+            </Grid>
+        </Border>-->
+    </Grid>
+</UserControl>

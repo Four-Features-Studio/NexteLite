@@ -1,0 +1,166 @@
+﻿<UserControl x:Class="NexteLite.ItemServer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NexteLite"
+             mc:Ignorable="d" 
+             Height="394" Width="234"
+             x:Name="thisServer"
+             FontFamily="./PFBeauSans.ttf #PF Beau Sans Pro Thin">
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles/Buttons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Storyboard x:Key="Show">
+                <DoubleAnimation Storyboard.TargetName="item_border" To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_servername" To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_play" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="item_settings" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_playercount" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Key="Hide">
+                <DoubleAnimation Storyboard.TargetName="item_border" To="0" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_servername" To="0" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_play" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="item_settings" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_playercount" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Key="Select">
+
+                <DoubleAnimation Storyboard.TargetName="item_border" To="280" Duration="0:0:0.2"  Storyboard.TargetProperty="Height"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_border" To="235" Duration="0:0:0.2" Storyboard.TargetProperty="Width"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_servername" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_play" To="1" Duration="0:0:0.1"  Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="item_settings" To="1" Duration="0:0:0.1"  Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_playercount" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_imageshadow" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Key="Unselect">
+
+                <DoubleAnimation Storyboard.TargetName="item_border" To="223" Duration="0:0:0.2" Storyboard.TargetProperty="Height"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_border" To="188" Duration="0:0:0.2" Storyboard.TargetProperty="Width"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_servername" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_play" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+                <DoubleAnimation Storyboard.TargetName="item_settings" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_playercount" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="item_imageshadow" To="0.3" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
+            </Storyboard>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding ElementName=thisServer, Path=.}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="280"></RowDefinition>
+            <RowDefinition Height="55"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="item_block" Background="Transparent" Opacity="0" Grid.RowSpan="3" Panel.ZIndex="2" Visibility="Collapsed">
+
+        </Grid>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock x:Name="item_servername"           
+                   Foreground="White" 
+                   HorizontalAlignment="Center" VerticalAlignment="Top"
+                   FontSize="28"
+                   Text="{Binding Title}">
+            </TextBlock>
+            <TextBlock x:Name="item_playercount"
+                   FontSize="14" 
+                   Foreground="#898989" Visibility="Visible"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"> 
+            Игроков на сервере 0 из 0
+            </TextBlock>
+
+        </StackPanel>
+
+
+        <Grid x:Name="item_border" Grid.Row="1" Height="280" Width="235" Panel.ZIndex="0" Opacity="1">
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="36" Direction="-176">
+                </DropShadowEffect>
+            </Grid.Effect>
+
+            <Grid x:Name="item_imageshadow" Background="Black" Opacity="0.2" Panel.ZIndex="1">
+            </Grid>
+
+            <Image x:Name="item_image" Stretch="UniformToFill" Source="{Binding ServerAvatar}">
+            </Image>
+        </Grid>
+        
+        <Button x:Name="item_play" Grid.Row="1" Margin="0,267,0,0" Click="item_play_Click" Background="Gray" BorderThickness="0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Height="24" Width="170" Cursor="Hand" Grid.RowSpan="2">
+            Играть
+        </Button>
+
+        <Button x:Name="item_settings" Grid.Row="2" Padding="5" Margin="1"
+                Foreground="Gray"
+                Click="item_settings_Click" 
+                Style="{DynamicResource MaterialDesignFloatingActionButton}"             
+                Background="Transparent"
+                VerticalAlignment="Bottom" HorizontalAlignment="Center" 
+                Height="30" Width="30"
+                Cursor="Hand">
+            <Image>
+                <Image.Source>
+                    <DrawingImage>
+                        <DrawingImage.Drawing>
+                            <DrawingGroup ClipGeometry="M0,0 V512 H448 V0 H0 Z">
+                                <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}" Geometry="F1 M448,512z M0,0z M16,132L432,132C440.837,132,448,124.837,448,116L448,76C448,67.163,440.837,60,432,60L16,60C7.163,60,0,67.163,0,76L0,116C0,124.837,7.163,132,16,132z M16,292L432,292C440.837,292,448,284.837,448,276L448,236C448,227.163,440.837,220,432,220L16,220C7.163,220,0,227.163,0,236L0,276C0,284.837,7.163,292,16,292z M16,452L432,452C440.837,452,448,444.837,448,436L448,396C448,387.163,440.837,380,432,380L16,380C7.163,380,0,387.163,0,396L0,436C0,444.837,7.163,452,16,452z" />
+                            </DrawingGroup>
+                        </DrawingImage.Drawing>
+                    </DrawingImage>
+                </Image.Source>
+            </Image>
+        </Button>
+    </Grid>
+</UserControl>

@@ -1,0 +1,195 @@
+﻿<Page x:Class="NexteLite.Pages.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:NexteLite"
+      mc:Ignorable="d" 
+      FontSize="14"
+      d:DesignHeight="450" d:DesignWidth="770"
+      Title="main"
+      FontFamily="./Resources/PFBeauSans.ttf #PF Beau Sans Pro Thin">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles/Buttons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Storyboard x:Key="Show">
+                <DoubleAnimation Storyboard.TargetName="download_control" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                <DoubleAnimation Storyboard.TargetName="main_control" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+            </Storyboard>
+
+            <Storyboard x:Key="Hide">
+                <DoubleAnimation Storyboard.TargetName="download_control" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                <DoubleAnimation Storyboard.TargetName="main_control" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+            </Storyboard>
+
+            <!--<Storyboard x:Key="Show_StartPlug">
+                <DoubleAnimation Storyboard.TargetName="plug_control" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                <DoubleAnimation Storyboard.TargetName="main_control" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+            </Storyboard>
+
+            <Storyboard x:Key="Hide_StartPlug">
+                <DoubleAnimation Storyboard.TargetName="plug_control" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                <DoubleAnimation Storyboard.TargetName="main_control" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+            </Storyboard>-->
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="plug_control" Visibility="Collapsed" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">Экземпляр игры уже запущен.</TextBlock>
+
+        <Grid x:Name="download_control" Panel.ZIndex="2" Opacity="0" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Border Width="467" Height="229" BorderBrush="#232532" BorderThickness="2">
+                <Border VerticalAlignment="Bottom" Height="55">
+                    <Border.Background>
+                        <SolidColorBrush Color="Black" Opacity="0.8"></SolidColorBrush>
+                    </Border.Background>
+                    <TextBlock x:Name="item_infodonwload" Foreground="White" TextAlignment="Left" VerticalAlignment="Center" Margin="10" >
+                        <Run x:Name="info_currentsize">123</Run>/<Run x:Name="info_totalsize">123</Run>
+                        <LineBreak></LineBreak>
+                        <Run x:Name="info_currentfile">asdasd</Run>
+                    </TextBlock>
+                </Border>
+            </Border>
+
+            <ProgressBar x:Name="item_progress" Grid.Row="2" BorderThickness="0" Height="20">
+                <ProgressBar.Foreground>
+                    <LinearGradientBrush >
+                        <GradientStop Color="#FF2F0470" Offset="0"/>
+                        <GradientStop Color="#FF6D19EB" Offset="1"/>
+                    </LinearGradientBrush>
+                </ProgressBar.Foreground>
+                <ProgressBar.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.35"/>
+                </ProgressBar.Background>
+            </ProgressBar>
+        </Grid>
+
+        <Grid x:Name="main_control">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="64"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+                <Border Margin="11,11" Width="42" Height="42" CornerRadius="5" Background="#262938">
+                    <Grid Margin="3">
+                        <Image Stretch="Uniform" Source="https://i.pinimg.com/originals/24/c8/55/24c855f2f5859e921b2e7a8ce7596e06.png"></Image>
+                    </Grid>
+                </Border>
+                <TextBlock x:Name="username_control" FontSize="16" TextAlignment="Center" VerticalAlignment="Center" Margin="0,12" Foreground="White" Text="{Binding Path=Profile.Username}"></TextBlock>
+            </StackPanel>
+
+            <Grid Grid.Row="1" Panel.ZIndex="5" Background="Transparent">
+                <StackPanel Orientation="Vertical" Grid.Row="1">
+                    <!--<Button x:Name="Mods" Cursor="Hand" Click="Buttons_OnClick" Tag="mods"  Height="24" Width="26" Margin="0,9,0,0" Style="{DynamicResource CustomStyle_Transperent_Button}">
+                        <Image Stretch="Fill">
+                            <Image.Source>
+                                <DrawingImage>
+                                    <DrawingImage.Drawing>
+                                        <DrawingGroup ClipGeometry="M0,0 V513.5 H512.5 V0 H0 Z">
+                                            <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}">
+                                                <GeometryDrawing.Geometry>
+                                                    <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,0,512,140" />
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                            <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}">
+                                                <GeometryDrawing.Geometry>
+                                                    <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0.5,186.5,512,140" />
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                            <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}">
+                                                <GeometryDrawing.Geometry>
+                                                    <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0.5,373.5,512,140" />
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingGroup>
+                                    </DrawingImage.Drawing>
+                                </DrawingImage>
+                            </Image.Source>
+                        </Image>
+                    </Button>-->
+                    <Button x:Name="Settings" Cursor="Hand" Click="Buttons_OnClick" Tag="settings"  Height="26" Width="26" Margin="0,20,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
+                        <Image Stretch="Fill">
+                            <Image.Source>
+                                <DrawingImage>
+                                    <DrawingImage.Drawing>
+                                        <DrawingGroup ClipGeometry="M0,0 V453.33 H453.33 V0 H0 Z">
+                                            <DrawingGroup Transform="1,0,0,1,-29.5,-28.83">
+                                                <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}" Geometry="F0 M453.33,453.33z M0,0z M407.28,255.5C407.28,245,482.83,179.94,482.83,179.94L445.06,104.39C445.06,104.39 338.22,129.78 331.72,123.28 325.22,116.78 312.83,28.83 312.83,28.83L199.5,28.83C199.5,28.83 185.94,117.94 180.61,123.28 175.28,128.62 67.28,104.39 67.28,104.39L29.5,179.94C29.5,179.94 105.06,249 105.06,255.5 105.06,262 29.5,331.06 29.5,331.06L67.28,406.61C67.28,406.61 174.94,382.06 180.61,387.72 186.28,393.38 199.5,482.17 199.5,482.17L312.83,482.17C312.83,482.17 325.72,393.72 331.72,387.72 337.72,381.72 445.06,406.61 445.06,406.61L482.83,331.06C482.83,331.06,407.28,266,407.28,255.5z M256.17,331.06A75.56,75.56,0,1,1,331.72,255.5A75.56,75.56,0,0,1,256.17,331.06z" />
+                                            </DrawingGroup>
+                                        </DrawingGroup>
+                                    </DrawingImage.Drawing>
+                                </DrawingImage>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                    <Button x:Name="Console" Visibility="Collapsed" Cursor="Hand" Click="Buttons_OnClick" Tag="console" Height="26" Width="26" Margin="0,20,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
+                        <Image Stretch="Fill">
+                            <Image.Source>
+                                <DrawingImage>
+                                    <DrawingImage.Drawing>
+                                        <DrawingGroup ClipGeometry="M0,0 V447.71 H511.67 V0 H0 Z">
+                                            <DrawingGroup Transform="1,0,0,1,-0.33,-32.4">
+                                                <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}" Geometry="F0 M511.67,447.71z M0,0z M490.68,32.4L21.68,32.4C0.62,32.4,0.33,53.72,0.33,53.72L0.33,416.15C0.33,437.15,21.65,437.47,21.65,437.47L21.65,480.1 490.65,480.1 490.65,437.47C509.95,437.47,511.97,416.15,511.97,416.15L511.97,53.72C512,32.49,490.68,32.4,490.68,32.4z M85.61,245.59L149.61,181.59 85.61,117.59 106.93,96.27 192.21,181.55 106.93,266.83z M320.12,288.23L192.21,288.23 192.21,245.59 320.12,245.59z" />
+                                            </DrawingGroup>
+                                        </DrawingGroup>
+                                    </DrawingImage.Drawing>
+                                </DrawingImage>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                    <Button x:Name="Logout"  Cursor="Hand" Click="Buttons_OnClick" Tag="logout" Height="26" Width="26" Margin="0,20,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
+                        <Image Stretch="Fill">
+                            <Image.Source>
+                                <DrawingImage>
+                                    <DrawingImage.Drawing>
+                                        <DrawingGroup ClipGeometry="M0,0 V501.72 H481.65 V0 H0 Z">
+                                            <DrawingGroup Transform="1,0,0,1,-15.35,-5.39">
+                                                <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}" Geometry="F0 M481.65,501.72z M0,0z M497,266.28L296.31,65.6 296.31,145.87 155.83,145.87 155.83,366.63 296.31,366.63 296.31,446.9z M216,426.83L95.63,426.83 95.63,85.67 216,85.67C236,85.67,236.07,65.6,236.07,65.6L236.07,25.46C236.11,5.68,216,5.39,216,5.39L55.49,5.39C15,5.39,15.35,45.53,15.35,45.53L15.35,467C15.35,506.93,55.49,507.14,55.49,507.14L216,507.14C236.08,507.14,236.07,487.07,236.07,487.07L236.07,446.9C236.11,426.86,216,426.83,216,426.83z" />
+                                            </DrawingGroup>
+                                        </DrawingGroup>
+                                    </DrawingImage.Drawing>
+                                </DrawingImage>
+                            </Image.Source>
+                        </Image>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel x:Name="socials_control"  VerticalAlignment="Bottom" Margin="0,0,0,16" Grid.Row="1">
+
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource CustomStyle_Transperent_Button}"></Style>
+                    </StackPanel.Resources>
+
+                    <!--<Button x:Name="VK" Cursor="Hand" Height="26" Width="26" Margin="0,10,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
+                    </Button>
+                    <Button x:Name="Discord" Cursor="Hand" Height="26" Width="26" Margin="0,10,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
+                    </Button>-->
+                </StackPanel>
+            </Grid>
+
+            <local:ServerCarousel x:Name="Servers" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" ItemsCarousel="{Binding ServerProfiles}">
+
+            </local:ServerCarousel>
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,6 @@
+NexteLite/obj/
+NexteLite/bin/
+NexteLite/Properties/PublishProfiles
+NexteLite/NexteLite.csproj.user
+packages/
+.vs/
