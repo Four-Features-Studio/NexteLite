@@ -10,8 +10,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -32,7 +34,7 @@ namespace NexteLite
         #region Window Events
         private void Window_Close(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            App.Current.Shutdown();
         }
 
         private void Window_Minimized(object sender, RoutedEventArgs e)
@@ -47,7 +49,14 @@ namespace NexteLite
         }
         private void Window_Back(object sender, RoutedEventArgs e)
         {
-
+            Storyboard sb = this.FindResource("Hide_Overlays") as Storyboard;
+            sb.Completed += (s, arg) =>
+            {
+                Overlayes.Content = null;
+                Overlayes.Visibility = Visibility.Collapsed;
+            };
+            sb.Begin();
+            back_button.Visibility = Visibility.Collapsed;
         }
 
         #endregion
@@ -67,7 +76,11 @@ namespace NexteLite
 
         public void ShowOverlay(Page page)
         {
-            
+            Overlayes.NavigationService.Navigate(page);
+            Overlayes.Visibility = Visibility.Visible;
+            back_button.Visibility = Visibility.Visible;
+            Storyboard sb = this.FindResource("Show_Overlays") as Storyboard;
+            sb.Begin();
         }
     }
 }

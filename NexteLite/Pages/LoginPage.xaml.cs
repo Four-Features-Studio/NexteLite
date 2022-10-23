@@ -22,11 +22,10 @@ namespace NexteLite.Pages
     /// </summary>
     public partial class LoginPage : Page, IPage
     {
-        ILoginProxy proxy;
+        ILoginProxy Proxy;
         public LoginPage(ILoginProxy login)
         {
-            proxy = login;
-
+            Proxy = login;
             InitializeComponent();
             IsOverlay = false;
         }
@@ -51,12 +50,18 @@ namespace NexteLite.Pages
 
             if (Validate())
             {
-                if(!proxy.Core_Login(login, password, save, out string message))
+               
+                if (!Proxy.Login(login, password, save, out string message))
                 {
                     ValidateLoginError(message);
                     ValidatePassError(message);
                 }
             }
+        }
+
+        private bool Proxy_Login(string username, string password, bool save, out string message)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

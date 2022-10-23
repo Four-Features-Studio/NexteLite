@@ -19,17 +19,22 @@ namespace NexteLite.Services
 
         ILoginProxy LoginProxy;
         IMainProxy MainProxy;
+        ISettingsLauncher SettingsLauncher;
 
-        public CoreLauncher(IMainWindow mainWindow, IPagesRepository pages, IWebService web, ILoginProxy login, IMainProxy main)
+        public CoreLauncher(IMainWindow mainWindow, IPagesRepository pages, IWebService web, ISettingsLauncher settings, ILoginProxy login, IMainProxy main)
         {
             Main = mainWindow;
             Pages = pages;
             Web = web;
+            SettingsLauncher = settings;
 
             LoginProxy = login;
             MainProxy = main;
 
-            LoginProxy.Core_Login = Login;
+            LoginProxy.LoginClick += LoginProxy_LoginClick;
+
+            MainProxy.SettingsClick += MainProxy_SettingsClick;
+
             Main.Show();
             ShowPage(PageType.Login);
         }
@@ -44,7 +49,7 @@ namespace NexteLite.Services
         /// <param name="save"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public bool Login(string username, string password, bool save, out string message)
+        private bool LoginProxy_LoginClick(string username, string password, bool save, out string message)
         {
             message = string.Empty;
             if (Web.Auth(username, password, out var profile, ref message))
@@ -60,11 +65,16 @@ namespace NexteLite.Services
         /// <summary>
         /// 
         /// </summary>
-        public void LoadProfiles()
+        private void LoadProfiles()
         {
             var profiles = Web.GetServerProfiles();
             ServerProfiles = profiles;
             MainProxy.SetServerProfiles(ServerProfiles);
+        }
+
+        private void MainProxy_SettingsClick()
+        {
+            ShowOverlay(PageType.Settings);
         }
 
         /// <summary>
@@ -82,7 +92,7 @@ namespace NexteLite.Services
         /// <param name="id"></param>
         public void ShowOverlay(PageType id)
         {
-            
+            Main.ShowOverlay(Pages.GetPage(id));
         }
 
         /// <summary>

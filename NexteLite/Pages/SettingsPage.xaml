@@ -6,9 +6,96 @@
       xmlns:local="clr-namespace:NexteLite.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="SEttingsPage">
+      FontFamily="./Resources/PFBeauSans.ttf #PF Beau Sans Pro Thin"
+      FontSize="14">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="110"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Image Grid.Row="0" Grid.RowSpan="4" Source="pack://application:,,,/NexteLite;component/Resources/background.png" Stretch="Fill"></Image>
+
+        <Grid>
+            <Slider x:Name="ram_slider" VerticalAlignment="Bottom" Margin="50,25" Maximum="4096" Minimum="1024" TickPlacement="TopLeft" IsSnapToTickEnabled="True" TickFrequency="128" Style="{DynamicResource Custom_Default_Slider}"/>
+        </Grid>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="70,10">
+            <Grid Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="autoconnect_control" />
+                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Автоматически подключаться к выбранному серверу"/>
+            </Grid>
+            <Grid Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="fullscreen_control"/>
+                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Запускать игру в полноэкранном режиме"/>
+            </Grid>
+            <Grid Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="debugging_control" />
+                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Включить отладку клиента"/>
+            </Grid>
+            <Grid Margin="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="usemetrica_control"/>
+                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Отпрявлять техническую метрику"/>
+            </Grid>
+        </StackPanel>
+
+        <Border Grid.Row="2" Grid.Column="0" Margin="70,0" Height="30">
+            <Border.Background>
+                <SolidColorBrush Color="Black" Opacity="0.3"/>
+            </Border.Background>
+
+            <TextBlock x:Name="path_control"               
+                   Margin="5,0"
+                   FontSize="18" 
+                   Foreground="White" 
+                   Padding="0"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                   PreviewMouseDown="TextBlock_Click">
+
+            C:\Users\gomer\AppData\Roaming\.nexte</TextBlock>
+        </Border>
+
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Foreground="White" BorderThickness="0" Background="#a22525" Width="170" Click="Buttons_Click" Tag="delete" Content="Удалить все клиенты" Cursor="Hand"/>
+            <Button Grid.Column="2" Foreground="White" BorderThickness="0"  Background="#38447a" Width="133" Content="Применить" Click="Buttons_Click" Tag="apply" Cursor="Hand"/>
+        </Grid>
+
     </Grid>
 </Page>

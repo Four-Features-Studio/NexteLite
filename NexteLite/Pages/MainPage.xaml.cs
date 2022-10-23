@@ -179,6 +179,15 @@ namespace NexteLite.Pages
 
         private void Buttons_OnClick(object sender, RoutedEventArgs e)
         {
+            var tag = ((Button)sender).Tag as string;
+            switch (tag)
+            {
+                case "settings":
+                    Proxy.OpenSettings();
+                    break;
+                case "logout":
+                    break;
+            }
         }
 
         #region [INotifyPropertyChanged]

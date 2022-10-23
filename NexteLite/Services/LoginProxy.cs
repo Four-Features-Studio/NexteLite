@@ -1,4 +1,5 @@
-﻿using NexteLite.Interfaces;
+﻿using Microsoft.VisualBasic.Logging;
+using NexteLite.Interfaces;
 using NexteLite.Models;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,11 @@ namespace NexteLite.Services
         /// <summary>
         /// Функция для авторизации посредством рест запроса
         /// </summary>
-        public LoginFunction Core_Login { get; set; }
+        public event LoginClickHandler LoginClick;
 
-        /// <summary>
-        /// Функция позволяющая разлогиниться в лаунчере
-        /// </summary>
-        public LogoutFunction Core_Logout { get; set; }
+        public bool Login(string login, string password, bool save, out string message)
+        {
+            return LoginClick.Invoke(login, password, save, out message);
+        }
     }
 }

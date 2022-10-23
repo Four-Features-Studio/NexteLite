@@ -46,6 +46,7 @@ namespace NexteLite
 
             services.AddSingleton<IMainWindow,MainWindow>();
             services.AddSingleton<ICoreLaucnher, CoreLauncher>();
+            services.AddSingleton<ISettingsLauncher, SettingsLauncher>();
 
             services.AddSingleton<ILoginProxy, LoginProxy>();
             services.AddSingleton<IMainProxy, MainProxy>();

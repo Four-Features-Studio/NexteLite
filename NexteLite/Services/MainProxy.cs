@@ -12,5 +12,22 @@ namespace NexteLite.Services
     {
         public SetProfileFunction SetProfile { get; set; }
         public SetServerProfilesFunction SetServerProfiles { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event SettingsClickHandler SettingsClick;
+
+        /// <summary>
+        /// Функция позволяющая разлогиниться в лаунчере
+        /// </summary>
+        public event LogoutClickHandler LogoutClick;
+        public event SocialClickHandler SocialClick;
+        public event PlayClickHandler PlayClick;
+
+        public void OpenSettings()
+        {
+            SettingsClick?.Invoke();
+        }
     }
 }

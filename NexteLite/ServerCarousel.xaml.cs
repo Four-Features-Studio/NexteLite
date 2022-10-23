@@ -99,7 +99,8 @@ namespace NexteLite
                     var index = servers.IndexOf(item);
 
                     itemServer.Hide();
-                    itemServer.IsHide = false;
+                    itemServer.IsHide = true;
+                    itemServer.Unselect();
 
                     Panel.SetZIndex(itemServer, 1);
 
@@ -110,6 +111,8 @@ namespace NexteLite
                     itemServer.Initialize(profile);
 
                     Servers.Add(itemServer);
+
+                    itemServer.Visibility = Visibility.Collapsed;
 
                     Container.Children.Add(itemServer);
                 }
