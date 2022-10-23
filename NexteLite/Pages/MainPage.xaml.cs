@@ -26,20 +26,16 @@ namespace NexteLite.Pages
     /// <summary>
     /// Логика взаимодействия для MainPage.xaml
     /// </summary>
-    public partial class MainPage : Page, IPage, INotifyPropertyChanged
+    public partial class MainPage : Page, IPage, IMainProxy, INotifyPropertyChanged
     {
-        IMainProxy Proxy;
-        public MainPage(IMainProxy proxy)
-        {
-            InitializeComponent();
-            DataContext = this;
-            IsOverlay = false;
-            Proxy = proxy;
+        public event SettingsClickHandler SettingsClick;
+        public event LogoutClickHandler LogoutClick;
+        public event SocialClickHandler SocialClick;
+        public event PlayClickHandler PlayClick;
 
-            Proxy.SetProfile = SetProfile;
-            Proxy.SetServerProfiles = SetServers;
-        }
-
+        public ObservableCollection<ServerProfile> ServerProfiles { get; set; }
+        public PageType Id => PageType.Main;
+        public bool IsOverlay { get; private set; }
 
         private Profile profile;
         public Profile Profile
@@ -55,17 +51,19 @@ namespace NexteLite.Pages
             }
         }
 
-        public ObservableCollection<ServerProfile> ServerProfiles {get; set;}
-
-        public PageType Id => PageType.Main;
-        public bool IsOverlay { get; private set; }
+        public MainPage()
+        {
+            InitializeComponent();
+            DataContext = this;
+            IsOverlay = false;
+        }
 
         public void SetProfile(Profile profile)
         {
             Profile = profile;
         }
 
-        public void SetServers(List<ServerProfile> profiles)
+        public void SetServerProfiles(List<ServerProfile> profiles)
         {
             ServerProfiles = new ObservableCollection<ServerProfile>();
             OnPropertyChanged(nameof(ServerProfiles));
@@ -183,7 +181,7 @@ namespace NexteLite.Pages
             switch (tag)
             {
                 case "settings":
-                    Proxy.OpenSettings();
+                    SettingsClick?.Invoke();
                     break;
                 case "logout":
                     break;

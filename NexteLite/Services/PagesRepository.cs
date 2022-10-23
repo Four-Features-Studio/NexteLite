@@ -14,12 +14,12 @@ namespace NexteLite.Services
     {
         private Dictionary<PageType,Page> Pages = new Dictionary<PageType,Page>();
 
-        public PagesRepository(MainPage main, LoginPage login, ConsolePage console, SettingsPage settings)
+        public PagesRepository(MainPage mainPage, LoginPage loginPage, ConsolePage consolePage, SettingsPage settingsPage)
         {
-            Pages.Add(((IPage)main).Id,main);
-            Pages.Add(((IPage)login).Id,login);
-            Pages.Add(((IPage)console).Id,console);
-            Pages.Add(((IPage)settings).Id,settings);
+            Pages.Add(((IPage)mainPage).Id, mainPage);
+            Pages.Add(((IPage)loginPage).Id, loginPage);
+            Pages.Add(((IPage)consolePage).Id, consolePage);
+            Pages.Add(((IPage)settingsPage).Id,settingsPage);
         }
         public Page GetPage(PageType type)
         {

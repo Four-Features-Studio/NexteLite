@@ -20,48 +20,17 @@ namespace NexteLite.Pages
     /// <summary>
     /// Логика взаимодействия для LoginPage.xaml
     /// </summary>
-    public partial class LoginPage : Page, IPage
+    public partial class LoginPage : Page, IPage, ILoginProxy
     {
-        ILoginProxy Proxy;
-        public LoginPage(ILoginProxy login)
-        {
-            Proxy = login;
-            InitializeComponent();
-            IsOverlay = false;
-        }
+        public event LoginClickHandler LoginClick;
 
         public PageType Id => PageType.Login;
         public bool IsOverlay { get; private set; }
-        private void Strbrd_Welcome_Completed(object sender, EventArgs e)
-        {
-            WelcomLabel.Visibility = Visibility.Collapsed;
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Btn_Login_Click(object sender, RoutedEventArgs e)
+        public LoginPage()
         {
-            var login = LoginInput.Text;
-            var password = PasswordInput.Password;
-            var save = save_userdata.IsChecked.Value;
-
-            if (Validate())
-            {
-               
-                if (!Proxy.Login(login, password, save, out string message))
-                {
-                    ValidateLoginError(message);
-                    ValidatePassError(message);
-                }
-            }
-        }
-
-        private bool Proxy_Login(string username, string password, bool save, out string message)
-        {
-            throw new NotImplementedException();
+            InitializeComponent();
+            IsOverlay = false;
         }
 
         /// <summary>
@@ -140,5 +109,39 @@ namespace NexteLite.Pages
 
             return false;
         }
+
+
+        private void Strbrd_Welcome_Completed(object sender, EventArgs e)
+        {
+            WelcomLabel.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btn_Login_Click(object sender, RoutedEventArgs e)
+        {
+            var login = LoginInput.Text;
+            var password = PasswordInput.Password;
+            var save = save_userdata.IsChecked.Value;
+
+            if (Validate())
+            {
+
+                if (!LoginClick.Invoke(login, password, save, out string message))
+                {
+                    ValidateLoginError(message);
+                    ValidatePassError(message);
+                }
+            }
+        }
+
+        private bool Proxy_Login(string username, string password, bool save, out string message)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

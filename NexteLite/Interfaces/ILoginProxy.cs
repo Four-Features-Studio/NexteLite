@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 namespace NexteLite.Interfaces
 {
     public delegate bool LoginClickHandler(string username, string password, bool save, out string message);
+
     public interface ILoginProxy
     {
         event LoginClickHandler LoginClick;
-
-        bool Login(string login, string password, bool save, out string message);
     }
 
 }

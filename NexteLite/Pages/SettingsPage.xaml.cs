@@ -2,8 +2,11 @@
 using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,18 +22,103 @@ using System.Windows.Shapes;
 namespace NexteLite.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для SEttingsPage.xaml
+    /// Логика взаимодействия для SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : Page, IPage
+    public partial class SettingsPage : Page, IPage, ISettingsProxy, INotifyPropertyChanged
     {
+        public PageType Id => PageType.Settings;
+        public bool IsOverlay { get; private set; }
+
+        double _MaximumRam;
+        public double MaximumRam
+        {
+            get
+            {
+                return _MaximumRam;
+            }
+            set
+            {
+                _MaximumRam = value;
+                OnPropertyChanged();
+            }
+        }
+
+        int _CurrentRam;
+        public int CurrentRam
+        {
+            get
+            {
+                return _CurrentRam;
+            }
+            set
+            {
+                _CurrentRam = value;
+                Debug.WriteLine($"RAM - {value}");
+                OnPropertyChanged();
+            }
+        }
+
+        bool _AutoConnectMode;
+        public bool AutoConnectMode
+        {
+            get
+            {
+                return _AutoConnectMode;
+            }
+            set
+            {
+                _AutoConnectMode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        bool _FullScreenMode;
+        public bool FullScreenMode
+        {
+            get
+            {
+                return _FullScreenMode;
+            }
+            set
+            {
+                _FullScreenMode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        bool _DebugMode;
+        public bool DebugMode
+        {
+            get
+            {
+                return _DebugMode;
+            }
+            set
+            {
+                _DebugMode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        string _Path;
+        public string Path
+        {
+            get
+            {
+                return _Path;
+            }
+            set
+            {
+                _Path = value;
+                OnPropertyChanged();
+            }
+        }
+
         public SettingsPage()
         {
             InitializeComponent();
             IsOverlay = true;
         }
-
-        public PageType Id => PageType.Settings;
-        public bool IsOverlay { get; private set; }
 
         public void SetMaxRam(long memory)
         {
@@ -47,7 +135,7 @@ namespace NexteLite.Pages
 
                 var ram_mb = ram_gb * 1024;
 
-                ram_slider.Maximum = ram_mb;
+                MaximumRam = ram_mb;
             };
             Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
         }
@@ -94,6 +182,59 @@ namespace NexteLite.Pages
             if (dialog.ShowDialog().GetValueOrDefault())
             {
                 ((TextBlock)sender).Text = dialog.SelectedPath;
+            }
+        }
+
+        #region [INotifyPropertyChanged]
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        #endregion
+        private void RmSldr_KeyUp(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            switch (e.Key)
+            {
+                case Key.Left:
+                    {
+                        var current = CurrentRam;
+                        var isFind = current % 1024 != 0;
+                        if (isFind)
+                        {
+                            int tmp, number = current;
+                            if ((tmp = number % 1024) != 0)
+                                number += number > -1 ? (1024 - tmp) : -tmp;
+
+                            CurrentRam = number - 1024;
+                        }
+                        else
+                        {
+                            CurrentRam -= 1024;
+                        }
+                    }
+                    break;
+                case Key.Right:
+                    {
+                        var current = CurrentRam;
+                        var isFind = current % 1024 != 0;
+                        if (isFind)
+                        {
+                            int tmp, number = current;
+                            if ((tmp = number % 1024) != 0)
+                                number += number > -1 ? (1024 - tmp) : -tmp;
+
+                            CurrentRam = number + 1024;
+                        }
+                        else
+                        {
+                            CurrentRam += 1024;
+                        }
+                    }
+                    break;
             }
         }
     }

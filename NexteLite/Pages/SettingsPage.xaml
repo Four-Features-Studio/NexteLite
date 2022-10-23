@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       FontFamily="./Resources/PFBeauSans.ttf #PF Beau Sans Pro Thin"
-      FontSize="14">
+      FontSize="14" x:Name="thisSettings">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
-    <Grid>
+    <Grid DataContext="{Binding ElementName=thisSettings, Path=.}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -31,7 +31,20 @@
         <Image Grid.Row="0" Grid.RowSpan="4" Source="pack://application:,,,/NexteLite;component/Resources/background.png" Stretch="Fill"></Image>
 
         <Grid>
-            <Slider x:Name="ram_slider" VerticalAlignment="Bottom" Margin="50,25" Maximum="4096" Minimum="1024" TickPlacement="TopLeft" IsSnapToTickEnabled="True" TickFrequency="128" Style="{DynamicResource Custom_Default_Slider}"/>
+            <Slider x:Name="ram_slider"
+                    VerticalAlignment="Bottom"
+                    Margin="50,25" 
+                    Maximum="{Binding MaximumRam}" 
+                    Minimum="0" 
+                    Value="{Binding CurrentRam}" 
+                    TickPlacement="TopLeft" 
+                    IsSnapToTickEnabled="False" 
+                    IsMoveToPointEnabled="True" 
+                    TickFrequency="128" 
+                    KeyUp="RmSldr_KeyUp"
+                    SmallChange="0"
+                    Style="{DynamicResource Custom_Default_Slider}"
+                    />
         </Grid>
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Margin="70,10">

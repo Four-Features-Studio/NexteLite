@@ -99,14 +99,18 @@
                     <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <local:RamTickBar x:Name="TopTick" Fill="{TemplateBinding Foreground}" SnapsToDevicePixels="True" Height="4" Margin="0,0,15,2" Placement="Top" Grid.Row="1" Visibility="Visible"/>
-                <TickBar x:Name="BottomTick" Fill="{TemplateBinding Foreground}" Height="4" Margin="0,0,0,10" Placement="Bottom" Grid.Row="3" Visibility="Visible"/>
-                <Border x:Name="TrackBackground" Background="{StaticResource SliderThumb.Track.Background}" BorderThickness="0" BorderBrush="{StaticResource SliderThumb.Track.Border}" Height="4.0" Margin="0,0" Grid.Row="2" VerticalAlignment="center">
-                    <Canvas Margin="-6,-1">
+
+                <TickBar x:Name="TopTick" Fill="{TemplateBinding Foreground}" Height="4" Margin="0,0,0,0" Placement="Bottom" Grid.Row="0" Visibility="Visible"/>
+
+                <Border x:Name="TrackBackground" Background="{StaticResource SliderThumb.Track.Background}" BorderThickness="0" BorderBrush="{StaticResource SliderThumb.Track.Border}" Height="4.0" Margin="0,0" Grid.Row="1" VerticalAlignment="center">
+                    <Canvas Margin="0">
                         <Rectangle x:Name="PART_SelectionRange" Fill="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Height="4.0" Visibility="Hidden"/>
                     </Canvas>
                 </Border>
-                <Track x:Name="PART_Track" Grid.Row="2">
+
+                <local:RamTickBar x:Name="BottomTick" Fill="{TemplateBinding Foreground}" SnapsToDevicePixels="True" Height="4" Margin="0,2,0,0" Placement="Bottom" Grid.Row="2" Visibility="Visible"/>
+                
+                <Track x:Name="PART_Track" Grid.Row="1">
                     <Track.DecreaseRepeatButton>
                         <RepeatButton Command="{x:Static Slider.DecreaseLarge}" Style="{StaticResource RepeatButtonTransparent}"/>
                     </Track.DecreaseRepeatButton>

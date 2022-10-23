@@ -20,15 +20,16 @@ namespace NexteLite.Pages
     /// <summary>
     /// Логика взаимодействия для ConsolePage.xaml
     /// </summary>
-    public partial class ConsolePage : Page, IPage
+    public partial class ConsolePage : Page, IPage, IConsoleProxy
     {
+        public PageType Id => PageType.Console;
+        public bool IsOverlay { get; private set; }
+
         public ConsolePage()
         {
             InitializeComponent();
             IsOverlay = true;
         }
 
-        public PageType Id => PageType.Console;
-        public bool IsOverlay { get; private set; }
     }
 }

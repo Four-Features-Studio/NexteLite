@@ -5,6 +5,7 @@ using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -13,30 +14,82 @@ namespace NexteLite.Services
 {
     public class CoreLauncher : ICoreLaucnher
     {
-        IMainWindow Main;
-        IPagesRepository Pages;
-        IWebService Web;
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
 
-        ILoginProxy LoginProxy;
-        IMainProxy MainProxy;
-        ISettingsLauncher SettingsLauncher;
+        IMainWindow _Main;
+        IPagesRepository _Pages;
+        IWebService _Web;
 
-        public CoreLauncher(IMainWindow mainWindow, IPagesRepository pages, IWebService web, ISettingsLauncher settings, ILoginProxy login, IMainProxy main)
+        ILoginProxy _LoginProxy;
+        IMainProxy _MainProxy;
+        ISettingsProxy _SettingsProxy;
+        IConsoleProxy _ConsoleProxy;
+        ISettingsLauncher _SettingsLauncher;
+
+        public CoreLauncher(IMainWindow mainWindow, IPagesRepository pagesRepository, IWebService webService, ISettingsLauncher settingsLauncher)
         {
-            Main = mainWindow;
-            Pages = pages;
-            Web = web;
-            SettingsLauncher = settings;
+            _Main = mainWindow;
+            _Pages = pagesRepository;
+            _Web = webService;
+            _SettingsLauncher = settingsLauncher;
 
-            LoginProxy = login;
-            MainProxy = main;
+            _LoginProxy = (ILoginProxy)_Pages.GetPage(PageType.Login);
+            _MainProxy = (IMainProxy)_Pages.GetPage(PageType.Main);
+            _SettingsProxy = (ISettingsProxy)_Pages.GetPage(PageType.Settings);
+            _ConsoleProxy = (IConsoleProxy)_Pages.GetPage(PageType.Console);
 
-            LoginProxy.LoginClick += LoginProxy_LoginClick;
 
-            MainProxy.SettingsClick += MainProxy_SettingsClick;
+            _LoginProxy.LoginClick += LoginProxy_LoginClick;
 
-            Main.Show();
+            _MainProxy.SettingsClick += MainProxy_SettingsClick;
+
+            CalculateMaxRam();
+
+            _Main.Show();
             ShowPage(PageType.Login);
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="id"></param>
+        public void ShowPage(PageType id)
+        {
+            _Main.ShowPage(_Pages.GetPage(id));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        public void ShowOverlay(PageType id)
+        {
+            _Main.ShowOverlay(_Pages.GetPage(id));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="save"></param>
+        public void LoginPage_Login(string username, string password, bool save)
+        {
+            //заглушка
+            ShowPage(PageType.Main);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void CalculateMaxRam()
+        {
+            var total = 0l;
+            GetPhysicallyInstalledSystemMemory(out total);
+            _SettingsProxy.SetMaxRam(total);
         }
 
         private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
@@ -52,9 +105,9 @@ namespace NexteLite.Services
         private bool LoginProxy_LoginClick(string username, string password, bool save, out string message)
         {
             message = string.Empty;
-            if (Web.Auth(username, password, out var profile, ref message))
+            if (_Web.Auth(username, password, out var profile, ref message))
             {
-                MainProxy.SetProfile(profile);
+                _MainProxy.SetProfile(profile);
                 ShowPage(PageType.Main);
                 LoadProfiles();
                 return true;
@@ -67,9 +120,9 @@ namespace NexteLite.Services
         /// </summary>
         private void LoadProfiles()
         {
-            var profiles = Web.GetServerProfiles();
+            var profiles = _Web.GetServerProfiles();
             ServerProfiles = profiles;
-            MainProxy.SetServerProfiles(ServerProfiles);
+            _MainProxy.SetServerProfiles(ServerProfiles);
         }
 
         private void MainProxy_SettingsClick()
@@ -77,34 +130,5 @@ namespace NexteLite.Services
             ShowOverlay(PageType.Settings);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="id"></param>
-        public void ShowPage(PageType id)
-        {
-            Main.ShowPage(Pages.GetPage(id));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        public void ShowOverlay(PageType id)
-        {
-            Main.ShowOverlay(Pages.GetPage(id));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="save"></param>
-        public void LoginPage_Login(string username, string password, bool save)
-        {
-            //заглушка
-            ShowPage(PageType.Main);
-        }
     }
 }

@@ -18,13 +18,14 @@ namespace NexteLite.Services
         public bool Debug { get; set; }
         public bool FullScreen { get; set; }
 
-        public void LoadSettings()
+        public object LoadSettings(string name)
         {
-
+            throw new NotImplementedException();
         }
-        public void SaveSettings()
-        {
 
+        public void SaveSettings(string name, object data)
+        {
+            throw new NotImplementedException();
         }
     }
 }
