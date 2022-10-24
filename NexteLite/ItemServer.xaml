@@ -110,12 +110,14 @@
 
         <StackPanel Grid.Row="0">
             <TextBlock x:Name="item_servername"           
+                   Opacity="0"
                    Foreground="White" 
                    HorizontalAlignment="Center" VerticalAlignment="Top"
                    FontSize="28"
                    Text="{Binding Title}">
             </TextBlock>
             <TextBlock x:Name="item_playercount"
+                   Opacity="0"
                    FontSize="14" 
                    Foreground="#898989" Visibility="Visible"
                    HorizontalAlignment="Center" VerticalAlignment="Center"> 
@@ -125,24 +127,25 @@
         </StackPanel>
 
 
-        <Grid x:Name="item_border" Grid.Row="1" Height="280" Width="235" Panel.ZIndex="0" Opacity="1">
+        <Grid x:Name="item_border" Grid.Row="1" Height="223" Width="188" Panel.ZIndex="0" Opacity="1">
             <Grid.Effect>
                 <DropShadowEffect BlurRadius="36" Direction="-176">
                 </DropShadowEffect>
             </Grid.Effect>
 
-            <Grid x:Name="item_imageshadow" Background="Black" Opacity="0.2" Panel.ZIndex="1">
+            <Grid x:Name="item_imageshadow" Background="Black" Opacity="0.3" Panel.ZIndex="1">
             </Grid>
 
             <Image x:Name="item_image" Stretch="UniformToFill" Source="{Binding ServerAvatar}">
             </Image>
         </Grid>
         
-        <Button x:Name="item_play" Grid.Row="1" Margin="0,267,0,0" Click="item_play_Click" Background="Gray" BorderThickness="0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Height="24" Width="170" Cursor="Hand" Grid.RowSpan="2">
+        <Button x:Name="item_play" Opacity="0" Grid.Row="1" Margin="0,267,0,0" Click="item_play_Click" Background="Gray" BorderThickness="0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Height="24" Width="170" Cursor="Hand" Grid.RowSpan="2">
             Играть
         </Button>
 
         <Button x:Name="item_settings" Grid.Row="2" Padding="5" Margin="1"
+                Opacity="0"
                 Foreground="Gray"
                 Click="item_settings_Click" 
                 Style="{DynamicResource MaterialDesignFloatingActionButton}"             

@@ -65,12 +65,8 @@ namespace NexteLite.Pages
 
         public void SetServerProfiles(List<ServerProfile> profiles)
         {
-            ServerProfiles = new ObservableCollection<ServerProfile>();
+            ServerProfiles = new ObservableCollection<ServerProfile>(profiles);
             OnPropertyChanged(nameof(ServerProfiles));
-            foreach (ServerProfile profile in profiles)
-            {
-                ServerProfiles.Add(profile);
-            }     
         }
 
         public void AddSocial(List<JObject> objs)

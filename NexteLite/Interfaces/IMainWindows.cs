@@ -11,9 +11,8 @@ namespace NexteLite.Interfaces
     public interface IMainWindow
     {
         void ShowPage(Page page);
-
         void ShowOverlay(Page page);
-
+        void HideOverlay();
         void Show();
     }
 }

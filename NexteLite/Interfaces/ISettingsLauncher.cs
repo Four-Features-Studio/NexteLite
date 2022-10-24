@@ -18,7 +18,12 @@ namespace NexteLite.Interfaces
         bool Debug { get; set; }
         bool FullScreen { get; set; }
 
-        object LoadSettings(string name);
-        void SaveSettings(string name, object data);
+        IParamsLoginPage LoadLoginParams();
+
+        bool SaveLoginParams(IParamsLoginPage data);
+
+        IParamsSettingPage LoadSettingsParams();
+
+        bool SaveSettingsParams(IParamsSettingPage data);
     }
 }

@@ -8,9 +8,7 @@ namespace NexteLite.Interfaces
 {
     public interface IParamsSettingPage
     {
-        public double MaximumRam { get; }
-
-        public double CurrentRam { get; }
+        public int CurrentRam { get; }
 
         public bool AutoConnectMode { get; }
 

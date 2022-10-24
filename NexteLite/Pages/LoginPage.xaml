@@ -10,7 +10,8 @@
       Title="Login"
       FontFamily="./Resources/PFBeauSans.ttf #PF Beau Sans Pro Thin"
       FontSize="14"    
-      xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf">
+      xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+      x:Name="thisLogin">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -40,7 +41,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid>
+    <Grid DataContext="{Binding ElementName=thisLogin, Path=.}">
         <Grid.Resources>
             <Storyboard x:Key="Welcome" Timeline.DesiredFrameRate="60" Completed="Strbrd_Welcome_Completed">
                 <DoubleAnimation Storyboard.TargetName="WelcomLabel" Storyboard.TargetProperty="Opacity" FillBehavior="HoldEnd"
@@ -88,7 +89,7 @@
                         <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
 
-                    <Image Source="Resources/logo.png"  Margin="57,25,57,0"></Image>
+                    <Image Source="/Resources/logo.png"  Margin="57,25,57,0"></Image>
 
                     <StackPanel Grid.Row="1" >
                         <TextBox Margin="27,20,27,0" x:Name="LoginInput" Foreground="LightGray" CaretBrush="White"
@@ -96,9 +97,8 @@
                         materialDesign:HintAssist.Foreground="White"
                         materialDesign:TextFieldAssist.UnderlineBrush="White"
                         Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"
+                        Text="{Binding Username}"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}">
-                            <Binding RelativeSource="{RelativeSource Self}" Path="Text" Mode="TwoWay">
-                            </Binding>
                         </TextBox>
                         <PasswordBox Margin="27,17,27,0" x:Name="PasswordInput" Foreground="LightGray" CaretBrush="White"
                         materialDesign:HintAssist.Hint="Пароль"
@@ -106,19 +106,17 @@
                         materialDesign:TextFieldAssist.UnderlineBrush="White"
                         Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"
                         Tag="{Binding Path=Password}"
+                        PasswordChanged="PasswordBox_PasswordChanged"
                         Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" Cursor="IBeam">
                         </PasswordBox>
                     </StackPanel>
-                    <Grid Grid.Row="2" Margin="0,27,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Grid Grid.Row="2" Margin="0,10,0,0">
+                        
+                        <!--<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="Collapsed">
                             <CheckBox x:Name="save_userdata">
                             </CheckBox>
                             <TextBlock Margin="7,0" Height="13" FontSize="12" Foreground="#606573" >Сохранить пароль</TextBlock>
-                        </StackPanel>
+                        </StackPanel>-->
 
                         <Button Grid.Row="1" Height="42" Margin="27,25,27,0" Background="#38447a" BorderThickness="0" Foreground="White" FontSize="14" Click="Btn_Login_Click">Войти</Button>
                     </Grid>

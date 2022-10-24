@@ -2,7 +2,10 @@
 using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,17 +23,38 @@ namespace NexteLite.Pages
     /// <summary>
     /// Логика взаимодействия для LoginPage.xaml
     /// </summary>
-    public partial class LoginPage : Page, IPage, ILoginProxy
+    public partial class LoginPage : Page, IPage, ILoginProxy, INotifyPropertyChanged
     {
         public event LoginClickHandler LoginClick;
 
         public PageType Id => PageType.Login;
         public bool IsOverlay { get; private set; }
 
+        string _Username;
+        public string Username
+        {
+            get
+            {
+                return _Username;
+            }
+            set
+            {
+                _Username = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Password { get; private set; }
+
         public LoginPage()
         {
             InitializeComponent();
             IsOverlay = false;
+        }
+
+        public void SetParams(IParamsLoginPage data)
+        {
+            Username = data.Username;
         }
 
         /// <summary>
@@ -69,7 +93,6 @@ namespace NexteLite.Pages
             bool error_password = false;
             ValidationError validationError_login = new ValidationError(new DataErrorValidationRule(), LoginInput);
             ValidationError validationError_password = new ValidationError(new DataErrorValidationRule(), PasswordInput);
-
 
 
             if (string.IsNullOrEmpty(LoginInput.Text))
@@ -123,14 +146,9 @@ namespace NexteLite.Pages
         /// <param name="e"></param>
         private void Btn_Login_Click(object sender, RoutedEventArgs e)
         {
-            var login = LoginInput.Text;
-            var password = PasswordInput.Password;
-            var save = save_userdata.IsChecked.Value;
-
             if (Validate())
             {
-
-                if (!LoginClick.Invoke(login, password, save, out string message))
+                if (!LoginClick.Invoke(Username, Password, false, out string message))
                 {
                     ValidateLoginError(message);
                     ValidatePassError(message);
@@ -138,10 +156,22 @@ namespace NexteLite.Pages
             }
         }
 
-        private bool Proxy_Login(string username, string password, bool save, out string message)
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (sender != null)
+            { Password = ((PasswordBox)sender).Password; }
         }
+
+        #region [INotifyPropertyChanged]
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        #endregion
+
 
     }
 }

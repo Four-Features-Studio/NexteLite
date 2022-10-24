@@ -82,5 +82,16 @@ namespace NexteLite
             Storyboard sb = this.FindResource("Show_Overlays") as Storyboard;
             sb.Begin();
         }
+        public void HideOverlay()
+        {
+            Storyboard sb = this.FindResource("Hide_Overlays") as Storyboard;
+            sb.Completed += (s, arg) =>
+            {
+                Overlayes.Content = null;
+                Overlayes.Visibility = Visibility.Collapsed;
+            };
+            sb.Begin();
+            back_button.Visibility = Visibility.Collapsed;
+        }
     }
 }

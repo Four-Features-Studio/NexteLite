@@ -155,32 +155,48 @@ namespace NexteLite
             //Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Background);
         }
 
-        public void Select()
+        public void Select(bool fast = false)
         {
-            Storyboard sb = this.FindResource("Select") as Storyboard;
-            sb.Begin();
+            var name = "Select";
+            Storyboard sb = this.FindResource(name) as Storyboard;
+
+            sb.Begin(this, true);
+            if (fast)
+                sb.SkipToFill();
+
             item_block.Visibility = Visibility.Collapsed;
         }
 
-        public void Unselect()
+        public void Unselect(bool fast = false)
         {
             Storyboard sb = this.FindResource("Unselect") as Storyboard;
-            sb.Begin();
+
+            sb.Begin(this, true);
+            if (fast)
+                sb.SkipToFill();
+
             item_block.Visibility = Visibility.Visible;
         }
 
-        public void Show()
+        public void Show(bool fast = false)
         {
             Storyboard sb = this.FindResource("Show") as Storyboard;
-            sb.Begin();
+
+            sb.Begin(this, true);
+            if (fast)
+                sb.SkipToFill();
+
             item_block.Visibility = Visibility.Collapsed;
             this.Visibility = Visibility.Visible;
         }
 
-        public void Hide()
+        public void Hide(bool fast = false)
         {
             Storyboard sb = this.FindResource("Hide") as Storyboard;
-            sb.Begin();
+
+            sb.Begin(this, true);
+            if (fast)
+                sb.SkipToFill();
 
             sb.Completed += (sender, args) =>
             {

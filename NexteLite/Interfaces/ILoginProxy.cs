@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace NexteLite.Interfaces
     public interface ILoginProxy
     {
         event LoginClickHandler LoginClick;
+        void SetParams(IParamsLoginPage data);
     }
 
 }

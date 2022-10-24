@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -42,8 +43,13 @@ namespace NexteLite.Services
 
 
             _LoginProxy.LoginClick += LoginProxy_LoginClick;
+            _LoginProxy.SetParams(_SettingsLauncher.LoadLoginParams());
+
 
             _MainProxy.SettingsClick += MainProxy_SettingsClick;
+
+            _SettingsProxy.SettingsApplyClick += SettingsProxy_SettingsApplyClick;
+            _SettingsProxy.SetParams(_SettingsLauncher.LoadSettingsParams());
 
             CalculateMaxRam();
 
@@ -67,18 +73,6 @@ namespace NexteLite.Services
         public void ShowOverlay(PageType id)
         {
             _Main.ShowOverlay(_Pages.GetPage(id));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="save"></param>
-        public void LoginPage_Login(string username, string password, bool save)
-        {
-            //заглушка
-            ShowPage(PageType.Main);
         }
 
 
@@ -105,14 +99,22 @@ namespace NexteLite.Services
         private bool LoginProxy_LoginClick(string username, string password, bool save, out string message)
         {
             message = string.Empty;
-            if (_Web.Auth(username, password, out var profile, ref message))
+
+            if (_SettingsLauncher.SaveLoginParams(new ParamsLoginPage(username, String.Empty, false)))
             {
-                _MainProxy.SetProfile(profile);
-                ShowPage(PageType.Main);
-                LoadProfiles();
-                return true;
+                if (_Web.Auth(username, password, out var profile, ref message))
+                {
+                    _MainProxy.SetProfile(profile);
+                    ShowPage(PageType.Main);
+                    LoadProfiles();
+                    return true;
+                }
+                return false;
             }
-            return false;
+            else
+            {
+                return false;
+            }      
         }
 
         /// <summary>
@@ -127,8 +129,17 @@ namespace NexteLite.Services
 
         private void MainProxy_SettingsClick()
         {
+            //Нужно сбросить до тех параметров которые у нас сохранены.
+            _SettingsProxy.SetParams(new ParamsSettingPage(_SettingsLauncher.UseRam, _SettingsLauncher.AutoConnect, _SettingsLauncher.FullScreen, _SettingsLauncher.Debug, _SettingsLauncher.RootDir));
             ShowOverlay(PageType.Settings);
         }
 
+        private void SettingsProxy_SettingsApplyClick(IParamsSettingPage paramsSetting)
+        {
+            if (_SettingsLauncher.SaveSettingsParams(paramsSetting))
+            {
+                _Main.HideOverlay();
+            }
+        }
     }
 }

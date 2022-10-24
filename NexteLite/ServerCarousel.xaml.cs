@@ -27,7 +27,7 @@ namespace NexteLite
     /// </summary>
     public partial class ServerCarousel : UserControl
     {
-        private int[] CarouselItemRender = { 0, 1};
+        private int[] CarouselItemRender = { 0, 1 };
 
         private int SelectedItem = 0;
         private ItemServer Selected;
@@ -51,16 +51,10 @@ namespace NexteLite
             var control = sender as ServerCarousel;
             if (control != null)
             {
-                var oldValueINotifyCollectionChanged = oldValue as INotifyCollectionChanged;
-
-                if (null != oldValueINotifyCollectionChanged)
+                var newCollection = newValue as IList;
+                if (null != newCollection)
                 {
-                    oldValueINotifyCollectionChanged.CollectionChanged -= new NotifyCollectionChangedEventHandler(control.Items_CollectionChanged);
-                }
-                var newValueINotifyCollectionChanged = newValue as INotifyCollectionChanged;
-                if (null != newValueINotifyCollectionChanged)
-                {
-                    newValueINotifyCollectionChanged.CollectionChanged += new NotifyCollectionChangedEventHandler(control.Items_CollectionChanged);
+                    control.AddItems(newCollection);
                 }
             }
         }
@@ -91,30 +85,25 @@ namespace NexteLite
 
         public void AddItems(IList servers)
         {
-            foreach(var item in servers)
+            foreach (var item in servers)
             {
-                if(item is ServerProfile profile)
+                if (item is ServerProfile profile)
                 {
                     var itemServer = new ItemServer();
+
                     var index = servers.IndexOf(item);
-
-                    itemServer.Hide();
-                    itemServer.IsHide = true;
-                    itemServer.Unselect();
-
-                    Panel.SetZIndex(itemServer, 1);
-
-                    var new_margin = last_margin;
-                    itemServer.RenderTransform = new TranslateTransform(new_margin, 0);
-                    last_margin = new_margin + 69 + 94;
-
-                    itemServer.Initialize(profile);
-
-                    Servers.Add(itemServer);
 
                     itemServer.Visibility = Visibility.Collapsed;
 
-                    Container.Children.Add(itemServer);
+                    if (index < 2)
+                    {
+                        itemServer.Show(true);
+                        itemServer.IsHide = true;
+                    }
+
+
+                    itemServer.Initialize(profile);
+                    Servers.Add(itemServer);
                 }
                 else
                 {
@@ -127,23 +116,34 @@ namespace NexteLite
             {
                 var item = Servers[i];
 
+                Container.Children.Add(item);
+
                 if (i == 0)
                 {
                     Panel.SetZIndex(item, 2);
-                    item.Select();
+
+                    item.Select(true);
+
                     item.IsSelect = true;
-                    //item.RenderTransform = new TranslateTransform(0, 0);
+                    item.RenderTransform = new TranslateTransform(0, 0);
                     Selected = item;
                 }
                 else
                 {
                     Panel.SetZIndex(item, 1);
-                    item.Unselect();
+
+                    item.Unselect(true);
+
                     item.IsSelect = true;
+                    var new_margin = last_margin + 69 + 94;
+                    item.RenderTransform = new TranslateTransform(new_margin, 0);
+                    last_margin = new_margin;
                 }
+
+                
             }
 
-            SelectChange();
+            UpdateButtonRender();
         }
         private void UpdateButtonRender()
         {
@@ -180,6 +180,7 @@ namespace NexteLite
             if (SelectedItem == 0)
             {
                 CarouselItemRender = new int[] { SelectedItem, SelectedItem + 1 };
+
             }
             else if (SelectedItem == countservers - 1)
             {
@@ -210,46 +211,43 @@ namespace NexteLite
 
         private void SelectChange()
         {
-            var servers = Container.Children;
+            UpdateRender(Servers.Count);
 
-            UpdateRender(servers.Count);
-
-            foreach (var item in servers)
+            foreach (var item in Servers)
             {
-                var elem = (ItemServer)item;
-                var index = servers.IndexOf((ItemServer)item);
+                var index = Servers.IndexOf(item);
 
                 if (CarouselItemRender.Contains(index))
                 {
-                    elem.Show();
-                    elem.IsHide = false;
+                    item.Show();
+                    item.IsHide = false;
                 }
                 else if (!CarouselItemRender.Contains(index))
                 {
-                    elem.Hide();
-                    elem.IsHide = true;
+                    item.Hide();
+                    item.IsHide = true;
                 }
 
                 if (index == SelectedItem - 1)
                 {
-                    Panel.SetZIndex(elem, 1);
-                    elem.Unselect();
-                    elem.IsSelect = false;
+                    Panel.SetZIndex(item, 1);
+                    item.Unselect();
+                    item.IsSelect = false;
                 }
 
                 if (index == SelectedItem)
                 {
-                    Panel.SetZIndex(elem, 2);
-                    elem.Select();
-                    elem.IsSelect = true;
-                    Selected = elem;
+                    Panel.SetZIndex(item, 2);
+                    item.Select();
+                    item.IsSelect = true;
+                    Selected = item;
                 }
 
                 if (index == SelectedItem + 1)
                 {
-                    Panel.SetZIndex(elem, 1);
-                    elem.Unselect();
-                    elem.IsSelect = false;         
+                    Panel.SetZIndex(item, 1);
+                    item.Unselect();
+                    item.IsSelect = false;
                 }
 
             }
@@ -271,7 +269,7 @@ namespace NexteLite
 
             if (button.Tag.ToString() == "Right")
             {
-                if (SelectedItem < Servers.Count-1)
+                if (SelectedItem < Servers.Count - 1)
                 {
                     SelectedItem++;
                     SelectChange();
@@ -285,7 +283,7 @@ namespace NexteLite
         {
             var delta = Math.Sign(e.Delta);
 
-            if(DateTime.Now < last_time.AddMilliseconds(100))
+            if (DateTime.Now < last_time.AddMilliseconds(100))
             {
                 return;
             }
@@ -299,7 +297,7 @@ namespace NexteLite
                     MoveRight();
                 }
             }
-            else if(delta < 0)
+            else if (delta < 0)
             {
                 if (SelectedItem < Servers.Count - 1)
                 {

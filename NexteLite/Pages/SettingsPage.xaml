@@ -53,7 +53,7 @@
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="autoconnect_control" />
+                <CheckBox x:Name="autoconnect_control" IsChecked="{Binding AutoConnectMode}"/>
                 <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Автоматически подключаться к выбранному серверу"/>
             </Grid>
             <Grid Margin="8">
@@ -61,7 +61,7 @@
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="fullscreen_control"/>
+                <CheckBox x:Name="fullscreen_control"  IsChecked="{Binding FullScreenMode}"/>
                 <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Запускать игру в полноэкранном режиме"/>
             </Grid>
             <Grid Margin="8">
@@ -69,10 +69,10 @@
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="debugging_control" />
+                <CheckBox x:Name="debugging_control"  IsChecked="{Binding DebugMode}"/>
                 <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Включить отладку клиента"/>
             </Grid>
-            <Grid Margin="8">
+            <Grid Margin="8" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="*"/>
@@ -93,9 +93,10 @@
                    Foreground="White" 
                    Padding="0"
                    HorizontalAlignment="Stretch" VerticalAlignment="Center"
-                   PreviewMouseDown="TextBlock_Click">
-
-            C:\Users\gomer\AppData\Roaming\.nexte</TextBlock>
+                   PreviewMouseDown="TextBlock_Click"
+                   Text="{Binding Path}">
+                
+            </TextBlock>
         </Border>
 
 

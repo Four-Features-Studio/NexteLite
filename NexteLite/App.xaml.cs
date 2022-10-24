@@ -40,7 +40,7 @@ namespace NexteLite
                 options.UseSqlite("Data Source = Employee.db");
             });*/
 
-            //services.Configure<AppSettings>(Configuration.GetSection(nameof(AppSettings)));
+            services.Configure<AppSettings>(Configuration);
 
             services.AddSingleton<IPagesRepository,PagesRepository>();
 
@@ -73,6 +73,11 @@ namespace NexteLite
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+        }
+
+        public void Configure()
+        {
+           
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
