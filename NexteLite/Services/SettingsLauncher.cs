@@ -38,7 +38,7 @@ namespace NexteLite.Services
         public IParamsLoginPage LoadLoginParams()
         {
             var path = GetPath();
-            var fullpath = Path.Combine(path, _AppSettings.SettingSection.SettingsLoginName + _AppSettings.SettingSection.SettingsExtension);
+            var fullpath = Path.Combine(path, _AppSettings.DirParams.SettingsLoginName + _AppSettings.DirParams.SettingsExtension);
 
             ParamsLoginPage result = new ParamsLoginPage(String.Empty, String.Empty, false);
 
@@ -62,7 +62,7 @@ namespace NexteLite.Services
         public IParamsSettingPage LoadSettingsParams()
         {
             var path = GetPath();
-            var fullpath = Path.Combine(path, _AppSettings.SettingSection.SettingsName + _AppSettings.SettingSection.SettingsExtension);
+            var fullpath = Path.Combine(path, _AppSettings.DirParams.SettingsName + _AppSettings.DirParams.SettingsExtension);
 
             ParamsSettingPage result = new ParamsSettingPage(_AppSettings.DefaultRam, false, false, false, GetPathRoot());
 
@@ -95,7 +95,7 @@ namespace NexteLite.Services
             try
             {
                 var path = GetPath();
-                var fullpath = Path.Combine(path, _AppSettings.SettingSection.SettingsLoginName + _AppSettings.SettingSection.SettingsExtension);
+                var fullpath = Path.Combine(path, _AppSettings.DirParams.SettingsLoginName + _AppSettings.DirParams.SettingsExtension);
 
                 new FileInfo(fullpath).Directory?.Create();
 
@@ -126,7 +126,7 @@ namespace NexteLite.Services
                var PathRoot = string.IsNullOrEmpty(data.Path) ? GetPathRoot() : data.Path;
 
                 var path = GetPath();
-                var fullpath = Path.Combine(path, _AppSettings.SettingSection.SettingsName + _AppSettings.SettingSection.SettingsExtension);
+                var fullpath = Path.Combine(path, _AppSettings.DirParams.SettingsName + _AppSettings.DirParams.SettingsExtension);
 
                 new FileInfo(fullpath).Directory?.Create();
 
@@ -158,7 +158,7 @@ namespace NexteLite.Services
 
         private string GetPath()
         {
-            var folder = _AppSettings.SettingSection.SettingsPath;
+            var folder = _AppSettings.DirParams.SettingsPath;
             if (string.IsNullOrEmpty(folder))
                 throw new ArgumentNullException("The configuration file does not contain the path to the settings folder");
 

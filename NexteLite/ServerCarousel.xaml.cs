@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
+using NexteLite.Interfaces;
 using NexteLite.Models;
 using System;
 using System.Collections;
@@ -31,6 +33,9 @@ namespace NexteLite
 
         private int SelectedItem = 0;
         private ItemServer Selected;
+
+        public delegate void OnPlayClickHandler(string nID);
+        public event OnPlayClickHandler PlayClick;
 
         public static readonly DependencyProperty ItemsCarouselProperty = DependencyProperty.Register("ItemsCarousel", typeof(IEnumerable), typeof(ServerCarousel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnItemsCollectionChanged)) { AffectsRender = true });
         public IEnumerable ItemsCarousel
@@ -75,10 +80,14 @@ namespace NexteLite
         ObservableCollection<ItemServer> _Servers = new ObservableCollection<ItemServer>();
         public ObservableCollection<ItemServer> Servers => _Servers;
 
+        IMineStat _State;
+
         public ServerCarousel()
         {
             InitializeComponent();
             UpdateButtonRender();
+
+            _State = ((App)App.Current).ServiceProvider.GetRequiredService<IMineStat>();
         }
 
         private int last_margin = 0;
@@ -89,7 +98,8 @@ namespace NexteLite
             {
                 if (item is ServerProfile profile)
                 {
-                    var itemServer = new ItemServer();
+                    var itemServer = new ItemServer(_State);
+                    itemServer.OnPlayClick += ItemServer_OnPlayClick;
 
                     var index = servers.IndexOf(item);
 
@@ -145,6 +155,12 @@ namespace NexteLite
 
             UpdateButtonRender();
         }
+
+        private void ItemServer_OnPlayClick(string nID)
+        {
+            PlayClick?.Invoke(nID);
+        }
+
         private void UpdateButtonRender()
         {
 

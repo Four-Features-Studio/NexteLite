@@ -174,20 +174,22 @@
                     </Button>
                 </StackPanel>
 
-                <StackPanel x:Name="socials_control"  VerticalAlignment="Bottom" Margin="0,0,0,16" Grid.Row="1">
-
-                    <StackPanel.Resources>
+                <ItemsControl ItemsSource="{Binding SocialButtons}" x:Name="Social" VerticalAlignment="Bottom" Margin="0,0,0,16" Grid.Row="1">
+                    <ItemsControl.Resources>
                         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource CustomStyle_Transperent_Button}"></Style>
-                    </StackPanel.Resources>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel >
+                            </StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-                    <!--<Button x:Name="VK" Cursor="Hand" Height="26" Width="26" Margin="0,10,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
-                    </Button>
-                    <Button x:Name="Discord" Cursor="Hand" Height="26" Width="26" Margin="0,10,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
-                    </Button>-->
-                </StackPanel>
+
             </Grid>
 
-            <local:ServerCarousel x:Name="Servers" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" ItemsCarousel="{Binding ServerProfiles}">
+            <local:ServerCarousel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" ItemsCarousel="{Binding ServerProfiles}" PlayClick="ServerCarousel_PlayClick">
 
             </local:ServerCarousel>
         </Grid>

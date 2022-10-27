@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NexteLite"
+             xmlns:local="clr-namespace:NexteLite" xmlns:converters="clr-namespace:NexteLite.Converters"
              mc:Ignorable="d" 
              Height="394" Width="234"
              x:Name="thisServer"
@@ -17,6 +17,11 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
+            <converters:BoolToBrushConverter x:Key="boolToBrushConverter"/>
+            <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+
             <Storyboard x:Key="Show">
                 <DoubleAnimation Storyboard.TargetName="item_border" To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
@@ -24,7 +29,7 @@
                 <DoubleAnimation Storyboard.TargetName="item_servername" To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
-                <DoubleAnimation Storyboard.TargetName="item_play" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                <DoubleAnimation Storyboard.TargetName="PlayButton" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
                 <DoubleAnimation Storyboard.TargetName="item_settings" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
@@ -40,7 +45,7 @@
                 <DoubleAnimation Storyboard.TargetName="item_servername" To="0" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
-                <DoubleAnimation Storyboard.TargetName="item_play" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                <DoubleAnimation Storyboard.TargetName="PlayButton" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
                 <DoubleAnimation Storyboard.TargetName="item_settings" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
@@ -60,7 +65,7 @@
                 <DoubleAnimation Storyboard.TargetName="item_servername" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
-                <DoubleAnimation Storyboard.TargetName="item_play" To="1" Duration="0:0:0.1"  Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                <DoubleAnimation Storyboard.TargetName="PlayButton" To="1" Duration="0:0:0.1"  Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
                 <DoubleAnimation Storyboard.TargetName="item_settings" To="1" Duration="0:0:0.1"  Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
@@ -83,7 +88,7 @@
                 <DoubleAnimation Storyboard.TargetName="item_servername" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
-                <DoubleAnimation Storyboard.TargetName="item_play" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                <DoubleAnimation Storyboard.TargetName="PlayButton" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
                 <DoubleAnimation Storyboard.TargetName="item_settings" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
@@ -119,9 +124,16 @@
             <TextBlock x:Name="item_playercount"
                    Opacity="0"
                    FontSize="14" 
-                   Foreground="#898989" Visibility="Visible"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"> 
-            Игроков на сервере 0 из 0
+                   Foreground="#898989"
+                   Visibility="{Binding IsOnline, Converter={StaticResource booleanToVisibilityConverter}}"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="Игроков на сервере {0} из {1}">
+                        <Binding Path="PlayerCurrent"/>
+                        <Binding Path="PlayerMax"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            
             </TextBlock>
 
         </StackPanel>
@@ -139,15 +151,20 @@
             <Image x:Name="item_image" Stretch="UniformToFill" Source="{Binding ServerAvatar}">
             </Image>
         </Grid>
-        
-        <Button x:Name="item_play" Opacity="0" Grid.Row="1" Margin="0,267,0,0" Click="item_play_Click" Background="Gray" BorderThickness="0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Height="24" Width="170" Cursor="Hand" Grid.RowSpan="2">
-            Играть
+
+        <Button x:Name="PlayButton" Content="{Binding IsOnline, Converter={StaticResource BoolToTextConverter}}" Opacity="0" Grid.Row="1" Margin="0,267,0,0" Click="PlayButton_Click" BorderThickness="0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Center" Height="24" Width="170" Cursor="Hand" Grid.RowSpan="2">
+            <Button.Background>
+                <MultiBinding Converter="{StaticResource boolToBrushConverter}">
+                    <Binding Path="IsOnline"/>
+                    <Binding Path="IsOnlineColor"/>
+                    <Binding Path="IsOfflineColor"/>
+                </MultiBinding>
+            </Button.Background>
         </Button>
 
         <Button x:Name="item_settings" Grid.Row="2" Padding="5" Margin="1"
                 Opacity="0"
                 Foreground="Gray"
-                Click="item_settings_Click" 
                 Style="{DynamicResource MaterialDesignFloatingActionButton}"             
                 Background="Transparent"
                 VerticalAlignment="Bottom" HorizontalAlignment="Center" 

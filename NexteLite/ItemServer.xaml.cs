@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NexteLite.Interfaces;
 using NexteLite.Models;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,14 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static NexteLite.ServerCarousel;
 
 namespace NexteLite
 {
     /// <summary>
     /// Логика взаимодействия для ItemServer.xaml
     /// </summary>
-    public partial class ItemServer : UserControl, INotifyPropertyChanged
+    public partial class ItemServer : UserControl, INotifyPropertyChanged, IMineStatSubscriber
     {
         string _NID;
         public string NID
@@ -96,9 +98,87 @@ namespace NexteLite
             }
         }
 
-        public ItemServer()
+        string _Ip;
+        public string Ip
+        {
+            get
+            {
+                return _Ip;
+            }
+            set
+            {
+                _Ip = value;
+                OnPropertyChanged();
+            }
+        }
+
+        int _Port;
+        public int Port
+        {
+            get
+            {
+                return _Port;
+            }
+            set
+            {
+                _Port = value;
+                OnPropertyChanged();
+            }
+        }
+
+        int _PlayerMax;
+        public int PlayerMax
+        {
+            get
+            {
+                return _PlayerMax;
+            }
+            set
+            {
+                _PlayerMax = value;
+                OnPropertyChanged();
+            }
+        }
+
+        int _PlayerCurrent;
+        public int PlayerCurrent
+        {
+            get
+            {
+                return _PlayerCurrent;
+            }
+            set
+            {
+                _PlayerCurrent = value;
+                OnPropertyChanged();
+            }
+        }
+
+        bool _IsOnline;
+        public bool IsOnline
+        {
+            get
+            {
+                return _IsOnline;
+            }
+            set
+            {
+                _IsOnline = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SolidColorBrush IsOnlineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#7bb458"));
+        public SolidColorBrush IsOfflineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ad4444"));
+
+        public event OnPlayClickHandler OnPlayClick;
+
+        IMineStat _State;
+
+        public ItemServer(IMineStat state)
         {
             InitializeComponent();
+            _State = state;
         }
 
         public void Initialize(ServerProfile profile)
@@ -106,6 +186,14 @@ namespace NexteLite
 
             NID = profile.NID;
             Title = profile.Title;
+
+            if(profile.Server != null)
+            {
+                Ip = profile.Server.Ip;
+                Port = profile.Server.Port;
+                IsOnline = false;
+            }
+
 
             byte[] binaryData = Convert.FromBase64String(profile.Avatar is null ? String.Empty : profile.Avatar);
 
@@ -124,35 +212,18 @@ namespace NexteLite
                 bi.EndInit();
                 ServerAvatar = bi;
             }
+
+            _State.Subscribe(this);
         }
 
-        public void UpdateData()
+        public void UpdateInfo(ServerState state)
         {
-            //Action dlg = () =>
-            //{
-            //    (bool, int, int) profile = default;
-            //    if (LauncherData.profilesData != null)
-            //    {                   
-            //        if (LauncherData.profilesData.TryGetValue(nID, out profile))
-            //        {
-            //            var text_player = $"Игроков на сервере {profile.Item2} из {profile.Item3}";
-            //            item_playercount.Text = text_player;
-            //            if (profile.Item1)
-            //            {
-            //                item_play.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#7bb458"));
-            //                item_play.Content = "Играть";
-            //                item_playercount.Visibility = Visibility.Visible;
-            //            }
-            //            else
-            //            {
-            //                item_play.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ad4444"));
-            //                item_play.Content = "В Офлайне";
-            //                item_playercount.Visibility = Visibility.Collapsed;
-            //            }
-            //        }
-            //    }
-            //};
-            //Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Background);
+            if (state != null)
+            {
+                PlayerCurrent = state.PlayerCurrent;
+                PlayerMax = state.PlayerMax;
+                IsOnline = state.IsOnline;
+            }
         }
 
         public void Select(bool fast = false)
@@ -207,25 +278,22 @@ namespace NexteLite
 
         }
 
-        private void item_play_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void item_settings_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
         #region [INotifyPropertyChanged]
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            OnPlayClick?.Invoke(NID);
+        }
     }
 }

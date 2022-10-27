@@ -1,4 +1,5 @@
-﻿using NexteLite.Interfaces;
+﻿using Microsoft.Extensions.Options;
+using NexteLite.Interfaces;
 using NexteLite.Models;
 using NexteLite.Pages;
 using NexteLite.Services.Enums;
@@ -7,9 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using static System.Windows.Forms.Design.AxImporter;
 
 namespace NexteLite.Services
 {
@@ -18,6 +23,8 @@ namespace NexteLite.Services
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
+
+        Action<string> StartingUriProccess;
 
         IMainWindow _Main;
         IPagesRepository _Pages;
@@ -29,8 +36,10 @@ namespace NexteLite.Services
         IConsoleProxy _ConsoleProxy;
         ISettingsLauncher _SettingsLauncher;
 
-        public CoreLauncher(IMainWindow mainWindow, IPagesRepository pagesRepository, IWebService webService, ISettingsLauncher settingsLauncher)
+        IOptions<AppSettings> _Options;
+        public CoreLauncher(IMainWindow mainWindow, IPagesRepository pagesRepository, IWebService webService, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
         {
+            _Options = options;
             _Main = mainWindow;
             _Pages = pagesRepository;
             _Web = webService;
@@ -47,11 +56,20 @@ namespace NexteLite.Services
 
 
             _MainProxy.SettingsClick += MainProxy_SettingsClick;
+            _MainProxy.SocialClick += MainProxy_SocialClick;
+            _MainProxy.PlayClick += MainProxy_PlayClick;
 
             _SettingsProxy.SettingsApplyClick += SettingsProxy_SettingsApplyClick;
             _SettingsProxy.SetParams(_SettingsLauncher.LoadSettingsParams());
 
             CalculateMaxRam();
+
+            CreateSocialBlock();
+
+            StartingUriProccess += ((e) =>
+            {
+                _Main.Minimized();
+            });
 
             _Main.Show();
             ShowPage(PageType.Login);
@@ -75,6 +93,37 @@ namespace NexteLite.Services
             _Main.ShowOverlay(_Pages.GetPage(id));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        public void HyperLinkOpen(string url)
+        {
+            var dlg = new Action(() =>
+            {
+                StartingUriProccess?.Invoke(url);
+                System.Diagnostics.Process.Start("explorer.exe", url);
+            });
+            try
+            { dlg.Invoke(); }
+            catch (Exception ex)
+            { }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void CreateSocialBlock()
+        {
+            var socials = _Options.Value.Social;
+            if (socials == null)
+                return;
+
+            foreach(var social in socials)
+            {
+                _MainProxy.AddSocial(social);
+            }
+        }
 
         /// <summary>
         /// 
@@ -127,6 +176,9 @@ namespace NexteLite.Services
             _MainProxy.SetServerProfiles(ServerProfiles);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void MainProxy_SettingsClick()
         {
             //Нужно сбросить до тех параметров которые у нас сохранены.
@@ -134,6 +186,29 @@ namespace NexteLite.Services
             ShowOverlay(PageType.Settings);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        private void MainProxy_SocialClick(string url)
+        {
+            HyperLinkOpen(url);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void MainProxy_PlayClick(string id)
+        {
+            Console.WriteLine(id);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="paramsSetting"></param>
         private void SettingsProxy_SettingsApplyClick(IParamsSettingPage paramsSetting)
         {
             if (_SettingsLauncher.SaveSettingsParams(paramsSetting))

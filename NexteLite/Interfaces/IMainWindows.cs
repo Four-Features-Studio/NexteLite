@@ -1,4 +1,5 @@
-﻿using NexteLite.Services.Enums;
+﻿using NexteLite.Services;
+using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace NexteLite.Interfaces
         void ShowOverlay(Page page);
         void HideOverlay();
         void Show();
+        void Minimized();
     }
 }

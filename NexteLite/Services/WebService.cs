@@ -42,7 +42,8 @@ namespace NexteLite.Services
                 new ServerProfile
                 {
                     NID = Guid.NewGuid().ToString(),
-                    Title = "test1"
+                    Title = "test1",
+                    Server = new Server() { Ip = "188.225.47.71", Port = 25565 }
                 },
                 new ServerProfile
                 {

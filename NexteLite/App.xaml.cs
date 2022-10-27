@@ -19,8 +19,6 @@ namespace NexteLite
     /// </summary>
     public partial class App : Application
     {
-        public IPagesRepository PagesRepository { get; set; }
-
         public IServiceProvider ServiceProvider { get; private set; }
 
         public IConfiguration Configuration { get; private set; }
@@ -47,6 +45,7 @@ namespace NexteLite
             services.AddSingleton<IMainWindow,MainWindow>();
             services.AddSingleton<ICoreLaucnher, CoreLauncher>();
             services.AddSingleton<ISettingsLauncher, SettingsLauncher>();
+            services.AddSingleton<IMineStat, MineStat>();
 
             services.AddSingleton<LoginPage>();
             services.AddSingleton<MainPage>();
@@ -73,11 +72,6 @@ namespace NexteLite
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-        }
-
-        public void Configure()
-        {
-           
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

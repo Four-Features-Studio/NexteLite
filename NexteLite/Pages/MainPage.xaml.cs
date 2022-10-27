@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using NexteLite.Interfaces;
 using NexteLite.Models;
+using NexteLite.Services;
 using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,9 @@ namespace NexteLite.Pages
         public event LogoutClickHandler LogoutClick;
         public event SocialClickHandler SocialClick;
         public event PlayClickHandler PlayClick;
+
+        ObservableCollection<Button> _SocialButtons = new ObservableCollection<Button>();
+        public ObservableCollection<Button> SocialButtons => _SocialButtons;
 
         public ObservableCollection<ServerProfile> ServerProfiles { get; set; }
         public PageType Id => PageType.Main;
@@ -67,40 +71,6 @@ namespace NexteLite.Pages
         {
             ServerProfiles = new ObservableCollection<ServerProfile>(profiles);
             OnPropertyChanged(nameof(ServerProfiles));
-        }
-
-        public void AddSocial(List<JObject> objs)
-        {
-            Action dlg = () =>
-            {
-                foreach (var item in objs)
-                {
-                    ResourceDictionary resource = new ResourceDictionary
-                    {
-                        Source = new Uri(item["image_resource"].ToString())
-                    };
-
-                    var icon_res = resource[item["image"].ToString()] as DrawingImage;
-
-                    if (icon_res != null)
-                    {
-                        var btn = new Button();
-                        btn.Height = 26;
-                        btn.Width = 26;
-                        btn.Margin = new Thickness(0, 10, 0, 0);
-                        btn.Cursor = Cursors.Hand;
-                        btn.Tag = item["url"].ToString();
-
-                        var img = new Image();
-                        img.Source = icon_res;
-                        btn.Content = img;
-                        btn.Click += Social_OnClick;
-
-                        socials_control.Children.Add(btn);
-                    }
-                }
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
         }
 
         public void ShowProgressBar()
@@ -166,9 +136,41 @@ namespace NexteLite.Pages
             Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="social"></param>
+        public void AddSocial(SocialItem social)
+        {
+            ResourceDictionary resource = new ResourceDictionary
+            {
+                Source = new Uri(social.ImageResource)
+            };
+
+            var icon_res = resource[social.ImageCode] as DrawingImage;
+
+            if (icon_res != null)
+            {
+                var btn = new Button();
+                btn.Height = 26;
+                btn.Width = 26;
+                btn.Margin = new Thickness(0, 10, 0, 0);
+                btn.Cursor = Cursors.Hand;
+                btn.Tag = social.Url;
+
+                var img = new Image();
+                img.Source = icon_res;
+                btn.Content = img;
+                btn.Click += Social_OnClick;
+
+                SocialButtons.Add(btn);
+            }
+        }
+
         private void Social_OnClick(object sender, RoutedEventArgs e)
         {
             var tag = ((Button)sender).Tag as string;
+            SocialClick?.Invoke(tag);
         }
 
         private void Buttons_OnClick(object sender, RoutedEventArgs e)
@@ -193,5 +195,14 @@ namespace NexteLite.Pages
         }
 
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nID"></param>
+        private void ServerCarousel_PlayClick(string nID)
+        {
+            PlayClick?.Invoke(nID);
+        }
     }
 }

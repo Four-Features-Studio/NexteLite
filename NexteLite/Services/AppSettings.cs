@@ -8,10 +8,19 @@ namespace NexteLite.Services
 {
     public class AppSettings
     {
-        public SettingsFolders SettingSection { get; set; }
+        public SettingsFolders DirParams { get; set; }
 
         public string DefaultPath { get; set; }
         public int DefaultRam { get; set; }
+
+        public List<SocialItem> Social { get; set; }
+    }
+
+    public class SocialItem
+    {
+        public string ImageResource { get; set; }
+        public string ImageCode { get; set; }
+        public string Url { get; set; }
     }
 
     public class SettingsFolders

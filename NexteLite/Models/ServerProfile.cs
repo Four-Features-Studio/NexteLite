@@ -24,8 +24,8 @@ namespace NexteLite.Models
         [JsonPropertyName("avatar")]
         public string Avatar { get; set; }
 
-        [JsonPropertyName("servers")]
-        public Server Servers { get; set; }
+        [JsonPropertyName("server")]
+        public Server Server { get; set; }
 
         [JsonPropertyName("sortIndex")]
         public int SortIndex { get; set; }
