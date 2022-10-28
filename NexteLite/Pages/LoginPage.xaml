@@ -43,7 +43,7 @@
 
     <Grid DataContext="{Binding ElementName=thisLogin, Path=.}">
         <Grid.Resources>
-            <Storyboard x:Key="Welcome" Timeline.DesiredFrameRate="60" Completed="Strbrd_Welcome_Completed">
+            <Storyboard x:Key="Welcome" Completed="Strbrd_Welcome_Completed">
                 <DoubleAnimation Storyboard.TargetName="WelcomLabel" Storyboard.TargetProperty="Opacity" FillBehavior="HoldEnd"
                     From="0" To="1" Duration="0:0:0.5" BeginTime="0:0:1">
                     <DoubleAnimation.EasingFunction>

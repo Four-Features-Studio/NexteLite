@@ -35,7 +35,12 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
+            
+            <Storyboard x:Key="Show">
+                <DoubleAnimation Storyboard.TargetName="CarouselGrid" To="1" Duration="0:0:0.25" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+            </Storyboard>
+            
             <Storyboard x:Key="Move_Left">
                 <DoubleAnimation Storyboard.TargetName="Container" Duration="0:0:0.25" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)">
                     <DoubleAnimation.EasingFunction>
@@ -54,7 +59,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="Transparent" PreviewMouseWheel="Carousel_Scroll">
+    <Grid x:Name="CarouselGrid" Background="Transparent" PreviewMouseWheel="Carousel_Scroll" Opacity="0">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60"/>

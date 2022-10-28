@@ -55,35 +55,6 @@ namespace NexteLite
             }
         }
 
-
-        bool _IsSelect;
-        public bool IsSelect
-        {
-            get
-            {
-                return _IsSelect;
-            }
-            set
-            {
-                _IsSelect = value;
-                OnPropertyChanged();
-            }
-        }
-
-        bool _IsHide;
-        public bool IsHide
-        {
-            get
-            {
-                return _IsHide;
-            }
-            set
-            {
-                _IsHide = value;
-                OnPropertyChanged();
-            }
-        }
-
         ImageSource _ServerAvatar;
         public ImageSource ServerAvatar
         {
@@ -168,6 +139,8 @@ namespace NexteLite
             }
         }
 
+
+
         public SolidColorBrush IsOnlineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#7bb458"));
         public SolidColorBrush IsOfflineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ad4444"));
 
@@ -228,47 +201,71 @@ namespace NexteLite
 
         public void Select(bool fast = false)
         {
+            if (fast)
+            {
+                Height = 394;
+                Border.Height = 279;
+                Border.Width = 234;
+
+                ServerName.Opacity = 1;
+                PlayButton.Opacity = 1;
+                PlayerOnServer.Opacity = 1;
+                BackgroundShadow.Opacity = 0;
+
+                return;
+            }
+
             var name = "Select";
             Storyboard sb = this.FindResource(name) as Storyboard;
 
-            sb.Begin(this, true);
-            if (fast)
-                sb.SkipToFill();
+            sb.Begin(this);
         }
 
         public void Unselect(bool fast = false)
         {
-            Storyboard sb = this.FindResource("Unselect") as Storyboard;
-
-            sb.Begin(this, true);
             if (fast)
-                sb.SkipToFill();
+            {
+                Height = 332;
+                Border.Height = 223;
+                Border.Width = 188;
+
+                ServerName.Opacity = 0;
+                PlayButton.Opacity = 0;
+                PlayerOnServer.Opacity = 0;
+                BackgroundShadow.Opacity = 0.3;
+
+                return;
+            }
+
+            Storyboard sb = this.FindResource("Unselect") as Storyboard;
+            sb.Begin(this);
         }
 
-        public void Show(bool fast = false)
+        public void Show()
         {
             Storyboard sb = this.FindResource("Show") as Storyboard;
 
-            sb.Begin(this, true);
-            if (fast)
-                sb.SkipToFill();
+            sb.Begin(this);
 
             this.Visibility = Visibility.Visible;
         }
 
         public void Hide(bool fast = false)
         {
-            Storyboard sb = this.FindResource("Hide") as Storyboard;
-
-            sb.Begin(this, true);
             if (fast)
-                sb.SkipToFill();
+            {
+                this.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            Storyboard sb = this.FindResource("Hide") as Storyboard;
 
             sb.Completed += (sender, args) =>
             {
                 this.Visibility = Visibility.Collapsed;
             };
 
+            sb.Begin(this);
         }
 
         #region [INotifyPropertyChanged]

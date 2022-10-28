@@ -46,9 +46,6 @@ namespace NexteLite.Models
         [JsonProperty("updateIgnore")]
         public List<string> UpdateIgnore { get; set; }
         
-        [JsonProperty("updateOptional")]
-        public List<string> UpdateOptional { get; set; }
-        
         [JsonProperty("jvmArgs")]
         public List<string> JvmArgs { get; set; }
 
@@ -57,9 +54,6 @@ namespace NexteLite.Models
 
         [JsonProperty("mainClass")]
         public string MainClass { get; set; }
-
-        [JsonProperty("whiteRole")] 
-        public List<string> WhiteRole { get; set; }
 
         [JsonProperty("hideProfile")] 
         public bool HideProfile { get; set; }

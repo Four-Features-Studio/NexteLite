@@ -85,9 +85,19 @@ namespace NexteLite
         public ServerCarousel()
         {
             InitializeComponent();
+            Loaded += ServerCarousel_Loaded;
+
+
             UpdateButtonRender();
 
             _State = ((App)App.Current).ServiceProvider.GetRequiredService<IMineStat>();
+        }
+
+        private void ServerCarousel_Loaded(object sender, RoutedEventArgs e)
+        {
+            var name = "Show";
+            Storyboard sb = this.FindResource(name) as Storyboard;
+            sb.Begin(this);
         }
 
         private int last_margin = 0;
@@ -107,10 +117,12 @@ namespace NexteLite
 
                     if (index < 2)
                     {
-                        itemServer.Show(true);
-                        itemServer.IsHide = true;
+                        itemServer.Show();
                     }
-
+                    else
+                    {
+                        itemServer.Hide(true);
+                    }
 
                     itemServer.Initialize(profile);
                     Servers.Add(itemServer);
@@ -134,7 +146,6 @@ namespace NexteLite
 
                     item.Select(true);
 
-                    item.IsSelect = true;
                     item.RenderTransform = new TranslateTransform(0, 0);
                     Selected = item;
                 }
@@ -144,7 +155,6 @@ namespace NexteLite
 
                     item.Unselect(true);
 
-                    item.IsSelect = true;
                     var new_margin = last_margin + 69 + 94;
                     item.RenderTransform = new TranslateTransform(new_margin, 0);
                     last_margin = new_margin;
@@ -236,26 +246,22 @@ namespace NexteLite
                 if (CarouselItemRender.Contains(index))
                 {
                     item.Show();
-                    item.IsHide = false;
                 }
                 else if (!CarouselItemRender.Contains(index))
                 {
                     item.Hide();
-                    item.IsHide = true;
                 }
 
                 if (index == SelectedItem - 1)
                 {
                     Panel.SetZIndex(item, 1);
                     item.Unselect();
-                    item.IsSelect = false;
                 }
 
                 if (index == SelectedItem)
                 {
                     Panel.SetZIndex(item, 2);
                     item.Select();
-                    item.IsSelect = true;
                     Selected = item;
                 }
 
@@ -263,7 +269,6 @@ namespace NexteLite
                 {
                     Panel.SetZIndex(item, 1);
                     item.Unselect();
-                    item.IsSelect = false;
                 }
 
             }

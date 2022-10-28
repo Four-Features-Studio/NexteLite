@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
-using NexteLite.Models.Minecraft;
 using NexteLite.Pages;
 using NexteLite.Services.Enums;
 using System;

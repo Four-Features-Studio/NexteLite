@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
-using NexteLite.Models.Minecraft;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -66,6 +66,43 @@ namespace NexteLite.Services
         {
             throw new NotImplementedException();
         }
+        public async Task<MemoryStream> Download(long totalDownloadSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress)
+        {
+            using var httpClient = new HttpClient { Timeout = TimeSpan.FromDays(1) };
+            using var response = await httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
 
+            response.EnsureSuccessStatusCode();
+
+            using var contentStream = await response.Content.ReadAsStreamAsync();
+            var totalBytesRead = 0L;
+            var readCount = 0L;
+            var buffer = new byte[8192];
+            var isMoreToRead = true;
+
+            using var dataStream = new MemoryStream(8192);
+
+            do
+            {
+                var bytesRead = await contentStream.ReadAsync(buffer);
+                if (bytesRead == 0)
+                {
+                    isMoreToRead = false;
+                    progress.Report(new DownloadProgressArguments(totalDownloadSize, totalBytesRead, name));
+                    continue;
+                }
+
+                await dataStream.WriteAsync(buffer.AsMemory(0, bytesRead));
+
+                totalBytesRead += bytesRead;
+                readCount++;
+
+                if (readCount % 100 == 0)
+                    progress.Report(new DownloadProgressArguments(totalDownloadSize, totalBytesRead, name));
+
+            }
+            while (isMoreToRead);
+
+            return dataStream;
+        }
     }
 }

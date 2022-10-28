@@ -1,7 +1,7 @@
 ﻿using NexteLite.Models;
-using NexteLite.Models.Minecraft;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +14,7 @@ namespace NexteLite.Interfaces
         void Logout();
         List<ServerProfile> GetServerProfiles();
         void GetFiles();
-
-        Task<ProfileTextures> GetMinecraftProfile(string uuid);
+        Task<MemoryStream> Download(long totalDownloadSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress);
     }
 
 
