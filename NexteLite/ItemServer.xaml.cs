@@ -41,7 +41,7 @@ namespace NexteLite
             }
         }
 
-        string _Title;
+        string _Title = "TEST";
         public string Title
         {
             get
@@ -234,8 +234,6 @@ namespace NexteLite
             sb.Begin(this, true);
             if (fast)
                 sb.SkipToFill();
-
-            item_block.Visibility = Visibility.Collapsed;
         }
 
         public void Unselect(bool fast = false)
@@ -245,8 +243,6 @@ namespace NexteLite
             sb.Begin(this, true);
             if (fast)
                 sb.SkipToFill();
-
-            item_block.Visibility = Visibility.Visible;
         }
 
         public void Show(bool fast = false)
@@ -257,7 +253,6 @@ namespace NexteLite
             if (fast)
                 sb.SkipToFill();
 
-            item_block.Visibility = Visibility.Collapsed;
             this.Visibility = Visibility.Visible;
         }
 
@@ -273,8 +268,6 @@ namespace NexteLite
             {
                 this.Visibility = Visibility.Collapsed;
             };
-
-            item_block.Visibility = Visibility.Visible;
 
         }
 

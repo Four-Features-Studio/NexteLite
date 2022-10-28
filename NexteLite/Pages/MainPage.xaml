@@ -89,10 +89,11 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
+            <!--ttps://i.pinimg.com/originals/24/c8/55/24c855f2f5859e921b2e7a8ce7596e06.png-->
             <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
                 <Border Margin="11,11" Width="42" Height="42" CornerRadius="5" Background="#262938">
                     <Grid Margin="3">
-                        <Image Stretch="Uniform" Source="https://i.pinimg.com/originals/24/c8/55/24c855f2f5859e921b2e7a8ce7596e06.png"></Image>
+                        <Image Stretch="Uniform" Source="{Binding Path=Profile.Avatar}"></Image>
                     </Grid>
                 </Border>
                 <TextBlock x:Name="username_control" FontSize="16" TextAlignment="Center" VerticalAlignment="Center" Margin="0,12" Foreground="White" Text="{Binding Path=Profile.Username}"></TextBlock>

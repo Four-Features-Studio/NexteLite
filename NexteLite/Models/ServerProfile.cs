@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,58 +10,58 @@ namespace NexteLite.Models
 {
     public class ServerProfile
     {
-        [JsonPropertyName("nID")]
+        [JsonProperty("nID")]
         public string NID { get; set; }
 
-        [JsonPropertyName("title")]
+        [JsonProperty("title")]
         public string Title { get; set; }
 
-        [JsonPropertyName("configVersion")]
+        [JsonProperty("configVersion")]
         public string ConfigVersion { get; set; }
 
-        [JsonPropertyName("version")]
+        [JsonProperty("version")]
         public string Version { get; set; }
 
-        [JsonPropertyName("avatar")]
+        [JsonProperty("avatar")]
         public string Avatar { get; set; }
 
-        [JsonPropertyName("server")]
+        [JsonProperty("server")]
         public Server Server { get; set; }
 
-        [JsonPropertyName("sortIndex")]
+        [JsonProperty("sortIndex")]
         public int SortIndex { get; set; }
         
-        [JsonPropertyName("dir")]
+        [JsonProperty("dir")]
         public string Dir { get; set; }
 
-        [JsonPropertyName("assetDir")]
+        [JsonProperty("assetDir")]
         public string AssetDir { get; set; }
        
-        [JsonPropertyName("assetIndex")]
+        [JsonProperty("assetIndex")]
         public string AssetIndex { get; set; }
         
-        [JsonPropertyName("updatesDir")]
+        [JsonProperty("updatesDir")]
         public List<string> UpdatesDir { get; set; }
         
-        [JsonPropertyName("updateIgnore")]
+        [JsonProperty("updateIgnore")]
         public List<string> UpdateIgnore { get; set; }
         
-        [JsonPropertyName("updateOptional")]
+        [JsonProperty("updateOptional")]
         public List<string> UpdateOptional { get; set; }
         
-        [JsonPropertyName("jvmArgs")]
+        [JsonProperty("jvmArgs")]
         public List<string> JvmArgs { get; set; }
 
-        [JsonPropertyName("clientArgs")] 
+        [JsonProperty("clientArgs")] 
         public List<string> ClientArgs { get; set; }
 
-        [JsonPropertyName("mainClass")]
+        [JsonProperty("mainClass")]
         public string MainClass { get; set; }
 
-        [JsonPropertyName("whiteRole")] 
+        [JsonProperty("whiteRole")] 
         public List<string> WhiteRole { get; set; }
 
-        [JsonPropertyName("hideProfile")] 
+        [JsonProperty("hideProfile")] 
         public bool HideProfile { get; set; }
     }
 }

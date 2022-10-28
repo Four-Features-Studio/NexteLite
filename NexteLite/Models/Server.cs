@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,10 @@ namespace NexteLite.Models
 {
     public class Server
     {
-        [JsonPropertyName("ip")]
+        [JsonProperty("ip")]
         public string Ip { get; set; } 
 
-        [JsonPropertyName("port")]
+        [JsonProperty("port")]
         public int Port { get; set; }
     }
 }

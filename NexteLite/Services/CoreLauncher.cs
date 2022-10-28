@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
+using NexteLite.Models.Minecraft;
 using NexteLite.Pages;
 using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -14,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using static System.Windows.Forms.Design.AxImporter;
 
 namespace NexteLite.Services
@@ -23,6 +27,8 @@ namespace NexteLite.Services
         [DllImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
+
+        public Profile Profile { get; set; }
 
         Action<string> StartingUriProccess;
 
@@ -37,6 +43,9 @@ namespace NexteLite.Services
         ISettingsLauncher _SettingsLauncher;
 
         IOptions<AppSettings> _Options;
+
+        private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
+
         public CoreLauncher(IMainWindow mainWindow, IPagesRepository pagesRepository, IWebService webService, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
         {
             _Options = options;
@@ -135,8 +144,6 @@ namespace NexteLite.Services
             _SettingsProxy.SetMaxRam(total);
         }
 
-        private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
-
         /// <summary>
         /// 
         /// </summary>
@@ -145,6 +152,7 @@ namespace NexteLite.Services
         /// <param name="save"></param>
         /// <param name="message"></param>
         /// <returns></returns>
+        /// 
         private bool LoginProxy_LoginClick(string username, string password, bool save, out string message)
         {
             message = string.Empty;
@@ -153,7 +161,10 @@ namespace NexteLite.Services
             {
                 if (_Web.Auth(username, password, out var profile, ref message))
                 {
-                    _MainProxy.SetProfile(profile);
+                    Profile = profile;
+
+                    _MainProxy.SetProfile(Profile);
+
                     ShowPage(PageType.Main);
                     LoadProfiles();
                     return true;

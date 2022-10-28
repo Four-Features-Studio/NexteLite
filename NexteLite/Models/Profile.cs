@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,19 +10,19 @@ namespace NexteLite.Models
 {
     public class Profile
     {
-        [JsonPropertyName("username")]
+        [JsonProperty("username")]
         public string Username { get; set; }
 
-        [JsonPropertyName("uuid")]
+        [JsonProperty("uuid")]
         public string Uuid { get; set; }
 
-        [JsonPropertyName("accessToken")]
+        [JsonProperty("accessToken")]
         public string AccessToken { get; set; }
 
-        [JsonPropertyName("serverToken")]
+        [JsonProperty("serverToken")]
         public string ServerToken { get; set; }
 
-        [JsonPropertyName("avatar")]
+        [JsonProperty("avatar")]
         public string Avatar { get; set; }
 
     }

@@ -1,8 +1,12 @@
-﻿using NexteLite.Interfaces;
+﻿using Newtonsoft.Json;
+using NexteLite.Interfaces;
 using NexteLite.Models;
+using NexteLite.Models.Minecraft;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +26,7 @@ namespace NexteLite.Services
             profile = new Profile
             {
                 Username = username,
-                Uuid = "test",
+                Uuid = "9b15dea6606e47a4a241420251703c59",
                 AccessToken = "test",
                 ServerToken = "test",
                 Avatar = "/avatar/placeholder.png"
@@ -62,5 +66,6 @@ namespace NexteLite.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

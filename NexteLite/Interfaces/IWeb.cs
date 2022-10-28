@@ -1,4 +1,5 @@
 ﻿using NexteLite.Models;
+using NexteLite.Models.Minecraft;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace NexteLite.Interfaces
         void Logout();
         List<ServerProfile> GetServerProfiles();
         void GetFiles();
+
+        Task<ProfileTextures> GetMinecraftProfile(string uuid);
     }
 
 
