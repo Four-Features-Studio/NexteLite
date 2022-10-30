@@ -34,6 +34,8 @@ namespace NexteLite.Services
         IMainWindow _Main;
         IPagesRepository _Pages;
         IWebService _Web;
+        IFileService _FileService;
+
 
         ILoginProxy _LoginProxy;
         IMainProxy _MainProxy;
@@ -45,13 +47,16 @@ namespace NexteLite.Services
 
         private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
 
-        public CoreLauncher(IMainWindow mainWindow, IPagesRepository pagesRepository, IWebService webService, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
+        public CoreLauncher(IMainWindow mainWindow, IFileService fileService, IPagesRepository pagesRepository, IWebService webService, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
         {
             _Options = options;
             _Main = mainWindow;
             _Pages = pagesRepository;
             _Web = webService;
             _SettingsLauncher = settingsLauncher;
+            _FileService = fileService;
+
+            _FileService.CheckAndCreateInjector();
 
             _LoginProxy = (ILoginProxy)_Pages.GetPage(PageType.Login);
             _MainProxy = (IMainProxy)_Pages.GetPage(PageType.Main);

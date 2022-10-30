@@ -44,6 +44,7 @@ namespace NexteLite
 
             services.AddSingleton<IMainWindow,MainWindow>();
             services.AddSingleton<ICoreLaucnher, CoreLauncher>();
+            services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<ISettingsLauncher, SettingsLauncher>();
             services.AddSingleton<IMineStat, MineStat>();
 

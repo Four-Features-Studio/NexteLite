@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="Resources\authlib-injector-1.2.1.jar" />
     <None Remove="Resources\background.png" />
     <None Remove="Resources\logo.png" />
     <None Remove="Resources\PFBeauSansPro.ttf" />
@@ -31,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\authlib-injector-1.2.1.jar" />
     <Resource Include="Resources\background.png" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="Resources\PFBeauSansPro.ttf" />

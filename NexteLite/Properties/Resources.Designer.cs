@@ -61,6 +61,16 @@ namespace NexteLite.Properties {
         }
         
         /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] authlib_injector_1_2_1 {
+            get {
+                object obj = ResourceManager.GetObject("authlib_injector_1_2_1", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на В Офлайне.
         /// </summary>
         internal static string lcl_txt_PlayButton_Offline {

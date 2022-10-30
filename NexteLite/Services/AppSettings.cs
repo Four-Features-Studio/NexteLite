@@ -14,6 +14,8 @@ namespace NexteLite.Services
         public int DefaultRam { get; set; }
 
         public List<SocialItem> Social { get; set; }
+
+        public string AssetsUrl { get; set; }  
     }
 
     public class SocialItem

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NexteLite.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace NexteLite.Interfaces
 {
     public interface IMinecraftService
     {
-        void Play(string nID);
+        Task Play(Profile profile);
 
     }
 }

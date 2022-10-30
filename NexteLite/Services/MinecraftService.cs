@@ -1,4 +1,5 @@
 ﻿using NexteLite.Interfaces;
+using NexteLite.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,24 @@ namespace NexteLite.Services
 {
     public class MinecraftService : IMinecraftService
     {
-        public void Play(string nID)
+       
+        public async Task Play(Profile profile)
         {
-            
+            await StartMinecraft();
+        }
+
+        private async Task StartMinecraft()
+        {
+
+        }
+
+        private void GetArgs()
+        {
+
+        }
+        private void GetJvm()
+        {
+
         }
     }
 }
