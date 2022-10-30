@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Policy;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,15 +28,13 @@ namespace NexteLite.Services
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetPhysicallyInstalledSystemMemory(out long TotalMemoryInKilobytes);
 
-        public Profile Profile { get; set; }
-
         Action<string> StartingUriProccess;
 
         IMainWindow _Main;
         IPagesRepository _Pages;
         IWebService _Web;
         IFileService _FileService;
-
+        IAccountService _Account;
 
         ILoginProxy _LoginProxy;
         IMainProxy _MainProxy;
@@ -43,20 +42,32 @@ namespace NexteLite.Services
         IConsoleProxy _ConsoleProxy;
         ISettingsLauncher _SettingsLauncher;
 
+        IMinecraftService _Minecraft;
+
         IOptions<AppSettings> _Options;
 
         private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
 
-        public CoreLauncher(IMainWindow mainWindow, IFileService fileService, IPagesRepository pagesRepository, IWebService webService, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
+        public CoreLauncher(IMainWindow mainWindow, 
+            IAccountService accountService,
+            IFileService fileService,
+            IPagesRepository pagesRepository,
+            IWebService webService, 
+            ISettingsLauncher settingsLauncher, 
+            IMinecraftService minecraftService,
+            IOptions<AppSettings> options)
         {
+            _Account = accountService;
             _Options = options;
             _Main = mainWindow;
             _Pages = pagesRepository;
             _Web = webService;
             _SettingsLauncher = settingsLauncher;
             _FileService = fileService;
-
+            
             _FileService.CheckAndCreateInjector();
+
+            _Minecraft = minecraftService;
 
             _LoginProxy = (ILoginProxy)_Pages.GetPage(PageType.Login);
             _MainProxy = (IMainProxy)_Pages.GetPage(PageType.Main);
@@ -161,24 +172,16 @@ namespace NexteLite.Services
         {
             message = string.Empty;
 
-            if (_SettingsLauncher.SaveLoginParams(new ParamsLoginPage(username, String.Empty, false)))
+            if (_Account.AuthAccount(username, password, out var profile, ref message))
             {
-                if (_Web.Auth(username, password, out var profile, ref message))
-                {
-                    Profile = profile;
+                _MainProxy.SetProfile(profile);
 
-                    _MainProxy.SetProfile(Profile);
-
-                    ShowPage(PageType.Main);
-                    LoadProfiles();
-                    return true;
-                }
-                return false;
+                ShowPage(PageType.Main);
+                LoadProfiles();
+                return true;
             }
-            else
-            {
-                return false;
-            }      
+
+            return false;
         }
 
         /// <summary>
@@ -218,6 +221,11 @@ namespace NexteLite.Services
         private void MainProxy_PlayClick(string id)
         {
             Console.WriteLine(id);
+            var profile = ServerProfiles.FirstOrDefault(x => x.NID == id);
+            if (profile == null)
+                return;
+
+            _Minecraft.Play(profile);
         }
 
         /// <summary>

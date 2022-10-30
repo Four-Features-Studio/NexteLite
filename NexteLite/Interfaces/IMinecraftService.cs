@@ -9,7 +9,7 @@ namespace NexteLite.Interfaces
 {
     public interface IMinecraftService
     {
-        Task Play(Profile profile);
+        Task Play(ServerProfile profile);
 
     }
 }

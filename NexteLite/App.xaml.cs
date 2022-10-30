@@ -48,12 +48,17 @@ namespace NexteLite
             services.AddSingleton<ISettingsLauncher, SettingsLauncher>();
             services.AddSingleton<IMineStat, MineStat>();
 
+            services.AddSingleton<IPathRepository, PathRepository>();
+            services.AddSingleton<IAccountService, AccountService>();
+
             services.AddSingleton<LoginPage>();
             services.AddSingleton<MainPage>();
             services.AddSingleton<ConsolePage>();
             services.AddSingleton<SettingsPage>();
 
             services.AddTransient<IWebService, WebService>();
+            services.AddTransient<IMinecraftService, MinecraftService>();
+
 
             //var serilogLogger = new LoggerConfiguration()
             //    .MinimumLevel.Debug()

@@ -9,13 +9,13 @@ namespace NexteLite.Services
     public class AppSettings
     {
         public SettingsFolders DirParams { get; set; }
-
         public string DefaultPath { get; set; }
         public int DefaultRam { get; set; }
 
         public List<SocialItem> Social { get; set; }
 
-        public string AssetsUrl { get; set; }  
+        public string AssetsUrl { get; set; }
+        public string InjectorUrl { get; set; }
     }
 
     public class SocialItem

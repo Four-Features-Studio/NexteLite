@@ -25,11 +25,14 @@ namespace NexteLite.Services
         IWebService _WebService;
         ISettingsLauncher _SettingsLauncher;
         IOptions<AppSettings> _Options;
-        public FileService(IWebService webService, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
+        IPathRepository _Path;
+
+        public FileService(IWebService webService, IPathRepository pathRepository, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
         {
             _WebService = webService;
             _SettingsLauncher = settingsLauncher;
             _Options = options;
+            _Path = pathRepository;
         }
 
         public async Task CheckFilesClient()
@@ -41,15 +44,14 @@ namespace NexteLite.Services
         }
         public async Task CheckAndCreateInjector()
         {
-            var path = GetPath();
-            var fullpath = Path.Combine(path, "injector.jar");
+            var path = _Path.GetInjectorPath();
             var injector = Properties.Resources.authlib_injector_1_2_1;
 
-            if (File.Exists(fullpath))
+            if (File.Exists(path))
             {
                 var sumCorrect = GetHashsum(injector);
                 var sumChecked = string.Empty;
-                using (FileStream fstream = new FileStream(fullpath, FileMode.Open))
+                using (FileStream fstream = new FileStream(path, FileMode.Open))
                 {
                     byte[] buffer = new byte[fstream.Length];
                     await fstream.ReadAsync(buffer, 0, buffer.Length);
@@ -62,7 +64,7 @@ namespace NexteLite.Services
             }
 
 
-            using (FileStream fstream = new FileStream(fullpath, FileMode.Create))
+            using (FileStream fstream = new FileStream(path, FileMode.Create))
             {
                 await fstream.WriteAsync(injector, 0, injector.Length);
             }
@@ -70,11 +72,8 @@ namespace NexteLite.Services
 
         public async Task DownloadClient(FilesEntity files, ServerProfile profile)
         {
-            //подготовливаем файлы
-            if (profile.Dir.StartsWith('/') || profile.Dir.StartsWith('\\'))
-                profile.Dir.TrimStart('/', '\\');
-
-            var ClientDir = Path.Combine(_SettingsLauncher.RootDir, profile.Dir);
+            
+             var ClientDir = _Path.GetClientPath(profile);
 
             var totalSize = 0l;
             var filesToDownload = new List<(string url, string path)>();
@@ -99,9 +98,9 @@ namespace NexteLite.Services
                 throw new ArgumentNullException("In the launcher settings there is no link to download the assets");
             }
 
-            var pathAssets = Path.Combine(_SettingsLauncher.RootDir, "Assets");
-            var pathIndexes = Path.Combine(pathAssets, "indexes");
-            var pathObjects = Path.Combine(pathAssets, "objects");
+            var pathAssets = _Path.GetAssetsPath();
+            var pathIndexes = _Path.GetAssetsIndexesPath();
+            var pathObjects = _Path.GetAssetsObjectsPath();
 
             if (!Directory.Exists(pathAssets))
             {
@@ -204,19 +203,6 @@ namespace NexteLite.Services
 
             using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
             await fileStream.WriteAsync(buffer, 0, buffer.Length);
-        }
-        private string GetPath()
-        {
-            var folder = _Options.Value.DirParams.SettingsPath;
-            if (string.IsNullOrEmpty(folder))
-                throw new ArgumentNullException("The configuration file does not contain the path to the settings folder");
-
-            var appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-            if (folder.StartsWith('/'))
-                folder = folder.TrimStart();
-
-            return Path.Combine(appdata, folder);
         }
 
         public string GetHashsum(byte[] file)

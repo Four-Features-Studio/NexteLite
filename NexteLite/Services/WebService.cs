@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace NexteLite.Services
 {
@@ -41,14 +42,37 @@ namespace NexteLite.Services
 
         public List<ServerProfile> GetServerProfiles()
         {
+            var TestProfile = new ServerProfile()
+            {
+                ConfigVersion = "1",
+                Version = "1.12.2",
+                SortIndex = 0,
+                Dir = "TestClient",
+                AssetDir = "Assets",
+                AssetIndex = "1.12",
+                MainClass = "net.minecraft.client.main.Main",
+                HideProfile = false
+            };
+
+            TestProfile.Server = new Server() { Ip = "188.225.47.71", Port = 25565 };
+
+            TestProfile.UpdatesDir = new List<string>()
+            {
+                "libraries",
+                "natives",
+                "mods",
+                "configs",
+                "resourcespacks",
+                "minecraft.jar",
+                "forge.jar",
+                "liteloader.jar"
+            };
+
+            TestProfile.UpdateIgnore = new List<string>();
+
             return new List<ServerProfile>
             {
-                new ServerProfile
-                {
-                    NID = Guid.NewGuid().ToString(),
-                    Title = "test1",
-                    Server = new Server() { Ip = "188.225.47.71", Port = 25565 }
-                },
+                TestProfile,
                 new ServerProfile
                 {
                     NID = Guid.NewGuid().ToString(),

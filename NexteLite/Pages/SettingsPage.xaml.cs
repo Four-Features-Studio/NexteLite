@@ -171,11 +171,11 @@ namespace NexteLite.Pages
         {
             var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
 
-            dialog.SelectedPath = ((TextBlock)sender).Text;
+            dialog.SelectedPath = Path;
 
             if (dialog.ShowDialog().GetValueOrDefault())
             {
-                ((TextBlock)sender).Text = dialog.SelectedPath;
+                Path = dialog.SelectedPath;
             }
         }
 
