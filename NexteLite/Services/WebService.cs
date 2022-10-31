@@ -71,13 +71,13 @@ namespace NexteLite.Services
             TestProfile.UpdateIgnore = new List<string>();
 
             return new List<ServerProfile>
-            {
-                TestProfile,
+            {                
                 new ServerProfile
                 {
                     NID = Guid.NewGuid().ToString(),
                     Title = "test2"
-                },                                
+                },
+                TestProfile,               
                 new ServerProfile
                 {
                     NID = Guid.NewGuid().ToString(),

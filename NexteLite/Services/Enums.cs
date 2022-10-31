@@ -11,6 +11,13 @@ namespace NexteLite.Services.Enums
         Login = 0,
         Main,
         Console,
-        Settings
+        Settings,
+        Running
+    }
+
+    public enum MinecraftState
+    {
+        Running,
+        Closed
     }
 }

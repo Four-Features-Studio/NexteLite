@@ -15,6 +15,7 @@ namespace NexteLite.Services
 {
     public class MinecraftService : IMinecraftService
     {
+        public event OnMinecraftStateChangedHandler OnMinecraftStateChanged;
 
         IOptions<AppSettings> _Options;
         ISettingsLauncher _SettingsLauncher;
@@ -64,16 +65,17 @@ namespace NexteLite.Services
             };
             process.Exited += (s, arg) =>
             {
+                OnMinecraftStateChanged?.Invoke(Enums.MinecraftState.Closed);
                 Console.WriteLine($"Exit time: {process.ExitTime}\n" + $"Exit code: {process.ExitCode}\n");
             };
             process.Start();
+
+            OnMinecraftStateChanged?.Invoke(Enums.MinecraftState.Running);
 
             killerProcessJob.AddProcess(process.Handle);
 
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-
-            await process.WaitForExitAsync().ConfigureAwait(true);
         }
 
         private string GetArgs(ServerProfile profile)
@@ -89,6 +91,8 @@ namespace NexteLite.Services
             var accessToken = _Account.GetAccessToken();
             var uuid = _Account.GetUuid();
             var username = _Account.GetUsername();
+
+            var memory = _SettingsLauncher.UseRam == 0 ? 1024 : _SettingsLauncher.UseRam;
 
             var userType = "mojang";
             var versionType = "NexteLauncher";
@@ -106,7 +110,9 @@ namespace NexteLite.Services
             //$"-javaagent:{injectorPath}={injectorUrl}",
             var jvmArgs = new List<string>()
             {
-                $"-Djava.library.path={nativesDir}",
+                $"-Xmx{memory}M",
+                $"-Xms{memory}M",
+                $"-Djava.library.path={nativesDir}"
             };
 
             var classPath = new List<string>()

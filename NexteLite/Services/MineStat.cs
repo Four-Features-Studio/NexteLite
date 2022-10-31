@@ -32,6 +32,7 @@ namespace NexteLite.Services
         public bool ServerUp { get; set; }
         public long Latency { get; set; }
 
+       
         ConcurrentBag<IMineStatSubscriber> subscribers = new ConcurrentBag<IMineStatSubscriber>();
 
         Time timer;
@@ -47,7 +48,7 @@ namespace NexteLite.Services
         {
             foreach (var subscriber in subscribers)
             {
-                var state = await CheckOnline(subscriber.Ip, subscriber.Port).ConfigureAwait(true);
+                var state = await CheckOnline(subscriber.Ip, subscriber.Port);
                 subscriber.UpdateInfo(state);
             }
         }
@@ -122,7 +123,7 @@ namespace NexteLite.Services
 
             subscribers.Add(subscriber);
 
-            var state = await CheckOnline(subscriber.Ip, subscriber.Port).ConfigureAwait(true);
+            var state = await CheckOnline(subscriber.Ip, subscriber.Port);
             subscriber.UpdateInfo(state);
 
         }

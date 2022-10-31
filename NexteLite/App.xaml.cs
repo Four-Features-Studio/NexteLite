@@ -55,6 +55,7 @@ namespace NexteLite
             services.AddSingleton<MainPage>();
             services.AddSingleton<ConsolePage>();
             services.AddSingleton<SettingsPage>();
+            services.AddSingleton<RunningPage>();
 
             services.AddTransient<IWebService, WebService>();
             services.AddTransient<IMinecraftService, MinecraftService>();

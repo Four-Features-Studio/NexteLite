@@ -75,6 +75,8 @@ namespace NexteLite.Services
             _ConsoleProxy = (IConsoleProxy)_Pages.GetPage(PageType.Console);
 
 
+            _Minecraft.OnMinecraftStateChanged += Minecraft_OnMinecraftStateChanged;
+
             _LoginProxy.LoginClick += LoginProxy_LoginClick;
             _LoginProxy.SetParams(_SettingsLauncher.LoadLoginParams());
 
@@ -97,6 +99,21 @@ namespace NexteLite.Services
 
             _Main.Show();
             ShowPage(PageType.Login);
+        }
+
+        private void Minecraft_OnMinecraftStateChanged(MinecraftState state)
+        {
+            switch (state)
+            {
+                case MinecraftState.Running:
+                    ShowPage(PageType.Running);
+                    break;
+
+                case MinecraftState.Closed:
+                    //Возвращаем главную страницу
+                    ShowPage(PageType.Main);
+                    break;
+            }
         }
 
         /// <summary>
@@ -132,6 +149,11 @@ namespace NexteLite.Services
             { dlg.Invoke(); }
             catch (Exception ex)
             { }
+        }
+
+        private void StartMinecraft(ServerProfile profile)
+        {
+            _Minecraft.Play(profile);
         }
 
         /// <summary>
@@ -225,7 +247,8 @@ namespace NexteLite.Services
             if (profile == null)
                 return;
 
-            _Minecraft.Play(profile);
+            StartMinecraft(profile);
+
         }
 
         /// <summary>

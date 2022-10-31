@@ -102,7 +102,9 @@ namespace NexteLite
         /// <param name="page"></param>
         public void ShowPage(Page page)
         {
-            Viewer.NavigationService.Navigate(page);
+            Action dlg = () => Viewer.NavigationService.Navigate(page);
+
+            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
         }
 
         /// <summary>
