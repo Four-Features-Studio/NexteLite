@@ -12,7 +12,7 @@
     <None Remove="Resources\authlib-injector-1.2.1.jar" />
     <None Remove="Resources\background.png" />
     <None Remove="Resources\logo.png" />
-    <None Remove="Resources\PFBeauSansPro.ttf" />
+    <None Remove="Resources\PFBeauSansPro-XThin.ttf" />
     <None Remove="Resources\placeholder.jpg" />
   </ItemGroup>
 
@@ -35,7 +35,7 @@
     <Resource Include="Resources\authlib-injector-1.2.1.jar" />
     <Resource Include="Resources\background.png" />
     <Resource Include="Resources\logo.png" />
-    <Resource Include="Resources\PFBeauSansPro.ttf" />
+    <Resource Include="Resources\PFBeauSansPro-XThin.ttf" />
     <Resource Include="Resources\placeholder.jpg" />
   </ItemGroup>
 
@@ -49,7 +49,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

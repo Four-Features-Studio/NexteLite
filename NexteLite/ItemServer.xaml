@@ -6,12 +6,12 @@
              xmlns:local="clr-namespace:NexteLite" xmlns:converters="clr-namespace:NexteLite.Converters"
              mc:Ignorable="d" 
              Height="394" Width="300"
-             x:Name="thisServer"
-             FontFamily="./PFBeauSans.ttf #PF Beau Sans Pro Thin">
+             x:Name="thisServer">
     <UserControl.Resources>
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Fonts.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles/Buttons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
@@ -94,7 +94,7 @@
                    Opacity="1"
                    Foreground="White" 
                    HorizontalAlignment="Center" VerticalAlignment="Top"
-                   FontSize="30"
+                   FontSize="30" FontFamily="{StaticResource XThin}"
                    Text="{Binding Title}">
         </TextBlock>
         
@@ -116,7 +116,7 @@
                 Grid.Row="1" 
                 Click="PlayButton_Click" 
                 BorderThickness="0" 
-                Foreground="White"
+                Foreground="White" FontFamily="{StaticResource XThin}"
                 VerticalAlignment="Bottom" HorizontalAlignment="Center" 
                 Height="24" Width="158" 
                 Cursor="Hand">
@@ -132,7 +132,7 @@
         <TextBlock x:Name="PlayerOnServer"
                    Grid.Row="2"
                    Opacity="1"
-                   FontSize="14" 
+                   FontSize="14" FontFamily="{StaticResource XThin}"
                    Foreground="#898989"
                    Visibility="{Binding IsOnline, Converter={StaticResource booleanToVisibilityConverter}}"
                    HorizontalAlignment="Center" VerticalAlignment="Center">

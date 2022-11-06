@@ -1,4 +1,5 @@
 ﻿using NexteLite.Interfaces;
+using NexteLite.Models;
 using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
@@ -20,45 +21,70 @@ using System.Windows.Shapes;
 namespace NexteLite.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для RunningPage.xaml
+    /// Логика взаимодействия для DownloadingPage.xaml
     /// </summary>
-    public partial class RunningPage : Page, IPage, IRunningProxy, INotifyPropertyChanged
+    public partial class DownloadingPage : Page, IPage, IDownloadingProxy, INotifyPropertyChanged
     {
-        public RunningPage()
+        public DownloadingPage()
         {
             InitializeComponent();
         }
-        public event OnKillClientClickHandler OnKillClientClick;
 
-        bool _IsDebugMode = false;
-        public bool IsDebugMode
+        public PageType Id => PageType.Downloading;
+
+        public bool IsOverlay => false;
+
+        string _FileName;
+        public string FileName
         {
             get
             {
-                return _IsDebugMode;
+                return _FileName;
             }
             set
             {
-                _IsDebugMode = value;
+                _FileName = value;
                 OnPropertyChanged();
             }
         }
-        public void WriteLog(string log)
-        {
-            Action dlg = () =>
-            {
-                PATH_Log.Text += log + Environment.NewLine;
-                PATH_Scroll.ScrollToBottom();
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
-        }
-        public void SetParams(bool isDebug)
-        {
-            IsDebugMode = isDebug;
-        }
-        public PageType Id => PageType.Running;
 
-        public bool IsOverlay => false;
+        long _TotalSize;
+        public long TotalSize
+        {
+            get
+            {
+                return _TotalSize;
+            }
+            set
+            {
+                _TotalSize = value;
+                OnPropertyChanged();
+            }
+        }
+
+        long _CurrentSize;
+        public long CurrentSize
+        {
+            get
+            {
+                return _CurrentSize;
+            }
+            set
+            {
+                _CurrentSize = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void OnDownloadingProgress(DownloadProgressArguments args)
+        {
+            
+        }
+
+        public void SetState(DownloadingState state)
+        {
+            
+        }
 
         #region [INotifyPropertyChanged]
 
@@ -69,10 +95,5 @@ namespace NexteLite.Pages
         }
 
         #endregion
-
-        private void KillClient_Click(object sender, RoutedEventArgs e)
-        {
-            OnKillClientClick?.Invoke();
-        }
     }
 }

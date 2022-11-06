@@ -40,6 +40,9 @@ namespace NexteLite.Services
         IMainProxy _MainProxy;
         ISettingsProxy _SettingsProxy;
         IConsoleProxy _ConsoleProxy;
+        IDownloadingProxy _DownloadingProxy;
+        IRunningProxy _RunningProxy;
+
         ISettingsLauncher _SettingsLauncher;
 
         IMinecraftService _Minecraft;
@@ -74,7 +77,6 @@ namespace NexteLite.Services
             _SettingsProxy = (ISettingsProxy)_Pages.GetPage(PageType.Settings);
             _ConsoleProxy = (IConsoleProxy)_Pages.GetPage(PageType.Console);
 
-
             _Minecraft.OnMinecraftStateChanged += Minecraft_OnMinecraftStateChanged;
 
             _LoginProxy.LoginClick += LoginProxy_LoginClick;
@@ -101,27 +103,21 @@ namespace NexteLite.Services
             ShowPage(PageType.Login);
         }
 
-        private void Minecraft_OnMinecraftStateChanged(MinecraftState state)
-        {
-            switch (state)
-            {
-                case MinecraftState.Running:
-                    ShowPage(PageType.Running);
-                    break;
-
-                case MinecraftState.Closed:
-                    //Возвращаем главную страницу
-                    ShowPage(PageType.Main);
-                    break;
-            }
-        }
-
         /// <summary>
         ///
         /// </summary>
         /// <param name="id"></param>
         public void ShowPage(PageType id)
         {
+            switch (id)
+            {
+                case PageType.Running:
+                    _Main.ShowPage(CreateRunningPage());
+                    return;
+                case PageType.Downloading:
+                    _Main.ShowPage(CreateDownloadingPage());
+                    return;
+            }
             _Main.ShowPage(_Pages.GetPage(id));
         }
 
@@ -151,8 +147,36 @@ namespace NexteLite.Services
             { }
         }
 
+        private Page CreateRunningPage()
+        {
+            var page = _Pages.GetRunningPage();
+            _RunningProxy = (IRunningProxy)page;
+            _RunningProxy.OnKillClientClick += _RunningProxy_OnKillClientClick;
+            _RunningProxy.SetParams(_SettingsLauncher.Debug);
+            _Minecraft.OnMinecraftLogRecived += _RunningProxy.WriteLog;
+
+            return page;
+        }
+
+        private Page CreateDownloadingPage()
+        {
+            var page = _Pages.GetDownloadingPage();
+            _DownloadingProxy = (IDownloadingProxy)page;
+            return page;
+        }
+
         private void StartMinecraft(ServerProfile profile)
         {
+            CreateRunningPage();
+            CreateDownloadingPage();
+            //Проверка файлов
+            //Скачивание файлов
+            //запуск майнкрафта
+            _FileService.OnProgressChanged += _DownloadingProxy.OnDownloadingProgress;
+
+            _DownloadingProxy.SetState(DownloadingState.HashAssets);
+            _FileService.CheckAssets();
+
             _Minecraft.Play(profile);
         }
 
@@ -260,6 +284,33 @@ namespace NexteLite.Services
             if (_SettingsLauncher.SaveSettingsParams(paramsSetting))
             {
                 _Main.HideOverlay();
+            }
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        private void _RunningProxy_OnKillClientClick()
+        {
+            _Minecraft.Kill();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        private void Minecraft_OnMinecraftStateChanged(MinecraftState state)
+        {
+            switch (state)
+            {
+                case MinecraftState.Running:
+                    ShowPage(PageType.Running);
+                    break;
+
+                case MinecraftState.Closed:
+                    //Возвращаем главную страницу
+                    ShowPage(PageType.Main);
+                    break;
             }
         }
     }

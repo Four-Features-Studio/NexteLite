@@ -16,12 +16,15 @@ namespace NexteLite.Services
     public class MinecraftService : IMinecraftService
     {
         public event OnMinecraftStateChangedHandler OnMinecraftStateChanged;
+        public event OnMinecraftLogRecivedHandler OnMinecraftLogRecived;
 
         IOptions<AppSettings> _Options;
         ISettingsLauncher _SettingsLauncher;
         IPathRepository _Path;
         IAccountService _Account;
 
+        ProcessJob _KillerProcessJob;
+        Process _Process;
         public MinecraftService (ISettingsLauncher settingsLauncher, IAccountService accountService, IPathRepository pathRepository, IOptions<AppSettings> options)
         {
             _SettingsLauncher = settingsLauncher;
@@ -35,13 +38,26 @@ namespace NexteLite.Services
             await StartMinecraft(profile);
         }
 
+        public void Kill()
+        {
+            if (_Process != null)
+            {
+                _Process.Kill();
+                _Process.Dispose();
+                OnMinecraftStateChanged?.Invoke(Enums.MinecraftState.Closed);
+                _Process = null;
+            }
+
+        }
+
         private async Task StartMinecraft(ServerProfile profile)
         {
             var args = GetArgs(profile);
             var clientDir = _Path.GetClientPath(profile);
 
             var java = _Path.GetJavaPath();
-            var killerProcessJob = new ProcessJob();
+
+            _KillerProcessJob = new ProcessJob();
 
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = java;
@@ -52,30 +68,31 @@ namespace NexteLite.Services
             info.RedirectStandardOutput = true;
             info.RedirectStandardError = true;
 
-            var process = new Process();
-            process.StartInfo = info;
-            process.EnableRaisingEvents = true;
-            process.OutputDataReceived += (sender, args) =>
+            _Process = new Process();
+            _Process.StartInfo = info;
+            _Process.EnableRaisingEvents = true;
+            _Process.OutputDataReceived += (sender, args) =>
             {
+                OnMinecraftLogRecived?.Invoke(args.Data.ToString());
 
             };
-            process.ErrorDataReceived += (s, args) =>
+            _Process.ErrorDataReceived += (s, args) =>
             {
-
+                OnMinecraftLogRecived?.Invoke(args.Data.ToString());
             };
-            process.Exited += (s, arg) =>
+            _Process.Exited += (s, arg) =>
             {
                 OnMinecraftStateChanged?.Invoke(Enums.MinecraftState.Closed);
-                Console.WriteLine($"Exit time: {process.ExitTime}\n" + $"Exit code: {process.ExitCode}\n");
+                Console.WriteLine($"Exit time: {_Process.ExitTime}\n" + $"Exit code: {_Process.ExitCode}\n");
             };
-            process.Start();
+            _Process.Start();
+
+            _KillerProcessJob.AddProcess(_Process.Handle);
+
+            _Process.BeginOutputReadLine();
+            _Process.BeginErrorReadLine();
 
             OnMinecraftStateChanged?.Invoke(Enums.MinecraftState.Running);
-
-            killerProcessJob.AddProcess(process.Handle);
-
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
         }
 
         private string GetArgs(ServerProfile profile)

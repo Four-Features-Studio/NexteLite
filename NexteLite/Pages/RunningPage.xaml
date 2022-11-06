@@ -4,11 +4,43 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:NexteLite.Pages"
+      xmlns:res="clr-namespace:NexteLite.Properties"
+      xmlns:converters="clr-namespace:NexteLite.Converters"
       mc:Ignorable="d" 
+      x:Name="thisPage"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="RunningPage">
 
-    <Grid>
-        
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Fonts.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <BooleanToVisibilityConverter x:Key="boolToVisibiltyConverter"/>
+            <converters:NotBoolVisibilityConverter x:Key="notBoolVisibilityConverter"/>
+
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid DataContext="{Binding ElementName=thisPage, Path=.}">
+        <Grid x:Name="OnRunning" Visibility="{Binding IsDebugMode, Converter={StaticResource notBoolVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Foreground="White" FontFamily="{StaticResource XThin}" FontSize="40" Text="{x:Static res:Resources.lcl_txt_RunningPage_ClientIsRunning}"/>
+        </Grid>
+
+        <Grid x:Name="DebugConsole" Grid.Row="0" Visibility="{Binding IsDebugMode, Converter={StaticResource boolToVisibiltyConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <ScrollViewer x:Name="PATH_Scroll" Margin="10,30,10,0" BorderBrush="Transparent">
+                <TextBlock x:Name="PATH_Log" Foreground="White" FontFamily="{StaticResource XThin}"/>
+            </ScrollViewer>
+
+            <Button Grid.Row="1" Margin="20,0" Height="27" Width="216" Background="#8b0000" Foreground="White" FontFamily="{StaticResource XThin}" BorderThickness="0" HorizontalAlignment="Left" Cursor="Hand" Click="KillClient_Click" >Убить клиент</Button>
+        </Grid>
     </Grid>
 </Page>

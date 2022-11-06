@@ -12,5 +12,8 @@ namespace NexteLite.Interfaces
     public interface IPagesRepository
     {
         Page GetPage(PageType type);
+
+        Page GetRunningPage();
+        Page GetDownloadingPage();
     }
 }

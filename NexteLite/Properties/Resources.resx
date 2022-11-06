@@ -127,4 +127,7 @@
   <data name="lcl_txt_PlayButton_Online" xml:space="preserve">
     <value>Играть</value>
   </data>
+  <data name="lcl_txt_RunningPage_ClientIsRunning" xml:space="preserve">
+    <value>Клиент уже запущен</value>
+  </data>
 </root>

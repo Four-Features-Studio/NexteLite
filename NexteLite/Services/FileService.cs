@@ -39,9 +39,11 @@ namespace NexteLite.Services
         {
 
         }
+
         public async Task CheckAssets()
         {
         }
+
         public async Task CheckAndCreateInjector()
         {
             var path = _Path.GetInjectorPath();
@@ -190,6 +192,7 @@ namespace NexteLite.Services
 
             await save;
         }
+
         void ReportProgress(DownloadProgressArguments args)
         {
             OnProgressChanged?.Invoke(args);

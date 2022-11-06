@@ -7,12 +7,12 @@
       mc:Ignorable="d" 
       FontSize="14"
       d:DesignHeight="450" d:DesignWidth="770"
-      Title="main"
-      FontFamily="./Resources/PFBeauSans.ttf #PF Beau Sans Pro Thin">
+      Title="main">
 
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Fonts.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles/Buttons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
@@ -44,41 +44,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <TextBlock x:Name="plug_control" Visibility="Collapsed" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="40">Экземпляр игры уже запущен.</TextBlock>
-
-        <Grid x:Name="download_control" Panel.ZIndex="2" Opacity="0" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="20"></RowDefinition>
-            </Grid.RowDefinitions>
-
-            <Border Width="467" Height="229" BorderBrush="#232532" BorderThickness="2">
-                <Border VerticalAlignment="Bottom" Height="55">
-                    <Border.Background>
-                        <SolidColorBrush Color="Black" Opacity="0.8"></SolidColorBrush>
-                    </Border.Background>
-                    <TextBlock x:Name="item_infodonwload" Foreground="White" TextAlignment="Left" VerticalAlignment="Center" Margin="10" >
-                        <Run x:Name="info_currentsize">123</Run>/<Run x:Name="info_totalsize">123</Run>
-                        <LineBreak></LineBreak>
-                        <Run x:Name="info_currentfile">asdasd</Run>
-                    </TextBlock>
-                </Border>
-            </Border>
-
-            <ProgressBar x:Name="item_progress" Grid.Row="2" BorderThickness="0" Height="20">
-                <ProgressBar.Foreground>
-                    <LinearGradientBrush >
-                        <GradientStop Color="#FF2F0470" Offset="0"/>
-                        <GradientStop Color="#FF6D19EB" Offset="1"/>
-                    </LinearGradientBrush>
-                </ProgressBar.Foreground>
-                <ProgressBar.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.35"/>
-                </ProgressBar.Background>
-            </ProgressBar>
-        </Grid>
-
+        
         <Grid x:Name="main_control">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="64"></ColumnDefinition>
@@ -96,7 +62,7 @@
                         <Image Stretch="Uniform" Source="{Binding Path=Profile.Avatar}"></Image>
                     </Grid>
                 </Border>
-                <TextBlock x:Name="username_control" FontSize="16" TextAlignment="Center" VerticalAlignment="Center" Margin="0,12" Foreground="White" Text="{Binding Path=Profile.Username}"></TextBlock>
+                <TextBlock FontSize="16" FontFamily="{StaticResource XThin}" TextAlignment="Center" VerticalAlignment="Center" Margin="0,12" Foreground="White" Text="{Binding Path=Profile.Username}"></TextBlock>
             </StackPanel>
 
             <Grid Grid.Row="1" Panel.ZIndex="5" Background="Transparent">
@@ -128,7 +94,7 @@
                             </Image.Source>
                         </Image>
                     </Button>-->
-                    <Button x:Name="Settings" Cursor="Hand" Click="Buttons_OnClick" Tag="settings"  Height="26" Width="26" Margin="0,20,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
+                    <Button x:Name="Settings" Cursor="Hand" Click="Buttons_OnClick" Tag="settings" Height="26" Width="26" Margin="0,20,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
                         <Image Stretch="Fill">
                             <Image.Source>
                                 <DrawingImage>

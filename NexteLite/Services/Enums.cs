@@ -12,6 +12,7 @@ namespace NexteLite.Services.Enums
         Main,
         Console,
         Settings,
+        Downloading,
         Running
     }
 
@@ -19,5 +20,13 @@ namespace NexteLite.Services.Enums
     {
         Running,
         Closed
+    }
+
+    public enum DownloadingState
+    {
+        DownloadAssets,
+        DownloadClient,
+        HashAssets,
+        HashClient
     }
 }

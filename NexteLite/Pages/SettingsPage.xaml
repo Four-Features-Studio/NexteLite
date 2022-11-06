@@ -6,12 +6,12 @@
       xmlns:local="clr-namespace:NexteLite.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      FontFamily="./Resources/PFBeauSans.ttf #PF Beau Sans Pro Thin"
       FontSize="14" x:Name="thisSettings">
 
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Fonts.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
@@ -32,6 +32,7 @@
 
         <Grid>
             <Slider x:Name="ram_slider"
+                    FontFamily="{StaticResource XThin}"
                     VerticalAlignment="Bottom"
                     Margin="50,25" 
                     Maximum="{Binding MaximumRam}" 
@@ -54,7 +55,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox x:Name="autoconnect_control" IsChecked="{Binding AutoConnectMode}"/>
-                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Автоматически подключаться к выбранному серверу"/>
+                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" FontFamily="{StaticResource XThin}" Text="Автоматически подключаться к выбранному серверу"/>
             </Grid>
             <Grid Margin="8">
                 <Grid.ColumnDefinitions>
@@ -62,7 +63,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox x:Name="fullscreen_control"  IsChecked="{Binding FullScreenMode}"/>
-                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Запускать игру в полноэкранном режиме"/>
+                <TextBlock Grid.Column="1" Foreground="White" FontFamily="{StaticResource XThin}" FontSize="15" Text="Запускать игру в полноэкранном режиме"/>
             </Grid>
             <Grid Margin="8">
                 <Grid.ColumnDefinitions>
@@ -70,7 +71,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox x:Name="debugging_control"  IsChecked="{Binding DebugMode}"/>
-                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Включить отладку клиента"/>
+                <TextBlock Grid.Column="1" Foreground="White" FontFamily="{StaticResource XThin}" FontSize="15" Text="Включить отладку клиента"/>
             </Grid>
             <Grid Margin="8" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
@@ -78,7 +79,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox x:Name="usemetrica_control"/>
-                <TextBlock Grid.Column="1" Foreground="White" FontSize="15" Text="Отпрявлять техническую метрику"/>
+                <TextBlock Grid.Column="1" Foreground="White" FontFamily="{StaticResource XThin}" FontSize="15" Text="Отпрявлять техническую метрику"/>
             </Grid>
         </StackPanel>
 
@@ -89,7 +90,7 @@
 
             <TextBlock x:Name="path_control"               
                    Margin="5,0"
-                   FontSize="18" 
+                   FontSize="18" FontFamily="{StaticResource XThin}"
                    Foreground="White" 
                    Padding="0"
                    HorizontalAlignment="Stretch" VerticalAlignment="Center"
@@ -107,8 +108,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Foreground="White" BorderThickness="0" Background="#a22525" Width="170" Click="Buttons_Click" Tag="delete" Content="Удалить все клиенты" Cursor="Hand"/>
-            <Button Grid.Column="2" Foreground="White" BorderThickness="0"  Background="#38447a" Width="133" Content="Применить" Click="Buttons_Click" Tag="apply" Cursor="Hand"/>
+            <Button Grid.Column="0" Foreground="White" FontFamily="{StaticResource XThin}" BorderThickness="0" Background="#a22525" Width="170" Click="Buttons_Click" Tag="delete" Content="Удалить все клиенты" Cursor="Hand"/>
+            <Button Grid.Column="2" Foreground="White" FontFamily="{StaticResource XThin}" BorderThickness="0"  Background="#38447a" Width="133" Content="Применить" Click="Buttons_Click" Tag="apply" Cursor="Hand"/>
         </Grid>
 
     </Grid>

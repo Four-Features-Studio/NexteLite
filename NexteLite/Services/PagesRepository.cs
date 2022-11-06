@@ -1,4 +1,5 @@
-﻿using NexteLite.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using NexteLite.Interfaces;
 using NexteLite.Pages;
 using NexteLite.Services.Enums;
 using System;
@@ -13,18 +14,32 @@ namespace NexteLite.Services
     public class PagesRepository : IPagesRepository
     {
         private Dictionary<PageType,Page> Pages = new Dictionary<PageType,Page>();
-
-        public PagesRepository(MainPage mainPage, LoginPage loginPage, ConsolePage consolePage, SettingsPage settingsPage, RunningPage runningPage)
+        IServiceProvider _ServiceProvider;
+        public PagesRepository(IServiceProvider services, MainPage mainPage, LoginPage loginPage, ConsolePage consolePage, SettingsPage settingsPage)
         {
+            _ServiceProvider = services;
+
             Pages.Add(((IPage)mainPage).Id, mainPage);
             Pages.Add(((IPage)loginPage).Id, loginPage);
             Pages.Add(((IPage)consolePage).Id, consolePage);
             Pages.Add(((IPage)settingsPage).Id, settingsPage);
-            Pages.Add(((IPage)runningPage).Id, runningPage);
         }
         public Page GetPage(PageType type)
         {
-            return Pages[type];
+            if (Pages.ContainsKey(type))
+                return Pages[type];
+
+            throw new Exception("Page not found");
+        }
+
+        public Page GetRunningPage()
+        {
+            return _ServiceProvider.GetRequiredService<RunningPage>();
+        }
+
+        public Page GetDownloadingPage()
+        {
+            return _ServiceProvider.GetRequiredService<DownloadingPage>();
         }
     }
 }

@@ -73,69 +73,6 @@ namespace NexteLite.Pages
             OnPropertyChanged(nameof(ServerProfiles));
         }
 
-        public void ShowProgressBar()
-        {
-            Action dlg = () =>
-            {
-                download_control.Visibility = Visibility.Visible;
-                Storyboard sb = this.FindResource("Show") as Storyboard;
-                sb.Completed += (s, args) => { main_control.Visibility = Visibility.Collapsed; };
-                sb.Begin();
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
-        }
-
-        public void HideProgressBar()
-        {
-            Action dlg = () =>
-            {
-                main_control.Visibility = Visibility.Visible;
-                Storyboard sb = this.FindResource("Hide") as Storyboard;
-                sb.Begin();
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
-        }
-
-        public void ShowPlug()
-        {
-            Action dlg = () =>
-            {
-                plug_control.Visibility = Visibility.Visible;
-                main_control.Visibility = Visibility.Collapsed;
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
-        }
-
-        public void HidePlug()
-        {
-            Action dlg = () =>
-            {
-                plug_control.Visibility = Visibility.Collapsed;
-                main_control.Visibility = Visibility.Visible;
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
-        }
-
-        public void UpdateInfoFile(string data, string total)
-        {
-            Action dlg = () =>
-            {
-                info_totalsize.Text = total;
-                info_currentfile.Text = data;
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Normal);
-        }
-
-        public void ChangeProgress(string value, double percent)
-        {
-            Action dlg = () =>
-            {
-                info_currentsize.Text = value;
-                item_progress.Value = percent;
-            };
-            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
-        }
-
         /// <summary>
         /// 
         /// </summary>

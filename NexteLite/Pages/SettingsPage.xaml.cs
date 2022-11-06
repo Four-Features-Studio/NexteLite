@@ -27,8 +27,8 @@ namespace NexteLite.Pages
     /// </summary>
     public partial class SettingsPage : Page, IPage, ISettingsProxy, INotifyPropertyChanged
     {
-        public event SettingsApplyClickHanglder SettingsApplyClick;
-        public event DeleteAllClickHanglder DeleteAllClick;
+        public event SettingsApplyClickHangler SettingsApplyClick;
+        public event DeleteAllClickHangler DeleteAllClick;
 
         public PageType Id => PageType.Settings;
         public bool IsOverlay { get; private set; }
