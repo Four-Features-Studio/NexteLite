@@ -45,7 +45,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <Grid x:Name="main_control">
+        <Grid x:Name="MainControl">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="64"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -67,33 +67,6 @@
 
             <Grid Grid.Row="1" Panel.ZIndex="5" Background="Transparent">
                 <StackPanel Orientation="Vertical" Grid.Row="1">
-                    <!--<Button x:Name="Mods" Cursor="Hand" Click="Buttons_OnClick" Tag="mods"  Height="24" Width="26" Margin="0,9,0,0" Style="{DynamicResource CustomStyle_Transperent_Button}">
-                        <Image Stretch="Fill">
-                            <Image.Source>
-                                <DrawingImage>
-                                    <DrawingImage.Drawing>
-                                        <DrawingGroup ClipGeometry="M0,0 V513.5 H512.5 V0 H0 Z">
-                                            <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}">
-                                                <GeometryDrawing.Geometry>
-                                                    <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,0,512,140" />
-                                                </GeometryDrawing.Geometry>
-                                            </GeometryDrawing>
-                                            <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}">
-                                                <GeometryDrawing.Geometry>
-                                                    <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0.5,186.5,512,140" />
-                                                </GeometryDrawing.Geometry>
-                                            </GeometryDrawing>
-                                            <GeometryDrawing Brush="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=Button}}">
-                                                <GeometryDrawing.Geometry>
-                                                    <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0.5,373.5,512,140" />
-                                                </GeometryDrawing.Geometry>
-                                            </GeometryDrawing>
-                                        </DrawingGroup>
-                                    </DrawingImage.Drawing>
-                                </DrawingImage>
-                            </Image.Source>
-                        </Image>
-                    </Button>-->
                     <Button x:Name="Settings" Cursor="Hand" Click="Buttons_OnClick" Tag="settings" Height="26" Width="26" Margin="0,20,0,0"  Style="{DynamicResource CustomStyle_Transperent_Button}">
                         <Image Stretch="Fill">
                             <Image.Source>

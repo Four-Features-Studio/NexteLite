@@ -3,6 +3,7 @@ using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
+using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Forms;
 
 namespace NexteLite.Services
 {
@@ -35,15 +36,55 @@ namespace NexteLite.Services
             _Path = pathRepository;
         }
 
-        public async Task CheckFilesClient()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>> CheckFilesClient(ServerProfile profile, FilesEntity webFiles)
         {
+            var pathClient = _Path.GetClientPath(profile);
 
+            var updates = String.Join(";", profile.UpdatesDir);
+
+            var filesRaw = Directory.GetFiles(pathClient, "*", SearchOption.AllDirectories);
+
+            var files = new List<string>();
+
+            foreach(var item in profile.UpdatesDir)
+            {
+                files.AddRange(filesRaw.Where(x => x.Contains(item)));
+            }
+
+            files = files.Distinct().ToList();
+
+            var typeHash = (ChecksumMethod)webFiles.TypeHash;
+
+            var hashes = new Dictionary<string,string>();
+
+            foreach(var item in files)
+            {
+                var hash = await GetHashsumAsync(typeHash, item);
+                hashes.Add(hash,item);
+            }
+
+            await Task.Delay(10000);
+
+            return new List<string>();
         }
 
-        public async Task CheckAssets()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<string>> CheckAssets(ServerProfile profile)
         {
+            return new List<string>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task CheckAndCreateInjector()
         {
             var path = _Path.GetInjectorPath();
@@ -51,14 +92,14 @@ namespace NexteLite.Services
 
             if (File.Exists(path))
             {
-                var sumCorrect = GetHashsum(injector);
+                var sumCorrect = GetHashsum(ChecksumMethod.SHA1,injector);
                 var sumChecked = string.Empty;
                 using (FileStream fstream = new FileStream(path, FileMode.Open))
                 {
                     byte[] buffer = new byte[fstream.Length];
                     await fstream.ReadAsync(buffer, 0, buffer.Length);
 
-                    sumChecked = GetHashsum(buffer);
+                    sumChecked = GetHashsum(ChecksumMethod.SHA1, buffer);
                 }
 
                 if (sumChecked == sumChecked)
@@ -72,10 +113,16 @@ namespace NexteLite.Services
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="profile"></param>
+        /// <returns></returns>
         public async Task DownloadClient(FilesEntity files, ServerProfile profile)
         {
-            
-             var ClientDir = _Path.GetClientPath(profile);
+
+            var ClientDir = _Path.GetClientPath(profile);
 
             var totalSize = 0l;
             var filesToDownload = new List<(string url, string path)>();
@@ -93,6 +140,13 @@ namespace NexteLite.Services
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assetsIndex"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public async Task DownloadAssets(AssetsIndex assetsIndex, string version)
         {
             if (string.IsNullOrEmpty(_Options.Value.AssetsUrl))
@@ -146,16 +200,32 @@ namespace NexteLite.Services
             await DownloadFiles(pathObjects, totalSize, files);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task RemoveAllClients()
         {
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <returns></returns>
         public async Task RemoveClient(ServerProfile profile)
         {
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <param name="totalSize"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
         async Task DownloadFiles(string folder, long totalSize, List<(string url, string path)> files)
         {
             var progress = new Progress<DownloadProgressArguments>(ReportProgress);
@@ -193,11 +263,21 @@ namespace NexteLite.Services
             await save;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         void ReportProgress(DownloadProgressArguments args)
         {
             OnProgressChanged?.Invoke(args);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         static async Task SaveFile(MemoryStream data, string path)
         {
             new FileInfo(path).Directory?.Create();
@@ -208,14 +288,102 @@ namespace NexteLite.Services
             await fileStream.WriteAsync(buffer, 0, buffer.Length);
         }
 
-        public string GetHashsum(byte[] file)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public string GetHashsum(ChecksumMethod method, byte[] file)
         {
-            using (SHA1 sha1 = SHA1.Create())
+            switch (method)
             {
-                var result = sha1.ComputeHash(file);
-                return string.Concat(result.Select(b => b.ToString("x2")));
+                case ChecksumMethod.MD5:
+                    {
+                        using (MD5 md5 = MD5.Create())
+                        {
+                            var result = md5.ComputeHash(file);
+                            return string.Concat(result.Select(b => b.ToString("x2")));
+                        }
+                    }
+                    break;
+                case ChecksumMethod.SHA1:
+                    {
+                        using (SHA1 sha1 = SHA1.Create())
+                        {
+                            var result = sha1.ComputeHash(file);
+                            return string.Concat(result.Select(b => b.ToString("x2")));
+                        }
+                    }
+                    break;
             }
+
+            throw new ArgumentException("Указанный метод хеширования указан не верно.");
+
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public async Task<string> GetHashsumAsync(ChecksumMethod method, string file)
+        {
+            switch (method)
+            {
+                case ChecksumMethod.MD5:
+                    {
+                        using (var md5 = MD5.Create())
+                        {
+                            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                            {
+                                byte[] buffer = new byte[4096];
+                                int bytesRead;
+                                do 
+                                {
+                                    bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                                    if(bytesRead > 0)
+                                    {
+                                        md5.TransformBlock(buffer, 0, bytesRead, null, 0);
+                                    }
+                                } while(bytesRead > 0);
+
+                                md5.TransformFinalBlock(buffer, 0, 0);
+                                return BitConverter.ToString(md5.Hash).Replace("-", "").ToUpperInvariant();
+                            }
+                            //var result = md5.ComputeHash(file);
+                            //return string.Concat(result.Select(b => b.ToString("x2")));
+                        }
+                    }
+                    break;
+                case ChecksumMethod.SHA1:
+                    {
+                        using (SHA1 sha1 = SHA1.Create())
+                        {
+                            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+                            {
+                                byte[] buffer = new byte[4096];
+                                int bytesRead;
+                                do
+                                {
+                                    bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                                    if (bytesRead > 0)
+                                    {
+                                        sha1.TransformBlock(buffer, 0, bytesRead, null, 0);
+                                    }
+                                } while (bytesRead > 0);
+
+                                sha1.TransformFinalBlock(buffer, 0, 0);
+                                return BitConverter.ToString(sha1.Hash).Replace("-", "").ToUpperInvariant();
+                            }
+                            //var result = sha1.ComputeHash(file);
+                            //return string.Concat(result.Select(b => b.ToString("x2")));
+                        }
+                    }
+                    break;
+            }
+
+            throw new ArgumentException("Указанный метод хеширования указан не верно.");
+
+        }
     }
 }

@@ -22,6 +22,12 @@ namespace NexteLite.Services.Enums
         Closed
     }
 
+    public enum ChecksumMethod
+    {
+        MD5,
+        SHA1
+    }
+
     public enum DownloadingState
     {
         DownloadAssets,

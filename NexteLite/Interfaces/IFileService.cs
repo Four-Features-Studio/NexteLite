@@ -14,9 +14,10 @@ namespace NexteLite.Interfaces
     {
         event OnProgressChangedHandler OnProgressChanged;
 
-        Task CheckFilesClient();
+        Task<List<string>> CheckFilesClient(ServerProfile profile, FilesEntity files);
 
-        Task CheckAssets();
+        Task<List<string>> CheckAssets(ServerProfile profile);
+
         Task CheckAndCreateInjector();
 
         Task DownloadClient(FilesEntity files, ServerProfile profile);
