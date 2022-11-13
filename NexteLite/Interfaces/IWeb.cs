@@ -13,8 +13,8 @@ namespace NexteLite.Interfaces
         bool Auth(string username, string password, out Profile profile, ref string message);
         void Logout();
         List<ServerProfile> GetServerProfiles();
-        void GetFiles();
-        Task<MemoryStream> Download(long totalDownloadSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress);
+        Task<FilesEntity> GetFiles(string dir);
+        Task<MemoryStream> Download(double totalSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress);
     }
 
 

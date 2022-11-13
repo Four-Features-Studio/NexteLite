@@ -19,7 +19,7 @@ namespace NexteLite.Models
         public string Url { get; set; }
         
         [JsonProperty("size")]
-        public long Size { get; set; }
+        public double Size { get; set; }
 
         [JsonProperty("hash")]
         public string Hash { get; set; }

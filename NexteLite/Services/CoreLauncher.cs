@@ -167,8 +167,10 @@ namespace NexteLite.Services
 
         private async void StartMinecraft(ServerProfile profile)
         {
-            CreateRunningPage();
-            CreateDownloadingPage();
+            //CreateRunningPage();
+            //CreateDownloadingPage();
+
+            ShowPage(PageType.Downloading);
 
             //Проверка файлов
             //Скачивание файлов
@@ -176,11 +178,17 @@ namespace NexteLite.Services
             _FileService.OnProgressChanged += _DownloadingProxy.OnDownloadingProgress;
 
             _DownloadingProxy.SetState(DownloadingState.HashAssets);
-
             //await _FileService.CheckAssets(profile);
-            await _FileService.CheckFilesClient(profile, new FilesEntity());
+
+            _DownloadingProxy.SetState(DownloadingState.HashClient);
+            var files = await _Web.GetFiles(profile.Dir);
+            var localFiles = await _FileService.CheckFilesClient(profile, files);
+
+            _DownloadingProxy.SetState(DownloadingState.DownloadClient);
+            await _FileService.DownloadClient(localFiles, profile);
 
             //_Minecraft.Play(profile);
+            ShowPage(PageType.Main);
         }
 
         /// <summary>

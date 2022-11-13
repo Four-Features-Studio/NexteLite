@@ -41,10 +41,10 @@ namespace NexteLite.Models
         public string AssetIndex { get; set; }
         
         [JsonProperty("updatesDir")]
-        public List<string> UpdatesDir { get; set; }
+        public List<string> UpadtesList { get; set; }
         
         [JsonProperty("updateIgnore")]
-        public List<string> UpdateIgnore { get; set; }
+        public List<string> IgnoreList { get; set; }
         
         [JsonProperty("jvmArgs")]
         public List<string> JvmArgs { get; set; }

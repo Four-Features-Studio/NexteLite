@@ -35,4 +35,11 @@ namespace NexteLite.Services.Enums
         HashAssets,
         HashClient
     }
+
+    public enum ActionFile
+    {
+        Delete,
+        Download,
+        Update
+    }
 }

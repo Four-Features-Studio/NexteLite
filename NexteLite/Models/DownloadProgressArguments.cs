@@ -8,15 +8,15 @@ namespace NexteLite.Models
 {
     public class DownloadProgressArguments
     {
-        public DownloadProgressArguments(long totalDownloadBytes, long totalBytes, string nameFile)
+        public DownloadProgressArguments(double downloadBytes, double totalBytes, string nameFile)
         {
-            TotalDownloadBytes = totalDownloadBytes;
+            DownloadBytes = downloadBytes;
             TotalBytes = totalBytes;
             NameFile = nameFile;
         }   
 
-        public long TotalDownloadBytes { get; set; }
-        public long TotalBytes { get; set; }
+        public double DownloadBytes { get; set; }
+        public double TotalBytes { get; set; }
         public string NameFile { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NexteLite.Models;
+using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,13 +15,13 @@ namespace NexteLite.Interfaces
     {
         event OnProgressChangedHandler OnProgressChanged;
 
-        Task<List<string>> CheckFilesClient(ServerProfile profile, FilesEntity files);
+        Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity files);
 
-        Task<List<string>> CheckAssets(ServerProfile profile);
+        Task<List<(ActionFile action, FileEntity file)>> CheckAssets(ServerProfile profile);
 
         Task CheckAndCreateInjector();
 
-        Task DownloadClient(FilesEntity files, ServerProfile profile);
+        Task DownloadClient(List<(ActionFile action, FileEntity file)> files, ServerProfile profile);
 
         Task DownloadAssets(AssetsIndex assetsIndex, string version);
 

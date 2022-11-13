@@ -4,6 +4,7 @@ using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -48,37 +49,23 @@ namespace NexteLite.Pages
             }
         }
 
-        long _TotalSize;
-        public long TotalSize
+        double _Percentage;
+        public double Percentage
         {
             get
             {
-                return _TotalSize;
+                return _Percentage;
             }
             set
             {
-                _TotalSize = value;
-                OnPropertyChanged();
-            }
-        }
-
-        long _CurrentSize;
-        public long CurrentSize
-        {
-            get
-            {
-                return _CurrentSize;
-            }
-            set
-            {
-                _CurrentSize = value;
+                _Percentage = value;
                 OnPropertyChanged();
             }
         }
 
         public void OnDownloadingProgress(DownloadProgressArguments args)
         {
-            
+            Percentage = args.DownloadBytes / args.TotalBytes * 100;
         }
 
         public void SetState(DownloadingState state)

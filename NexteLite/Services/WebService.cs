@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -15,6 +17,26 @@ namespace NexteLite.Services
 {
     public class WebService : IWebService
     {
+        IOptions<AppSettings> _Options;
+        HttpClient _HttpClient;
+
+        public WebService(IOptions<AppSettings> options)
+        {
+            _Options = options;
+            var baseUrl = _Options.Value.API.BaseUrl;
+
+            //TODO проверку вынести в отдельный метод
+
+            if (string.IsNullOrEmpty(baseUrl))
+                throw new ArgumentNullException("В настройках лаунчера не указаны ссылки на api");
+
+            if (string.IsNullOrEmpty(baseUrl))
+                throw new ArgumentNullException("В настройках лаунчера не указаны ссылки на api");
+
+            _HttpClient = new HttpClient();
+            _HttpClient.BaseAddress = new Uri(baseUrl);
+        }
+
         public bool Auth(string username, string password, out Profile profile, ref string message)
         {
             //message = "Неверный логин или пароль";
@@ -35,9 +57,28 @@ namespace NexteLite.Services
             return true;
         }
 
-        public void GetFiles()
+        public async Task<FilesEntity> GetFiles(string dir)
         {
-            throw new NotImplementedException();
+            
+            var requestModel = new FilesRequest
+            {
+                Directory = dir
+            };
+
+            var model = JsonConvert.SerializeObject(requestModel);
+            var request = new HttpRequestMessage(HttpMethod.Post, _Options.Value.API.FilesUrl);
+
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Content = new StringContent(model, Encoding.UTF8);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _HttpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+
+            var files = JsonConvert.DeserializeObject<FilesEntity>(content);
+
+            return files;
         }
 
         public List<ServerProfile> GetServerProfiles()
@@ -56,7 +97,7 @@ namespace NexteLite.Services
 
             TestProfile.Server = new Server() { Ip = "188.225.47.71", Port = 25565 };
 
-            TestProfile.UpdatesDir = new List<string>()
+            TestProfile.UpadtesList = new List<string>()
             {
                 "libraries",
                 "natives",
@@ -68,7 +109,10 @@ namespace NexteLite.Services
                 "liteloader.jar"
             };
 
-            TestProfile.UpdateIgnore = new List<string>();
+            TestProfile.IgnoreList = new List<string>()
+            {
+                "mods/1.12"
+            };
 
             return new List<ServerProfile>
             {                
@@ -90,7 +134,7 @@ namespace NexteLite.Services
         {
             throw new NotImplementedException();
         }
-        public async Task<MemoryStream> Download(long totalDownloadSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress)
+        public async Task<MemoryStream> Download(double totalSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress)
         {
             using var httpClient = new HttpClient { Timeout = TimeSpan.FromDays(1) };
             using var response = await httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead);
@@ -98,12 +142,12 @@ namespace NexteLite.Services
             response.EnsureSuccessStatusCode();
 
             using var contentStream = await response.Content.ReadAsStreamAsync();
-            var totalBytesRead = 0L;
+            var downloadedSize = 0L;
             var readCount = 0L;
-            var buffer = new byte[8192];
+            var buffer = new byte[1024];
             var isMoreToRead = true;
 
-            using var dataStream = new MemoryStream(8192);
+            using var dataStream = new MemoryStream();
 
             do
             {
@@ -111,17 +155,13 @@ namespace NexteLite.Services
                 if (bytesRead == 0)
                 {
                     isMoreToRead = false;
-                    progress.Report(new DownloadProgressArguments(totalDownloadSize, totalBytesRead, name));
+                    progress.Report(new DownloadProgressArguments(downloadedSize, totalSize, name));
                     continue;
                 }
 
                 await dataStream.WriteAsync(buffer.AsMemory(0, bytesRead));
 
-                totalBytesRead += bytesRead;
-                readCount++;
-
-                if (readCount % 100 == 0)
-                    progress.Report(new DownloadProgressArguments(totalDownloadSize, totalBytesRead, name));
+                downloadedSize += bytesRead;
 
             }
             while (isMoreToRead);
