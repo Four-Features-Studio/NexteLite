@@ -178,11 +178,15 @@ namespace NexteLite.Services
             _FileService.OnProgressChanged += _DownloadingProxy.OnDownloadingProgress;
 
             _DownloadingProxy.SetState(DownloadingState.HashAssets);
-            //await _FileService.CheckAssets(profile);
+            var assetsIndex = await _Web.GetAssetsIndex(profile.AssetIndex);
+            var localAssets = await _FileService.CheckAssets(profile, assetsIndex);
 
             _DownloadingProxy.SetState(DownloadingState.HashClient);
             var files = await _Web.GetFiles(profile.Dir);
             var localFiles = await _FileService.CheckFilesClient(profile, files);
+
+            _DownloadingProxy.SetState(DownloadingState.DownloadAssets);
+            await _FileService.DownloadAssets(assetsIndex, localAssets, profile.AssetIndex);
 
             _DownloadingProxy.SetState(DownloadingState.DownloadClient);
             await _FileService.DownloadClient(localFiles, profile);

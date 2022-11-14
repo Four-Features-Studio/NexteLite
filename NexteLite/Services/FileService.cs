@@ -116,9 +116,41 @@ namespace NexteLite.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<List<(ActionFile action, FileEntity file)>> CheckAssets(ServerProfile profile)
+        public async Task<List<(string hash, double size)>> CheckAssets(ServerProfile profile, AssetsIndex assets)
         {
-            return new List<(ActionFile action, FileEntity file)>();
+            var indexesPath = _Path.GetAssetsIndexesPath();
+            var objectsPath = _Path.GetAssetsObjectsPath();
+
+            var localFiles = Directory.GetFiles(objectsPath, "*", SearchOption.AllDirectories);
+
+            var assetsIncorect = new List<(string hash, double size)>();
+
+            foreach(var asset in assets.Objects.Values)
+            {
+                var twoSymbol = asset.Hash.Substring(0, 2);
+                var path = Path.Combine(twoSymbol, asset.Hash);
+
+                var local = localFiles.FirstOrDefault(x => x.Contains(path));
+
+                if(local != null)
+                {
+                    if(!File.Exists(local))
+                        assetsIncorect.Add((asset.Hash, asset.Size));
+
+                    var hash = await GetHashsumAsync(ChecksumMethod.SHA1,local);
+                    if (asset.Hash == hash)
+                        continue;
+                    else
+                        assetsIncorect.Add((asset.Hash, asset.Size));
+                }
+                else
+                {
+                    assetsIncorect.Add((asset.Hash, asset.Size));
+                }
+
+            }
+
+            return assetsIncorect;
         }
 
         /// <summary>
@@ -213,7 +245,7 @@ namespace NexteLite.Services
         /// <param name="version"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public async Task DownloadAssets(AssetsIndex assetsIndex, string version)
+        public async Task DownloadAssets(AssetsIndex assetsIndex, List<(string hash, double size)> assetsDownload, string version)
         {
             if (string.IsNullOrEmpty(_Options.Value.AssetsUrl))
             {
@@ -245,19 +277,18 @@ namespace NexteLite.Services
                 }
             };
 
-            var assetsHash = assetsIndex.Objects.Values;
             List<(string url, string path)> files = new List<(string url, string path)>();
-            var totalSize = 0l;
+            var totalSize = 0d;
 
-            foreach (var asset in assetsHash)
+            foreach (var asset in assetsDownload)
             {
-                var twoSymbol = asset.Hash.Substring(0, 2);
+                var twoSymbol = asset.hash.Substring(0, 2);
 
-                var path = Path.Combine(twoSymbol, asset.Hash);
+                var path = Path.Combine(twoSymbol, asset.hash);
 
-                var url = $"{_Options.Value.AssetsUrl}{twoSymbol}/{asset.Hash}";
+                var url =  $"{_Options.Value.AssetsUrl}{twoSymbol}/{asset.hash}";
 
-                totalSize += asset.Size;
+                totalSize += asset.size;
 
                 files.Add((url, path));
             }

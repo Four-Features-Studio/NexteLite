@@ -23,7 +23,7 @@ namespace NexteLite.Services
         public WebService(IOptions<AppSettings> options)
         {
             _Options = options;
-            var baseUrl = _Options.Value.API.BaseUrl;
+            var baseUrl = _Options.Value.API.BaseApiUrl;
 
             //TODO проверку вынести в отдельный метод
 
@@ -66,7 +66,7 @@ namespace NexteLite.Services
             };
 
             var model = JsonConvert.SerializeObject(requestModel);
-            var request = new HttpRequestMessage(HttpMethod.Post, _Options.Value.API.FilesUrl);
+            var request = new HttpRequestMessage(HttpMethod.Post, _Options.Value.API.FilesClientUrl);
 
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             request.Content = new StringContent(model, Encoding.UTF8);
@@ -79,6 +79,29 @@ namespace NexteLite.Services
             var files = JsonConvert.DeserializeObject<FilesEntity>(content);
 
             return files;
+        }
+        public async Task<AssetsIndex> GetAssetsIndex(string version)
+        {
+
+            var requestModel = new AssetsIndexRequest
+            {
+                Version = version
+            };
+
+            var model = JsonConvert.SerializeObject(requestModel);
+            var request = new HttpRequestMessage(HttpMethod.Post, _Options.Value.API.AssetsIndexUrl);
+
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Content = new StringContent(model, Encoding.UTF8);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _HttpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+
+            var assetsIndex = JsonConvert.DeserializeObject<AssetsIndex>(content);
+
+            return assetsIndex;
         }
 
         public List<ServerProfile> GetServerProfiles()

@@ -14,6 +14,7 @@ namespace NexteLite.Interfaces
         void Logout();
         List<ServerProfile> GetServerProfiles();
         Task<FilesEntity> GetFiles(string dir);
+        Task<AssetsIndex> GetAssetsIndex(string version);
         Task<MemoryStream> Download(double totalSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress);
     }
 

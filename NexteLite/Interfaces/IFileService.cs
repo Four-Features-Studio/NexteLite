@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,13 +18,13 @@ namespace NexteLite.Interfaces
 
         Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity files);
 
-        Task<List<(ActionFile action, FileEntity file)>> CheckAssets(ServerProfile profile);
+        Task<List<(string hash, double size)>> CheckAssets(ServerProfile profile, AssetsIndex assets);
 
         Task CheckAndCreateInjector();
 
         Task DownloadClient(List<(ActionFile action, FileEntity file)> files, ServerProfile profile);
 
-        Task DownloadAssets(AssetsIndex assetsIndex, string version);
+        Task DownloadAssets(AssetsIndex assetsIndex, List<(string hash, double size)> assetsDownload, string version);
 
         Task RemoveAllClients();
 
