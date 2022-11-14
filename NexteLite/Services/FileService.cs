@@ -283,9 +283,7 @@ namespace NexteLite.Services
             foreach (var asset in assetsDownload)
             {
                 var twoSymbol = asset.hash.Substring(0, 2);
-
                 var path = Path.Combine(twoSymbol, asset.hash);
-
                 var url =  $"{_Options.Value.AssetsUrl}{twoSymbol}/{asset.hash}";
 
                 totalSize += asset.size;
