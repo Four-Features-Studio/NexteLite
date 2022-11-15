@@ -62,7 +62,7 @@
                         <Image Stretch="Uniform" Source="{Binding Path=Profile.Avatar}"></Image>
                     </Grid>
                 </Border>
-                <TextBlock FontSize="16" FontFamily="{StaticResource XThin}" TextAlignment="Center" VerticalAlignment="Center" Margin="0,12" Foreground="White" Text="{Binding Path=Profile.Username}"></TextBlock>
+                <TextBlock FontSize="16" FontFamily="{StaticResource Thin}" TextAlignment="Center" VerticalAlignment="Center" Margin="0,12" Foreground="White" Text="{Binding Path=Profile.Username}"></TextBlock>
             </StackPanel>
 
             <Grid Grid.Row="1" Panel.ZIndex="5" Background="Transparent">

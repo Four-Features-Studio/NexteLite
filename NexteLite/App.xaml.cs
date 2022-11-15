@@ -40,6 +40,8 @@ namespace NexteLite
 
             services.Configure<AppSettings>(Configuration);
 
+            services.AddHttpClient<IWebService, WebService>();
+
             services.AddSingleton<IPagesRepository,PagesRepository>();
 
             services.AddSingleton<IMainWindow,MainWindow>();
@@ -55,12 +57,10 @@ namespace NexteLite
             services.AddSingleton<MainPage>();
             services.AddSingleton<ConsolePage>();
             services.AddSingleton<SettingsPage>();
+            services.AddSingleton<IMinecraftService, MinecraftService>();
 
             services.AddTransient<DownloadingPage>();
             services.AddTransient<RunningPage>();
-
-            services.AddTransient<IWebService, WebService>();
-            services.AddTransient<IMinecraftService, MinecraftService>();
 
 
             //var serilogLogger = new LoggerConfiguration()

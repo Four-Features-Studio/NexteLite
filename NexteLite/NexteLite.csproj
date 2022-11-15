@@ -12,7 +12,9 @@
     <None Remove="Resources\authlib-injector-1.2.1.jar" />
     <None Remove="Resources\background.png" />
     <None Remove="Resources\logo.png" />
-    <None Remove="Resources\PFBeauSansPro-XThin.ttf" />
+    <None Remove="Resources\PFBeauSansPro-Light.ttf" />
+    <None Remove="Resources\PFBeauSansPro-Regular.ttf" />
+    <None Remove="Resources\PFBeauSansPro-Thin.ttf" />
     <None Remove="Resources\placeholder.jpg" />
   </ItemGroup>
 
@@ -23,10 +25,11 @@
   <ItemGroup>
     <PackageReference Include="MaterialDesignColors" Version="2.0.9" />
     <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
   </ItemGroup>
@@ -35,7 +38,9 @@
     <Resource Include="Resources\authlib-injector-1.2.1.jar" />
     <Resource Include="Resources\background.png" />
     <Resource Include="Resources\logo.png" />
-    <Resource Include="Resources\PFBeauSansPro-XThin.ttf" />
+    <Resource Include="Resources\PFBeauSansPro-Light.ttf" />
+    <Resource Include="Resources\PFBeauSansPro-Regular.ttf" />
+    <Resource Include="Resources\PFBeauSansPro-Thin.ttf" />
     <Resource Include="Resources\placeholder.jpg" />
   </ItemGroup>
 
@@ -52,6 +57,15 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Resources\Styles\Buttons.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
+    <Page Update="Resources\Styles\ProgressBarStyle.xaml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Page>
   </ItemGroup>
 
 </Project>

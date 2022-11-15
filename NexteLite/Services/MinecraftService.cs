@@ -74,7 +74,6 @@ namespace NexteLite.Services
             _Process.OutputDataReceived += (sender, args) =>
             {
                 OnMinecraftLogRecived?.Invoke(args.Data.ToString());
-
             };
             _Process.ErrorDataReceived += (s, args) =>
             {

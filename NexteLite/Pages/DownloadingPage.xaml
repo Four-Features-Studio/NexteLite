@@ -4,6 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:NexteLite.Pages"
+      xmlns:res="clr-namespace:NexteLite.Properties"
+      xmlns:nextelite="clr-namespace:NexteLite"
       mc:Ignorable="d" 
       x:Name="thisPage"
       d:DesignHeight="450" d:DesignWidth="800"
@@ -12,42 +14,82 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Fonts.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Icons.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/NexteLite;component/Resources/Styles/ProgressBarStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
     <Grid DataContext="{Binding ElementName=thisPage, Path=.}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Border Width="467" Height="229" BorderBrush="#232532" BorderThickness="2">
-            <Border VerticalAlignment="Bottom" Height="55">
-                <Border.Background>
-                    <SolidColorBrush Color="Black" Opacity="0.8"></SolidColorBrush>
-                </Border.Background>
-                <TextBlock x:Name="DownloadInfo" Foreground="White" TextAlignment="Left" VerticalAlignment="Center" Margin="10" >
 
+        <Grid Width="600" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock FontSize="12" FontFamily="{DynamicResource Reqular}" Foreground="#D9D9D9" Text="{Binding Status}"/>
+
+            <ProgressBar Style="{StaticResource CystomStyle_Rounded_ProgressBar}" IsIndeterminate="False" Grid.Row="1" Margin="0,5" x:Name="ProgressDownload" BorderThickness="0" Height="10" Value="{Binding Percentage}" Maximum="100" >
+                <ProgressBar.Foreground>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#FF2F0470" Offset="0"/>
+                        <GradientStop Color="#FF6D19EB" Offset="1"/>
+                    </LinearGradientBrush>
+                </ProgressBar.Foreground>
+                <ProgressBar.Background>
+                    <SolidColorBrush Color="Black" Opacity="0.35"/>
+                </ProgressBar.Background>
+            </ProgressBar>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" >
+                <Image Source="{DynamicResource system_download}" Margin="5,0"/>
+                <TextBlock Foreground="#D9D9D9" Margin="5,0">
+                    <Run Foreground="#D9D9D9" FontFamily="{DynamicResource Reqular}" Text="80,1 MB"></Run> 
+                    / 
+                    <Run Foreground="#D9D9D9" FontFamily="{DynamicResource Light}" Text="184 MB"></Run>
                 </TextBlock>
-                <!--<TextBlock.Text>
-                    <MultiBinding StringFormat="{0}/{1}">
-                            <Binding Path=""/>
-                            <Binding Path="PlayerMax"/>
-                        </MultiBinding>
-                </TextBlock.Text>-->
-            </Border>
-        </Border>
+            </StackPanel>
+        </Grid>
 
-        <ProgressBar x:Name="ProgressDownload" Grid.Row="2" BorderThickness="0" Height="20" Maximum="100" Value="{Binding Percentage}">
-            <ProgressBar.Foreground>
-                <LinearGradientBrush >
-                    <GradientStop Color="#FF2F0470" Offset="0"/>
-                    <GradientStop Color="#FF6D19EB" Offset="1"/>
-                </LinearGradientBrush>
-            </ProgressBar.Foreground>
-            <ProgressBar.Background>
-                <SolidColorBrush Color="Black" Opacity="0.35"/>
-            </ProgressBar.Background>
-        </ProgressBar>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border Opacity="0.25" Grid.ColumnSpan="2">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                        <GradientStop Color="Black" Offset="0"/>
+                        <GradientStop Color="#00000000" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <nextelite:NetworkChart DataCollection="{Binding ChartDatas}" Resolution="50" LineBackBrush="#1A6D19EB" LineBrush="#6D19EB"/>
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="5">
+                    <TextBlock FontFamily="{DynamicResource Reqular}" Foreground="White" HorizontalAlignment="Center" Text="{Binding CurrentSpeed}"></TextBlock>
+                    <TextBlock FontFamily="{DynamicResource Thin}" Foreground="#898989" HorizontalAlignment="Center" Text="{x:Static res:Resources.lcl_txt_DownloadingPage_CurrentSpeed}"></TextBlock>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Center"  Margin="5">
+                    <TextBlock FontFamily="{DynamicResource Reqular}" Foreground="White" HorizontalAlignment="Center" Text="{Binding MaximumSpeed}"></TextBlock>
+                    <TextBlock FontFamily="{DynamicResource Thin}" Foreground="#898989" HorizontalAlignment="Center" Text="{x:Static res:Resources.lcl_txt_DownloadingPage_MaxSpeed}"></TextBlock>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
     </Grid>
 </Page>

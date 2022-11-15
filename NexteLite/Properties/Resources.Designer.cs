@@ -71,6 +71,60 @@ namespace NexteLite.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Обновление ассетов.
+        /// </summary>
+        public static string lcl_txt_DownloadingPage_AssetsDownloadingStatus {
+            get {
+                return ResourceManager.GetString("lcl_txt_DownloadingPage_AssetsDownloadingStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Проверка ассетов.
+        /// </summary>
+        public static string lcl_txt_DownloadingPage_AssetsHashStatus {
+            get {
+                return ResourceManager.GetString("lcl_txt_DownloadingPage_AssetsHashStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Обновление клиента.
+        /// </summary>
+        public static string lcl_txt_DownloadingPage_ClientDownloadingStatus {
+            get {
+                return ResourceManager.GetString("lcl_txt_DownloadingPage_ClientDownloadingStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Проверка файлов клиента.
+        /// </summary>
+        public static string lcl_txt_DownloadingPage_ClientHashStatus {
+            get {
+                return ResourceManager.GetString("lcl_txt_DownloadingPage_ClientHashStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Текущая.
+        /// </summary>
+        public static string lcl_txt_DownloadingPage_CurrentSpeed {
+            get {
+                return ResourceManager.GetString("lcl_txt_DownloadingPage_CurrentSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Максимальная.
+        /// </summary>
+        public static string lcl_txt_DownloadingPage_MaxSpeed {
+            get {
+                return ResourceManager.GetString("lcl_txt_DownloadingPage_MaxSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на В Офлайне.
         /// </summary>
         public static string lcl_txt_PlayButton_Offline {

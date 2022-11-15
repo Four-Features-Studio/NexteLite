@@ -25,4 +25,13 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+
+    <DrawingImage x:Key="system_download">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M16,16z M0,0z M8.35355,10.3535L11.5355,7.17156C11.7308,6.97629 11.7308,6.65971 11.5355,6.46445 11.3403,6.26919 11.0237,6.26919 10.8284,6.46445L8.5,8.79287 8.5,0.999997 7.5,0.999997 7.5,8.79287 5.17157,6.46445C4.97631,6.26919 4.65973,6.26919 4.46447,6.46445 4.2692,6.65971 4.2692,6.97629 4.46447,7.17156L7.64645,10.3535C7.84171,10.5488,8.15829,10.5488,8.35355,10.3535z" />
+                <GeometryDrawing Brush="#FFD9D9D9" Geometry="F1 M16,16z M0,0z M0,9.85354L1,9.85354C1.5,9.85357,2,10.3535,2,10.8535L2,12.8535 14,12.8535 14,10.8535C14,10.3535,14.5,9.85354,15,9.85354L16,9.85354 16,14.8535 0,14.8535 0,9.85354z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
 </ResourceDictionary>

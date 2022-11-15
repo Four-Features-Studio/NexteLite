@@ -27,7 +27,7 @@
     </Page.Resources>
     <Grid DataContext="{Binding ElementName=thisPage, Path=.}">
         <Grid x:Name="OnRunning" Visibility="{Binding IsDebugMode, Converter={StaticResource notBoolVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock Foreground="White" FontFamily="{StaticResource XThin}" FontSize="40" Text="{x:Static res:Resources.lcl_txt_RunningPage_ClientIsRunning}"/>
+            <TextBlock Foreground="White" FontFamily="{StaticResource Thin}" FontSize="40" Text="{x:Static res:Resources.lcl_txt_RunningPage_ClientIsRunning}"/>
         </Grid>
 
         <Grid x:Name="DebugConsole" Grid.Row="0" Visibility="{Binding IsDebugMode, Converter={StaticResource boolToVisibiltyConverter}}">
@@ -37,10 +37,10 @@
             </Grid.RowDefinitions>
 
             <ScrollViewer x:Name="PATH_Scroll" Margin="10,30,10,0" BorderBrush="Transparent">
-                <TextBlock x:Name="PATH_Log" Foreground="White" FontFamily="{StaticResource XThin}"/>
+                <TextBlock x:Name="PATH_Log" Foreground="White" FontFamily="{StaticResource Thin}"/>
             </ScrollViewer>
 
-            <Button Grid.Row="1" Margin="20,0" Height="27" Width="216" Background="#8b0000" Foreground="White" FontFamily="{StaticResource XThin}" BorderThickness="0" HorizontalAlignment="Left" Cursor="Hand" Click="KillClient_Click" >Убить клиент</Button>
+            <Button Grid.Row="1" Margin="20,0" Height="27" Width="216" Background="#8b0000" Foreground="White" FontFamily="{StaticResource Thin}" BorderThickness="0" HorizontalAlignment="Left" Cursor="Hand" Click="KillClient_Click" >Убить клиент</Button>
         </Grid>
     </Grid>
 </Page>

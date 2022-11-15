@@ -10,7 +10,7 @@ namespace NexteLite.Models
     public partial class AssetsIndex
     {
         [JsonProperty("objects")]
-        public Dictionary<string, Asset> Objects { get; set; }
+        public Dictionary<string, Asset> Objects { get; set; } = new Dictionary<string, Asset>(); 
     }
 
     public partial class Asset

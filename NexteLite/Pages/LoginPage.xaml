@@ -26,13 +26,13 @@
             <ControlTemplate x:Key="ValidationErrorTemplate">
                 <ControlTemplate.Resources>
                     <DataTemplate DataType="{x:Type ValidationError}">
-                        <TextBlock Foreground="#f44336" FontSize="10" FontFamily="{StaticResource XThin}" HorizontalAlignment="{Binding AdornedElement.(wpf:ValidationAssist.HorizontalAlignment), ElementName=Placeholder}" Margin="2" MaxWidth="{Binding ActualWidth, ElementName=Placeholder}" Text="{Binding ErrorContent}" TextWrapping="Wrap" UseLayoutRounding="false"/>
+                        <TextBlock Foreground="#f44336" FontSize="10" FontFamily="{StaticResource Thin}" HorizontalAlignment="{Binding AdornedElement.(wpf:ValidationAssist.HorizontalAlignment), ElementName=Placeholder}" Margin="2" MaxWidth="{Binding ActualWidth, ElementName=Placeholder}" Text="{Binding ErrorContent}" TextWrapping="Wrap" UseLayoutRounding="false"/>
                     </DataTemplate>
                 </ControlTemplate.Resources>
                 <StackPanel>
                     <AdornedElementPlaceholder x:Name="Placeholder"/>
                     <Border x:Name="DefaultErrorViewer" Background="Transparent" Visibility="Visible">
-                        <TextBlock Foreground="#f44336" FontSize="10" FontFamily="{StaticResource XThin}" HorizontalAlignment="{Binding AdornedElement.(wpf:ValidationAssist.HorizontalAlignment), ElementName=Placeholder}" Margin="0 2" MaxWidth="{Binding ActualWidth, ElementName=Placeholder}" Text="{Binding CurrentItem.ErrorContent}" TextWrapping="Wrap" UseLayoutRounding="false"/>
+                        <TextBlock Foreground="#f44336" FontSize="10" FontFamily="{StaticResource Thin}" HorizontalAlignment="{Binding AdornedElement.(wpf:ValidationAssist.HorizontalAlignment), ElementName=Placeholder}" Margin="0 2" MaxWidth="{Binding ActualWidth, ElementName=Placeholder}" Text="{Binding CurrentItem.ErrorContent}" TextWrapping="Wrap" UseLayoutRounding="false"/>
                     </Border>
                 </StackPanel>
             </ControlTemplate>
@@ -93,7 +93,7 @@
 
                     <StackPanel Grid.Row="1" >
                         <TextBox Margin="27,20,27,0" x:Name="LoginInput" Foreground="LightGray" CaretBrush="White"
-                        FontFamily="{StaticResource XThin}"
+                        FontFamily="{StaticResource Thin}"
                         materialDesign:HintAssist.Hint="Логин"
                         materialDesign:HintAssist.Foreground="White"
                         materialDesign:TextFieldAssist.UnderlineBrush="White"
@@ -102,7 +102,7 @@
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}">
                         </TextBox>
                         <PasswordBox Margin="27,17,27,0" x:Name="PasswordInput" Foreground="LightGray" CaretBrush="White"
-                        FontFamily="{StaticResource XThin}"
+                        FontFamily="{StaticResource Thin}"
                         materialDesign:HintAssist.Hint="Пароль"
                         materialDesign:HintAssist.Foreground="White"
                         materialDesign:TextFieldAssist.UnderlineBrush="White"
@@ -120,14 +120,14 @@
                             <TextBlock Margin="7,0" Height="13" FontSize="12" Foreground="#606573" >Сохранить пароль</TextBlock>
                         </StackPanel>-->
 
-                        <Button Grid.Row="1" Height="42" Margin="27,25,27,0" Background="#38447a" BorderThickness="0" Foreground="White" FontSize="14"  FontFamily="{StaticResource XThin}" Click="Btn_Login_Click">Войти</Button>
+                        <Button Grid.Row="1" Height="42" Margin="27,25,27,0" Background="#38447a" BorderThickness="0" Foreground="White" FontSize="14"  FontFamily="{StaticResource Thin}" Click="Btn_Login_Click">Войти</Button>
                     </Grid>
 
-                    <TextBlock Grid.Row="3" Margin="0" Foreground="#727272" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"  FontFamily="{StaticResource XThin}">Все еще нет учетной записи? <Hyperlink>Создайте</Hyperlink></TextBlock>
+                    <TextBlock Grid.Row="3" Margin="0" Foreground="#727272" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"  FontFamily="{StaticResource Thin}">Все еще нет учетной записи? <Hyperlink>Создайте</Hyperlink></TextBlock>
                 </Grid>
 
                 <Grid Name="WelcomLabel" Opacity="0">
-                    <TextBlock FontSize="36" Foreground="LightGray" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center" FontFamily="{StaticResource XThin}">Welcome to Nexte Launcher</TextBlock>
+                    <TextBlock FontSize="36" Foreground="LightGray" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center" FontFamily="{StaticResource Thin}">Welcome to Nexte Launcher</TextBlock>
                 </Grid>
             </Grid>
         </Border>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NexteLite.Interfaces
 {
-    public interface IWebService
+    public interface IWebService: IDisposable
     {
         bool Auth(string username, string password, out Profile profile, ref string message);
         void Logout();

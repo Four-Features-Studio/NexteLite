@@ -94,7 +94,7 @@
                    Opacity="1"
                    Foreground="White" 
                    HorizontalAlignment="Center" VerticalAlignment="Top"
-                   FontSize="30" FontFamily="{StaticResource XThin}"
+                   FontSize="30" FontFamily="{StaticResource Thin}"
                    Text="{Binding Title}">
         </TextBlock>
         
@@ -116,7 +116,7 @@
                 Grid.Row="1" 
                 Click="PlayButton_Click" 
                 BorderThickness="0" 
-                Foreground="White" FontFamily="{StaticResource XThin}"
+                Foreground="White" FontFamily="{StaticResource Thin}"
                 VerticalAlignment="Bottom" HorizontalAlignment="Center" 
                 Height="24" Width="158" 
                 Cursor="Hand">
@@ -132,7 +132,7 @@
         <TextBlock x:Name="PlayerOnServer"
                    Grid.Row="2"
                    Opacity="1"
-                   FontSize="14" FontFamily="{StaticResource XThin}"
+                   FontSize="14" FontFamily="{StaticResource Thin}"
                    Foreground="#898989"
                    Visibility="{Binding IsOnline, Converter={StaticResource booleanToVisibilityConverter}}"
                    HorizontalAlignment="Center" VerticalAlignment="Center">

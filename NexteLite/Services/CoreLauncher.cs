@@ -191,8 +191,11 @@ namespace NexteLite.Services
             _DownloadingProxy.SetState(DownloadingState.DownloadClient);
             await _FileService.DownloadClient(localFiles, profile);
 
-            //_Minecraft.Play(profile);
-            ShowPage(PageType.Main);
+            await _Minecraft.Play(profile);
+
+            //await Task.Delay(150000);
+
+            //ShowPage(PageType.Main);
         }
 
         /// <summary>

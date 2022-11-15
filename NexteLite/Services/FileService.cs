@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
 using NexteLite.Services.Enums;
+using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Markup;
 
 namespace NexteLite.Services
 {
@@ -29,10 +31,6 @@ namespace NexteLite.Services
         ISettingsLauncher _SettingsLauncher;
         IOptions<AppSettings> _Options;
         IPathRepository _Path;
-
-        //Ибо хочу чтоб был общий прогресс бар на весь объем, по этому я тут просто агригирую данные из эвента в эту переменную. Каждое новое скачивание, обнуляем ее.
-        double _DownloadedBytes;
-
         public FileService(IWebService webService, IPathRepository pathRepository, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
         {
             _WebService = webService;
@@ -61,12 +59,23 @@ namespace NexteLite.Services
             var typeHash = (ChecksumMethod)webFiles.TypeHash;
             var verifyFiles = webFiles.Files;
 
-            var pathClient = _Path.GetClientPath(profile);
-            //1
-            var localFiles = Directory.GetFiles(pathClient, "*", SearchOption.AllDirectories);
-
             var hashesFiles = new List<FileEntity>();
             var fileIncorect = new List<(ActionFile action, FileEntity file)>();
+
+            var pathClient = _Path.GetClientPath(profile);
+
+            if (!Directory.Exists(pathClient))
+            {
+                //0
+                foreach (var file in verifyFiles)
+                {
+                    fileIncorect.Add((ActionFile.Download, file));
+                }
+                return fileIncorect;
+            }
+
+            //1
+            var localFiles = Directory.GetFiles(pathClient, "*", SearchOption.AllDirectories);
 
             //2
             localFiles = localFiles.Where(x => profile.UpadtesList.Any(u => CheckNameInFileOrFolder(pathClient, x, u))).ToArray();
@@ -118,14 +127,25 @@ namespace NexteLite.Services
         /// <returns></returns>
         public async Task<List<(string hash, double size)>> CheckAssets(ServerProfile profile, AssetsIndex assets)
         {
-            var indexesPath = _Path.GetAssetsIndexesPath();
             var objectsPath = _Path.GetAssetsObjectsPath();
+            var assetsIncorect = new List<(string hash, double size)>();
+
+            if (!Directory.Exists(objectsPath))
+            {
+                foreach (var asset in assets.Objects.Values)
+                {
+                    var twoSymbol = asset.Hash.Substring(0, 2);
+                    var path = Path.Combine(twoSymbol, asset.Hash);
+
+                    assetsIncorect.Add((asset.Hash, asset.Size));
+                }
+
+                return assetsIncorect;
+            }
 
             var localFiles = Directory.GetFiles(objectsPath, "*", SearchOption.AllDirectories);
 
-            var assetsIncorect = new List<(string hash, double size)>();
-
-            foreach(var asset in assets.Objects.Values)
+            foreach (var asset in assets.Objects.Values)
             {
                 var twoSymbol = asset.Hash.Substring(0, 2);
                 var path = Path.Combine(twoSymbol, asset.Hash);
@@ -247,7 +267,7 @@ namespace NexteLite.Services
         /// <exception cref="ArgumentNullException"></exception>
         public async Task DownloadAssets(AssetsIndex assetsIndex, List<(string hash, double size)> assetsDownload, string version)
         {
-            if (string.IsNullOrEmpty(_Options.Value.AssetsUrl))
+            if (string.IsNullOrEmpty(_Options.Value.WebFiles.AssetsUrl))
             {
                 throw new ArgumentNullException("In the launcher settings there is no link to download the assets");
             }
@@ -284,7 +304,7 @@ namespace NexteLite.Services
             {
                 var twoSymbol = asset.hash.Substring(0, 2);
                 var path = Path.Combine(twoSymbol, asset.hash);
-                var url =  $"{_Options.Value.AssetsUrl}{twoSymbol}/{asset.hash}";
+                var url = Url.Combine(_Options.Value.WebFiles.AssetsUrl, twoSymbol, asset.hash);
 
                 totalSize += asset.size;
 
@@ -386,14 +406,12 @@ namespace NexteLite.Services
         string CombineUrlClientFile(string path)
         {
             var baseUrl = _Options.Value.WebFiles.FilesUrl;
-
-            if (path.StartsWith("/") || path.StartsWith("\\"))
-                path = path.Substring(1);
-
-            var url = Path.Combine(baseUrl, path);
-
+            var url = Url.Combine(baseUrl, path);
             return url;
         }
+
+
+        NetworkSpeeder speeder;
 
         /// <summary>
         /// 
@@ -404,8 +422,25 @@ namespace NexteLite.Services
         /// <returns></returns>
         async Task DownloadFiles(string folder, double totalSize, List<(string url, string path)> files)
         {
-            _DownloadedBytes = 0d;
-            var progress = new Progress<DownloadProgressArguments>(ReportProgress);
+            var _DownloadedBytes = 0d;
+            var progress = new Progress<DownloadProgressArguments>(ReportProgressLocal);
+
+            #region Тут происходит магия, тут я считаю скорость скачивания, кря
+
+            speeder = new NetworkSpeeder();
+
+            void ReportProgressLocal(DownloadProgressArguments data)
+            {
+                _DownloadedBytes += data.DownloadBytes;
+
+                var args = new DownloadProgressArguments(_DownloadedBytes, data.TotalBytes, data.NameFile);
+                args.NetworkSpeed = speeder.CalculateSpeed(_DownloadedBytes);
+                args.MaxNetworkSpeed = speeder.MaxSpeed;
+
+                ReportProgress(args);
+            }
+
+            #endregion
 
             bool isDownloadEnd = false;
 
@@ -454,10 +489,7 @@ namespace NexteLite.Services
         /// <param name="args"></param>
         void ReportProgress(DownloadProgressArguments data)
         {  
-            _DownloadedBytes += data.DownloadBytes;
-            var args = new DownloadProgressArguments(_DownloadedBytes, data.TotalBytes, data.NameFile);
-
-            OnProgressChanged?.Invoke(args);
+            OnProgressChanged?.Invoke(data);
         }
 
         /// <summary>

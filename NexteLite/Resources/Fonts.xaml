@@ -1,4 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <FontFamily x:Key="XThin">pack://application:,,,/Resources/#PF BeauSans Pro Thin</FontFamily>
+    <FontFamily x:Key="Thin">pack://application:,,,/Resources/#PF BeauSans Pro Thin</FontFamily>
+    <FontFamily x:Key="Light">pack://application:,,,/Resources/#PF BeauSans Pro Light</FontFamily>
+    <FontFamily x:Key="Reqular">pack://application:,,,/Resources/#PF BeauSans Pro</FontFamily>
 </ResourceDictionary>

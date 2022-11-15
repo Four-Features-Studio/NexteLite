@@ -14,7 +14,6 @@ namespace NexteLite.Services
 
         public List<SocialItem> Social { get; set; }
 
-        public string AssetsUrl { get; set; }
         public string InjectorUrl { get; set; }
         public WebFilesSettings WebFiles { get; set; }
         public ApiSettings API {get;set;}
@@ -28,6 +27,7 @@ namespace NexteLite.Services
     }
     public class WebFilesSettings
     {
+        public string AssetsUrl { get; set; }
         public string FilesUrl { get; set; }
         public string ClientsFolder { get; set; }
         public string AssetsFolder { get; set; }

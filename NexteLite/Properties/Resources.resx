@@ -130,4 +130,22 @@
   <data name="lcl_txt_RunningPage_ClientIsRunning" xml:space="preserve">
     <value>Клиент уже запущен</value>
   </data>
+  <data name="lcl_txt_DownloadingPage_ClientHashStatus" xml:space="preserve">
+    <value>Проверка файлов клиента</value>
+  </data>
+  <data name="lcl_txt_DownloadingPage_AssetsHashStatus" xml:space="preserve">
+    <value>Проверка ассетов</value>
+  </data>
+  <data name="lcl_txt_DownloadingPage_ClientDownloadingStatus" xml:space="preserve">
+    <value>Обновление клиента</value>
+  </data>
+  <data name="lcl_txt_DownloadingPage_AssetsDownloadingStatus" xml:space="preserve">
+    <value>Обновление ассетов</value>
+  </data>
+  <data name="lcl_txt_DownloadingPage_MaxSpeed" xml:space="preserve">
+    <value>Максимальная</value>
+  </data>
+  <data name="lcl_txt_DownloadingPage_CurrentSpeed" xml:space="preserve">
+    <value>Текущая</value>
+  </data>
 </root>
