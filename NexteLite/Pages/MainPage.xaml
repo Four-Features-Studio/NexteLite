@@ -59,7 +59,7 @@
             <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
                 <Border Margin="11,11" Width="42" Height="42" CornerRadius="5" Background="#262938">
                     <Grid Margin="3">
-                        <Image Stretch="Uniform" Source="{Binding Path=Profile.Avatar}"></Image>
+                        <Image Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding Path=Avatar}"></Image>
                     </Grid>
                 </Border>
                 <TextBlock FontSize="16" FontFamily="{StaticResource Thin}" TextAlignment="Center" VerticalAlignment="Center" Margin="0,12" Foreground="White" Text="{Binding Path=Profile.Username}"></TextBlock>

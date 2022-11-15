@@ -126,8 +126,8 @@
                     <TextBlock Grid.Row="3" Margin="0" Foreground="#727272" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"  FontFamily="{StaticResource Thin}">Все еще нет учетной записи? <Hyperlink>Создайте</Hyperlink></TextBlock>
                 </Grid>
 
-                <Grid Name="WelcomLabel" Opacity="0">
-                    <TextBlock FontSize="36" Foreground="LightGray" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center" FontFamily="{StaticResource Thin}">Welcome to Nexte Launcher</TextBlock>
+                <Grid Name="WelcomLabel" Opacity="1" Background="Transparent">
+                    <TextBlock FontFamily="{DynamicResource Thin}" FontSize="36" Foreground="LightGray" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center">Welcome to Nexte Launcher</TextBlock>
                 </Grid>
             </Grid>
         </Border>

@@ -36,10 +36,10 @@
                 <DoubleAnimation Storyboard.TargetName="thisServer" To="394" Duration="0:0:0.2" Storyboard.TargetProperty="Height"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
                 
-                <DoubleAnimation Storyboard.TargetName="Border" To="279" Duration="0:0:0.2"  Storyboard.TargetProperty="Height"  FillBehavior="HoldEnd">
+                <DoubleAnimation Storyboard.TargetName="Border" To="280" Duration="0:0:0.2"  Storyboard.TargetProperty="Height"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
-                <DoubleAnimation Storyboard.TargetName="Border" To="234" Duration="0:0:0.2" Storyboard.TargetProperty="Width"  FillBehavior="HoldEnd">
+                <DoubleAnimation Storyboard.TargetName="Border" To="235" Duration="0:0:0.2" Storyboard.TargetProperty="Width"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
                 <DoubleAnimation Storyboard.TargetName="ServerName" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">

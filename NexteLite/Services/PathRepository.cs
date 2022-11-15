@@ -42,6 +42,13 @@ namespace NexteLite.Services
             return Path.Combine(appdata, folder);
         }
 
+        public string GetProjectPath()
+        {        
+            var root = _SettingsLauncher.RootDir;
+            return root;
+        }
+
+
         public string GetAssetsIndexesPath()
         {
             var path = Path.Combine(GetAssetsPath(), NameDirectoryAssetsIndexes);
@@ -59,12 +66,18 @@ namespace NexteLite.Services
             var path = Path.Combine(_SettingsLauncher.RootDir, NameDirectoryAssets);
             return path;
         }
+        public string GetClientsPath()
+        {
+            var path = Path.Combine(_SettingsLauncher.RootDir, NameDirectoryClients);
+            return path;
+        }
 
         public string GetClientPath(ServerProfile profile)
         {
             var folder = NameDirectoryClients;
 
             var clientDir = profile.Dir;
+
             if (string.IsNullOrEmpty(clientDir))
                 throw new ArgumentNullException("The server profiles does not contain the path to the settings folder");
 

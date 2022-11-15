@@ -146,6 +146,9 @@ namespace NexteLite.Pages
             MaximumSpeed = args.MaxNetworkSpeed;
             CurrentSpeed = args.NetworkSpeed;
 
+            TotalSize = args.TotalBytes;
+            DownloadedSize = args.DownloadBytes;
+
             ChartDatas.Add(new NetworkChartData(CurrentSpeed, DateTime.Now));
 
             Debug.WriteLine($"DOWNLOADED Part {Percentage}");

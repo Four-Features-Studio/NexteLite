@@ -167,24 +167,7 @@ namespace NexteLite
                 IsOnline = false;
             }
 
-
-            byte[] binaryData = Convert.FromBase64String(profile.Avatar is null ? String.Empty : profile.Avatar);
-
-            BitmapImage bi = new BitmapImage();
-            if (binaryData.Length > 0)
-            {
-                bi.BeginInit();
-                bi.StreamSource = new MemoryStream(binaryData);
-                bi.EndInit();
-                ServerAvatar = bi;
-            }
-            else
-            {
-                bi.BeginInit();
-                bi.UriSource = new Uri("pack://application:,,,/NexteLite;component/Resources/placeholder.jpg");
-                bi.EndInit();
-                ServerAvatar = bi;
-            }
+            ServerAvatar = ImageUtils.GetImageFromBase64(profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/placeholder.jpg");
 
             _State.Subscribe(this);
         }

@@ -9,7 +9,9 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="log4net.config" />
     <None Remove="Resources\authlib-injector-1.2.1.jar" />
+    <None Remove="Resources\avatar.png" />
     <None Remove="Resources\background.png" />
     <None Remove="Resources\logo.png" />
     <None Remove="Resources\PFBeauSansPro-Light.ttf" />
@@ -32,10 +34,15 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\authlib-injector-1.2.1.jar" />
+    <Resource Include="Resources\avatar.png" />
     <Resource Include="Resources\background.png" />
     <Resource Include="Resources\logo.png" />
     <Resource Include="Resources\PFBeauSansPro-Light.ttf" />

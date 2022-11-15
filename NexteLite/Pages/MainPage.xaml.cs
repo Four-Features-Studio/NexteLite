@@ -55,6 +55,22 @@ namespace NexteLite.Pages
             }
         }
 
+        ImageSource _Avatar;
+        public ImageSource Avatar
+        {
+            get
+            {
+                return _Avatar;
+            }
+            set
+            {
+                _Avatar = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
         public MainPage()
         {
             InitializeComponent();
@@ -65,6 +81,7 @@ namespace NexteLite.Pages
         public void SetProfile(Profile profile)
         {
             Profile = profile;
+            Avatar = ImageUtils.GetImageFromBase64(profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/avatar.png");
         }
 
         public void SetServerProfiles(List<ServerProfile> profiles)

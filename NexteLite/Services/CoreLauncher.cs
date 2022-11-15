@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
@@ -19,6 +20,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using static System.Windows.Forms.Design.AxImporter;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace NexteLite.Services
 {
@@ -49,6 +51,8 @@ namespace NexteLite.Services
 
         IOptions<AppSettings> _Options;
 
+        ILogger<CoreLauncher> _Logger;
+
         private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
 
         public CoreLauncher(IMainWindow mainWindow, 
@@ -58,7 +62,8 @@ namespace NexteLite.Services
             IWebService webService, 
             ISettingsLauncher settingsLauncher, 
             IMinecraftService minecraftService,
-            IOptions<AppSettings> options)
+            IOptions<AppSettings> options,
+            ILogger<CoreLauncher> logger)
         {
             _Account = accountService;
             _Options = options;
@@ -67,11 +72,13 @@ namespace NexteLite.Services
             _Web = webService;
             _SettingsLauncher = settingsLauncher;
             _FileService = fileService;
-            
+            _Logger = logger;
+
             _FileService.CheckAndCreateInjector();
 
             _Minecraft = minecraftService;
 
+            _Logger.LogInformation("Запрос страниц");
             _LoginProxy = (ILoginProxy)_Pages.GetPage(PageType.Login);
             _MainProxy = (IMainProxy)_Pages.GetPage(PageType.Main);
             _SettingsProxy = (ISettingsProxy)_Pages.GetPage(PageType.Settings);
@@ -90,8 +97,10 @@ namespace NexteLite.Services
             _SettingsProxy.SettingsApplyClick += SettingsProxy_SettingsApplyClick;
             _SettingsProxy.SetParams(_SettingsLauncher.LoadSettingsParams());
 
+            _Logger.LogInformation("Расчет максимального количество ОЗУ");
             CalculateMaxRam();
 
+            _Logger.LogInformation("Загрузка социального блока");
             CreateSocialBlock();
 
             StartingUriProccess += ((e) =>
@@ -101,6 +110,8 @@ namespace NexteLite.Services
 
             _Main.Show();
             ShowPage(PageType.Login);
+
+            _Logger.LogDebug("Ядро инициализированно");
         }
 
         /// <summary>
@@ -109,6 +120,8 @@ namespace NexteLite.Services
         /// <param name="id"></param>
         public void ShowPage(PageType id)
         {
+            _Logger.LogDebug($"Запрос на отображение страницы {id.ToString()}");
+
             switch (id)
             {
                 case PageType.Running:
@@ -127,6 +140,7 @@ namespace NexteLite.Services
         /// <param name="id"></param>
         public void ShowOverlay(PageType id)
         {
+            _Logger.LogDebug($"Запрос на отображение оверлея {id.ToString()}");
             _Main.ShowOverlay(_Pages.GetPage(id));
         }
 
@@ -167,9 +181,7 @@ namespace NexteLite.Services
 
         private async void StartMinecraft(ServerProfile profile)
         {
-            //CreateRunningPage();
-            //CreateDownloadingPage();
-
+            _Logger.LogDebug($"Запрос на запуск игрового клиента {profile.Title}");
             ShowPage(PageType.Downloading);
 
             //Проверка файлов
@@ -191,11 +203,8 @@ namespace NexteLite.Services
             _DownloadingProxy.SetState(DownloadingState.DownloadClient);
             await _FileService.DownloadClient(localFiles, profile);
 
+            _Logger.LogDebug($"Запуск игрового клиента");
             await _Minecraft.Play(profile);
-
-            //await Task.Delay(150000);
-
-            //ShowPage(PageType.Main);
         }
 
         /// <summary>
@@ -234,16 +243,21 @@ namespace NexteLite.Services
         /// 
         private bool LoginProxy_LoginClick(string username, string password, bool save, out string message)
         {
+            _Logger.LogDebug($"Запрос авторизации - Login:{username}");
+
             message = string.Empty;
 
             if (_Account.AuthAccount(username, password, out var profile, ref message))
             {
+                _Logger.LogDebug($"Авторизация успешна");
                 _MainProxy.SetProfile(profile);
 
                 ShowPage(PageType.Main);
-                LoadProfiles();
+                LoadServerProfiles();
                 return true;
             }
+
+            _Logger.LogDebug($"Ошибка авторизации:{message}");
 
             return false;
         }
@@ -251,7 +265,7 @@ namespace NexteLite.Services
         /// <summary>
         /// 
         /// </summary>
-        private void LoadProfiles()
+        private void LoadServerProfiles()
         {
             var profiles = _Web.GetServerProfiles();
             ServerProfiles = profiles;
@@ -274,6 +288,7 @@ namespace NexteLite.Services
         /// <exception cref="NotImplementedException"></exception>
         private void MainProxy_SocialClick(string url)
         {
+            _Logger.LogDebug($"Запрос открытия ссылки социальной кнопки");
             HyperLinkOpen(url);
         }
 
@@ -299,8 +314,10 @@ namespace NexteLite.Services
         /// <param name="paramsSetting"></param>
         private void SettingsProxy_SettingsApplyClick(IParamsSettingPage paramsSetting)
         {
+            _Logger.LogDebug($"Запрос сохранения настроек");
             if (_SettingsLauncher.SaveSettingsParams(paramsSetting))
             {
+                _Logger.LogDebug($"Настройки сохранены");
                 _Main.HideOverlay();
             }
         }
@@ -310,6 +327,7 @@ namespace NexteLite.Services
         /// </summary>
         private void _RunningProxy_OnKillClientClick()
         {
+            _Logger.LogDebug($"Запрос принудительного завершения процесса игрового клиента");
             _Minecraft.Kill();
         }
 
@@ -330,6 +348,8 @@ namespace NexteLite.Services
                     ShowPage(PageType.Main);
                     break;
             }
+
+            _Logger.LogDebug($"Состояние клиента изменено на {state.ToString()}");
         }
     }
 }

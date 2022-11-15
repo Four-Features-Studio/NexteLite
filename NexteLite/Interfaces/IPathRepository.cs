@@ -11,6 +11,8 @@ namespace NexteLite.Interfaces
     {
         string GetAppDataPath();
         string GetInjectorPath();
+        string GetProjectPath();
+        string GetClientsPath();
         string GetClientPath(ServerProfile profile);
         string GetNativesPath(ServerProfile profile);
         string GetLibrariesPath(ServerProfile profile);

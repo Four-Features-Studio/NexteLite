@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
 using NexteLite.Services.Enums;
 using Ookii.Dialogs.Wpf;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,12 +33,19 @@ namespace NexteLite.Services
         ISettingsLauncher _SettingsLauncher;
         IOptions<AppSettings> _Options;
         IPathRepository _Path;
-        public FileService(IWebService webService, IPathRepository pathRepository, ISettingsLauncher settingsLauncher, IOptions<AppSettings> options)
+
+        ILogger<FileService> _Logger;
+        public FileService(IWebService webService, 
+            IPathRepository pathRepository, 
+            ISettingsLauncher settingsLauncher, 
+            IOptions<AppSettings> options,
+            ILogger<FileService> logger)
         {
             _WebService = webService;
             _SettingsLauncher = settingsLauncher;
             _Options = options;
             _Path = pathRepository;
+            _Logger = logger;
         }
 
         /// <summary>
@@ -54,7 +63,7 @@ namespace NexteLite.Services
             //  | 3 - Если локальный файл есть в веб файлах и хеши совпадают, то файл корректный
             //  | 4 - Если локальный файл есть в веб файлах и хеши не совпадают, то его нужно обновить
             //  | 5 - Если в веб файлах есть файл которого нет локально, то его нужно скачать.
-
+            _Logger.LogDebug($"Запущенна проверка файлов клиента {profile.Title}");
 
             var typeHash = (ChecksumMethod)webFiles.TypeHash;
             var verifyFiles = webFiles.Files;
@@ -66,6 +75,7 @@ namespace NexteLite.Services
 
             if (!Directory.Exists(pathClient))
             {
+                _Logger.LogDebug("Указанной папки не существует, клиент будет скачан полностью");
                 //0
                 foreach (var file in verifyFiles)
                 {
@@ -75,12 +85,15 @@ namespace NexteLite.Services
             }
 
             //1
+            _Logger.LogDebug("Запрос всех локальных файлов клиента");
             var localFiles = Directory.GetFiles(pathClient, "*", SearchOption.AllDirectories);
 
             //2
+            _Logger.LogDebug("Фильтрация локальных файлов, которые не входят в список обновления");
             localFiles = localFiles.Where(x => profile.UpadtesList.Any(u => CheckNameInFileOrFolder(pathClient, x, u))).ToArray();
 
             //3
+            _Logger.LogDebug("Расчет хешсум локальных файлов");
             foreach (var item in localFiles)
             {
                 var hash = await GetHashsumAsync(typeHash, item);
@@ -88,7 +101,8 @@ namespace NexteLite.Services
             }
 
             //4 - 1,2
-            foreach(var local in hashesFiles)
+            _Logger.LogDebug("Сбор списка файлов на удаления, которых нет в списках на сервере");
+            foreach (var local in hashesFiles)
             {
                 //2
                 if (profile.IgnoreList.Any(x => CheckNameInFileOrFolder(pathClient, local.Path, x)))
@@ -99,7 +113,8 @@ namespace NexteLite.Services
             }
 
             //4 - 3,4,5
-            foreach(var file in verifyFiles)
+            _Logger.LogDebug("Основная провека на соответсвие серверных файлов с локальными");
+            foreach (var file in verifyFiles)
             {
                 var local = hashesFiles.FirstOrDefault(x => x.Name == file.Name);
 
@@ -118,6 +133,7 @@ namespace NexteLite.Services
                 }
             }
 
+            _Logger.LogDebug("Проверка завершена.");
             return fileIncorect;
         }
 
@@ -127,11 +143,14 @@ namespace NexteLite.Services
         /// <returns></returns>
         public async Task<List<(string hash, double size)>> CheckAssets(ServerProfile profile, AssetsIndex assets)
         {
+            _Logger.LogDebug($"Запущенна проверка ассетов {profile.AssetIndex}");
             var objectsPath = _Path.GetAssetsObjectsPath();
             var assetsIncorect = new List<(string hash, double size)>();
 
             if (!Directory.Exists(objectsPath))
             {
+                _Logger.LogDebug("Указанной папки не существует, ассеты будут скаченны полностью");
+
                 foreach (var asset in assets.Objects.Values)
                 {
                     var twoSymbol = asset.Hash.Substring(0, 2);
@@ -143,8 +162,11 @@ namespace NexteLite.Services
                 return assetsIncorect;
             }
 
+            _Logger.LogDebug("Получение всех локальный файлов ассетов");
             var localFiles = Directory.GetFiles(objectsPath, "*", SearchOption.AllDirectories);
 
+
+            _Logger.LogDebug("Основная проверка на соответсвие/отсутсвие файлов ассетов");
             foreach (var asset in assets.Objects.Values)
             {
                 var twoSymbol = asset.Hash.Substring(0, 2);
@@ -169,7 +191,7 @@ namespace NexteLite.Services
                 }
 
             }
-
+            _Logger.LogDebug("Проверка завершена");
             return assetsIncorect;
         }
 
@@ -181,6 +203,8 @@ namespace NexteLite.Services
         {
             var path = _Path.GetInjectorPath();
             var injector = Properties.Resources.authlib_injector_1_2_1;
+
+            _Logger.LogDebug("Проверка существования инжектора");
 
             if (File.Exists(path))
             {
@@ -195,10 +219,13 @@ namespace NexteLite.Services
                 }
 
                 if (sumChecked == sumChecked)
+                {
+                    _Logger.LogDebug("Инжектор прошел проверку успешно");
                     return;
+                }
             }
 
-
+            _Logger.LogDebug("Инжектор не прошел проверку либо не обнаружен. Инжектор будет распакован из лаунчера");
             using (FileStream fstream = new FileStream(path, FileMode.Create))
             {
                 await fstream.WriteAsync(injector, 0, injector.Length);
@@ -213,6 +240,8 @@ namespace NexteLite.Services
         /// <returns></returns>
         public async Task DownloadClient(List<(ActionFile action, FileEntity file)> files, ServerProfile profile)
         {
+
+            _Logger.LogDebug($"Скачивание клиента {profile.Title}");
             var RootDir = _SettingsLauncher.RootDir;
             var ClientDir = _Path.GetClientPath(profile);
 
@@ -267,6 +296,8 @@ namespace NexteLite.Services
         /// <exception cref="ArgumentNullException"></exception>
         public async Task DownloadAssets(AssetsIndex assetsIndex, List<(string hash, double size)> assetsDownload, string version)
         {
+            _Logger.LogDebug($"Скачивание ассетов версии {version}");
+
             if (string.IsNullOrEmpty(_Options.Value.WebFiles.AssetsUrl))
             {
                 throw new ArgumentNullException("In the launcher settings there is no link to download the assets");
@@ -320,7 +351,47 @@ namespace NexteLite.Services
         /// <returns></returns>
         public async Task RemoveAllClients()
         {
+            _Logger.LogDebug("Запущен процесс удаления всех клиентов");
 
+            _Logger.LogDebug("Запрос папки клиентов");
+            var clients = _Path.GetClientsPath();
+            DirectoryInfo clientsDir = new DirectoryInfo(clients);
+
+            _Logger.LogDebug("Запрос папки ассетов");
+            var assets = _Path.GetClientsPath();
+            DirectoryInfo assetsDir = new DirectoryInfo(clients);
+
+            var tasks = new List<Task>();
+
+
+            tasks.Add(Task.Run(() =>
+            {
+                foreach (FileInfo file in clientsDir.EnumerateFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in clientsDir.EnumerateDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }));
+
+            tasks.Add(Task.Run(() =>
+            {
+                foreach (FileInfo file in assetsDir.EnumerateFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in assetsDir.EnumerateDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }));
+
+            _Logger.LogDebug("Задачи на удаления созданны");
+            await Task.WhenAll(tasks);
+
+            _Logger.LogDebug("Удаление завершенно");
         }
 
         /// <summary>
@@ -510,8 +581,6 @@ namespace NexteLite.Services
 
         async Task DeleteFile(string path)
         {
-
-
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, 1, FileOptions.DeleteOnClose | FileOptions.Asynchronous))
             {
                 await stream.FlushAsync();

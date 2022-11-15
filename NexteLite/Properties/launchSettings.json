@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NexteLite": {
+      "commandName": "Project",
+      "commandLineArgs": "-debug\r\n"
+    }
+  }
+}
