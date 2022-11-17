@@ -5,9 +5,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace NexteLite
+namespace NexteLite.Utils
 {
-    public class Url
+    public class UrlUtil
     {
         //Flurl code
 

@@ -95,6 +95,7 @@ namespace NexteLite.Services
             _MainProxy.PlayClick += MainProxy_PlayClick;
 
             _SettingsProxy.SettingsApplyClick += SettingsProxy_SettingsApplyClick;
+            _SettingsProxy.DeleteAllClick += SettingsProxy_DeleteAllClick;
             _SettingsProxy.SetParams(_SettingsLauncher.LoadSettingsParams());
 
             _Logger.LogInformation("Расчет максимального количество ОЗУ");
@@ -191,10 +192,27 @@ namespace NexteLite.Services
 
             _DownloadingProxy.SetState(DownloadingState.HashAssets);
             var assetsIndex = await _Web.GetAssetsIndex(profile.AssetIndex);
+            if (assetsIndex is null)
+            {
+                _Logger.LogError("Не возможно проверить ассеты клиента, запуск не возможен");
+                ShowPage(PageType.Main);
+                return;
+            }
+
             var localAssets = await _FileService.CheckAssets(profile, assetsIndex);
+
+            
 
             _DownloadingProxy.SetState(DownloadingState.HashClient);
             var files = await _Web.GetFiles(profile.Dir);
+            if (files is null)
+            {
+                _Logger.LogError("Не возможно проверить файлы клиента, запуск не возможен");
+                ShowPage(PageType.Main);
+                return;
+            }
+                
+
             var localFiles = await _FileService.CheckFilesClient(profile, files);
 
             _DownloadingProxy.SetState(DownloadingState.DownloadAssets);
@@ -321,7 +339,13 @@ namespace NexteLite.Services
                 _Main.HideOverlay();
             }
         }
-        
+        private void SettingsProxy_DeleteAllClick()
+        {
+            _Logger.LogDebug($"Запрос удаления всех клиентов");
+            _FileService.RemoveAllClients();
+        }
+
+
         /// <summary>
         /// 
         /// </summary>

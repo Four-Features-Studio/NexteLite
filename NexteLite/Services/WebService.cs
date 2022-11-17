@@ -2,17 +2,20 @@
 using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
+using NexteLite.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace NexteLite.Services
 {
@@ -20,17 +23,19 @@ namespace NexteLite.Services
     {
         IOptions<AppSettings> _Options;
         HttpClient _HttpClient;
-
+        IMessageService _Messages;
         string _BaseApiUrl;
 
-        public WebService(HttpClient client, IOptions<AppSettings> options)
+        public WebService(HttpClient client, IOptions<AppSettings> options, IMessageService messages)
         {
             _HttpClient = client;
 
             _Options = options;
 
-            _BaseApiUrl = _Options.Value.API.BaseApiUrl;
+            _Messages = messages;
 
+            _BaseApiUrl = _Options.Value.API.BaseApiUrl;
+            
             //TODO проверку вынести в отдельный метод
 
             if (string.IsNullOrEmpty(_BaseApiUrl))
@@ -59,60 +64,78 @@ namespace NexteLite.Services
 
         public async Task<FilesEntity> GetFiles(string dir)
         {
-            var url = Url.Combine(_BaseApiUrl, _Options.Value.API.FilesClientUrl);
-
-            var requestModel = new FilesRequest
+            try
             {
-                Directory = dir
-            };
+                var url = UrlUtil.Combine(_BaseApiUrl, _Options.Value.API.FilesClientUrl);
 
-            var model = JsonConvert.SerializeObject(requestModel);
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
+                var requestModel = new FilesRequest
+                {
+                    Directory = dir
+                };
 
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            request.Content = new StringContent(model, Encoding.UTF8);
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var model = JsonConvert.SerializeObject(requestModel);
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-            var response = await _HttpClient.SendAsync(request);
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var files = JsonConvert.DeserializeObject<FilesEntity>(content);
-                Console.WriteLine("TODO - Errors");
-                return files;
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                request.Content = new StringContent(model, Encoding.UTF8);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                var response = await _HttpClient.SendAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var files = JsonConvert.DeserializeObject<FilesEntity>(content);
+                    Console.WriteLine("TODO - Errors");
+                    return files;
+                }
+
+                return null;
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                _Messages.SendInfo("Произошла ошибка при запросе файлов клиента, возможно удаленный сервер не доступен");
+                return null;
+            }
         }
         public async Task<AssetsIndex> GetAssetsIndex(string version)
         {
-            var url = Url.Combine(_BaseApiUrl, _Options.Value.API.AssetsIndexUrl);
 
-            var requestModel = new AssetsIndexRequest
+            try
             {
-                Version = version
-            };
+                var url = UrlUtil.Combine(_BaseApiUrl, _Options.Value.API.AssetsIndexUrl);
 
-            var model = JsonConvert.SerializeObject(requestModel);
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
+                var requestModel = new AssetsIndexRequest
+                {
+                    Version = version
+                };
 
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            request.Content = new StringContent(model, Encoding.UTF8);
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var model = JsonConvert.SerializeObject(requestModel);
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-            var response = await _HttpClient.SendAsync(request);
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                request.Content = new StringContent(model, Encoding.UTF8);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var assetsIndex = new AssetsIndex();
+                var response = await _HttpClient.SendAsync(request);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                assetsIndex = JsonConvert.DeserializeObject<AssetsIndex>(content);
-                Console.WriteLine("TODO - Errors");
+                var assetsIndex = new AssetsIndex();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    assetsIndex = JsonConvert.DeserializeObject<AssetsIndex>(content);
+                    Console.WriteLine("TODO - Errors");
+                    return assetsIndex;
+                }
+
                 return assetsIndex;
             }
-
-            return assetsIndex;
+            catch (Exception ex)
+            {
+                _Messages.SendInfo("Произошла ошибка при запросе ассетов клиента, возможно удаленный сервер не доступен");
+                return null;
+            }
+           
         }
 
         public List<ServerProfile> GetServerProfiles()
@@ -216,6 +239,21 @@ namespace NexteLite.Services
         public void Dispose()
         {
             _HttpClient.Dispose();
+        }
+
+        async Task<bool> IsOnline(string url)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Head, url);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            try
+            {
+                var response = await _HttpClient.SendAsync(request);
+                return true;
+            }
+            catch (WebException wex)
+            {
+                return false;
+            }
         }
     }
 }

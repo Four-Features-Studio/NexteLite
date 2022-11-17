@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="NexteLite.Controls.MessagesRenderControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NexteLite.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+            <Storyboard x:Key="Show">
+                <DoubleAnimation Duration="0:0:0.5" From="-200" To="15"
+                                 FillBehavior="HoldEnd" 
+                                 Storyboard.TargetName="Container"
+                                 Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)">
+
+                    <DoubleAnimation.EasingFunction>
+                        <ExponentialEase Exponent="6" EasingMode="EaseOut"/>
+                    </DoubleAnimation.EasingFunction>
+
+                </DoubleAnimation>
+
+                <DoubleAnimation BeginTime="0:0:5" Duration="0:0:0.3" To="-200"
+                                 FillBehavior="HoldEnd" 
+                                 Storyboard.TargetName="Container"
+                                 Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)">
+
+                </DoubleAnimation>
+            </Storyboard>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid x:Name="Container" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Grid.RenderTransform>
+                <TranslateTransform/>
+            </Grid.RenderTransform>
+        </Grid>
+    </Grid>
+</UserControl>

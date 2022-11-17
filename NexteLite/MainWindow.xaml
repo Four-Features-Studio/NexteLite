@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NexteLite"
+        xmlns:local="clr-namespace:NexteLite" xmlns:controls="clr-namespace:NexteLite.Controls"
         mc:Ignorable="d"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -30,6 +30,7 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
         <Grid Grid.Row="0" Panel.ZIndex="100" MouseDown="Window_Drag" Background="Transparent">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="back_button" Visibility="Collapsed" Width="25" Style="{DynamicResource Button_Style_Back}" Click="Window_Back"></Button>
@@ -48,6 +49,10 @@
             <Frame x:Name="Viewer"  NavigationUIVisibility="Hidden" Panel.ZIndex="1" Navigating="Viewer_PreviewExecuted">
 
             </Frame>
+        </DockPanel>
+
+        <DockPanel Grid.Row="0" Grid.RowSpan="2" Panel.ZIndex="99">
+            <controls:MessagesRenderControl x:Name="MessageManager" Panel.ZIndex="99"/>
         </DockPanel>
     </Grid>
 </Window>

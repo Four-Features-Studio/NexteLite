@@ -95,6 +95,16 @@ namespace NexteLite
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        public void SendMessage(string message)
+        {
+            Action dlg = () => MessageManager.SendMessage(message);
+
+            Dispatcher.BeginInvoke(dlg, System.Windows.Threading.DispatcherPriority.Render);
+        }
 
         /// <summary>
         /// 

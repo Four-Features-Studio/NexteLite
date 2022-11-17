@@ -10,7 +10,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace NexteLite
+namespace NexteLite.Controls
 {
     public class RamTickBar : TickBar
     {

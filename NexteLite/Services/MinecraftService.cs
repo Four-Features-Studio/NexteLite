@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using NexteLite.Interfaces;
 using NexteLite.Models;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,14 +25,25 @@ namespace NexteLite.Services
         IPathRepository _Path;
         IAccountService _Account;
 
+        IMessageService _Messages;
+        ILogger<MinecraftService> _Logger;
+
         ProcessJob _KillerProcessJob;
         Process _Process;
-        public MinecraftService (ISettingsLauncher settingsLauncher, IAccountService accountService, IPathRepository pathRepository, IOptions<AppSettings> options)
+        public MinecraftService (ISettingsLauncher settingsLauncher,
+            IAccountService accountService, 
+            IPathRepository pathRepository, 
+            IOptions<AppSettings> options,
+            IMessageService messages,
+            ILogger<MinecraftService> logger)
         {
             _SettingsLauncher = settingsLauncher;
             _Options = options;
             _Path = pathRepository;
             _Account = accountService;
+
+            _Messages = messages;
+            _Logger = logger;
         }
 
         public async Task Play(ServerProfile profile)
@@ -51,15 +64,31 @@ namespace NexteLite.Services
         }
 
         private async Task StartMinecraft(ServerProfile profile)
-        {
-            var args = GetArgs(profile);
-            var clientDir = _Path.GetClientPath(profile);
+        {      
+            var clientDir = _Path.GetClientPath(profile);    
+
+            if (!Directory.Exists(clientDir))
+            {
+                _Logger.LogError("Папка с клиентом не существует, запуск не возможен");
+                _Messages.SendInfo("Папка с клиентом не существует, запуск не возможен");
+                OnMinecraftStateChanged?.Invoke(Enums.MinecraftState.Closed);
+                return;
+            }
 
             var java = _Path.GetJavaPath();
+            var args = GetArgs(profile);
+
+            if (string.IsNullOrEmpty(args) || string.IsNullOrEmpty(clientDir) || string.IsNullOrEmpty(java))
+            {
+                _Logger.LogError($"Невозможно запустить майнкрафт, один из параметров пустой. Args {args}; ClientDir {clientDir}; Java {java}");
+                OnMinecraftStateChanged?.Invoke(Enums.MinecraftState.Closed);
+                return;
+            }
 
             _KillerProcessJob = new ProcessJob();
 
             ProcessStartInfo info = new ProcessStartInfo();
+
             info.FileName = java;
             info.WorkingDirectory = clientDir;
             info.UserName = null;
@@ -100,6 +129,9 @@ namespace NexteLite.Services
             var nativesDir = _Path.GetNativesPath(profile);
             var librariesDir = _Path.GetLibrariesPath(profile);
 
+            if(string.IsNullOrEmpty(clientDir) || string.IsNullOrEmpty(nativesDir) || string.IsNullOrEmpty(librariesDir))
+                return string.Empty;
+
             var AssetsDir = _Path.GetAssetsPath();
             var AssetsIndex = profile.AssetIndex;
             var versionClient = profile.Version;
@@ -118,6 +150,8 @@ namespace NexteLite.Services
             var injectorUrl = _Options.Value.InjectorUrl;
             if (string.IsNullOrEmpty(injectorUrl))
                 throw new ArgumentNullException("The configuration file does not contain the url to api injector");
+
+
 
             var libraries = Directory.GetFiles(librariesDir, "*.*", SearchOption.AllDirectories);
             var minecraft = _Path.GetMinecraftPath(profile);

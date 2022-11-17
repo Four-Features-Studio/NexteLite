@@ -13,7 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Media.Media3D;
 using System.Timers;
 
-namespace NexteLite
+namespace NexteLite.Controls
 {
     public class NetworkChartData
     {

@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using NexteLite.Interfaces;
 using NexteLite.Models;
+using NexteLite.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,9 +19,9 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static NexteLite.ServerCarousel;
+using static NexteLite.Controls.ServerCarousel;
 
-namespace NexteLite
+namespace NexteLite.Controls
 {
     /// <summary>
     /// Логика взаимодействия для ItemServer.xaml
@@ -138,8 +139,6 @@ namespace NexteLite
                 OnPropertyChanged();
             }
         }
-
-
 
         public SolidColorBrush IsOnlineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#7bb458"));
         public SolidColorBrush IsOfflineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ad4444"));

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexteLite
+namespace NexteLite.Utils
 {
     internal static class DoubleUtil
     {

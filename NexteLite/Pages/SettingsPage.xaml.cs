@@ -162,7 +162,7 @@ namespace NexteLite.Pages
                     SettingsApplyClick?.Invoke(new ParamsSettingPage(CurrentRam, AutoConnectMode, FullScreenMode, DebugMode, Path));
                     break;
                 case "delete":
-                    
+                    DeleteAllClick?.Invoke();
                     break;
             }
         }

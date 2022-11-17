@@ -70,6 +70,8 @@ namespace NexteLite
             services.AddSingleton<SettingsPage>();
             services.AddSingleton<IMinecraftService, MinecraftService>();
 
+            services.AddSingleton<IMessageService, MessageService>();
+
             services.AddTransient<DownloadingPage>();
             services.AddTransient<RunningPage>();
 

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexteLite
+namespace NexteLite.Services
 {
     public class ProcessJob : IDisposable
     {

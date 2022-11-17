@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using NexteLite.Interfaces;
 using NexteLite.Models;
 using NexteLite.Services.Enums;
+using NexteLite.Utils;
 using Ookii.Dialogs.Wpf;
 using Serilog.Core;
 using System;
@@ -13,8 +14,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -34,17 +37,21 @@ namespace NexteLite.Services
         IOptions<AppSettings> _Options;
         IPathRepository _Path;
 
+        IMessageService _MessageService;
+
         ILogger<FileService> _Logger;
         public FileService(IWebService webService, 
             IPathRepository pathRepository, 
             ISettingsLauncher settingsLauncher, 
             IOptions<AppSettings> options,
+            IMessageService messages,
             ILogger<FileService> logger)
         {
             _WebService = webService;
             _SettingsLauncher = settingsLauncher;
             _Options = options;
             _Path = pathRepository;
+            _MessageService = messages;
             _Logger = logger;
         }
 
@@ -54,6 +61,8 @@ namespace NexteLite.Services
         /// <returns></returns>
         public async Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity webFiles)
         {
+            if (webFiles is null)
+                return new List<(ActionFile, FileEntity)>();
             //1 - Получить все локальные файлы.
             //2 - Отсеить файлы которые не входят в updatelist
             //3 - Получаем хеши локальных файлов
@@ -143,6 +152,9 @@ namespace NexteLite.Services
         /// <returns></returns>
         public async Task<List<(string hash, double size)>> CheckAssets(ServerProfile profile, AssetsIndex assets)
         {
+            if (assets is null)
+                return new List<(string, double)>();
+
             _Logger.LogDebug($"Запущенна проверка ассетов {profile.AssetIndex}");
             var objectsPath = _Path.GetAssetsObjectsPath();
             var assetsIncorect = new List<(string hash, double size)>();
@@ -240,7 +252,6 @@ namespace NexteLite.Services
         /// <returns></returns>
         public async Task DownloadClient(List<(ActionFile action, FileEntity file)> files, ServerProfile profile)
         {
-
             _Logger.LogDebug($"Скачивание клиента {profile.Title}");
             var RootDir = _SettingsLauncher.RootDir;
             var ClientDir = _Path.GetClientPath(profile);
@@ -310,11 +321,13 @@ namespace NexteLite.Services
             if (!Directory.Exists(pathAssets))
             {
                 Directory.CreateDirectory(pathAssets);
+                SetEveryoneAccess(pathAssets);
             }
 
             var pathIndex = Path.Combine(pathIndexes, version + ".json");
 
             new FileInfo(pathIndex).Directory?.Create();
+            SetEveryoneAccess(pathIndex);
 
             using (FileStream sourceStream = new FileStream(pathIndex,
                FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None,
@@ -328,6 +341,7 @@ namespace NexteLite.Services
                 }
             };
 
+
             List<(string url, string path)> files = new List<(string url, string path)>();
             var totalSize = 0d;
 
@@ -335,7 +349,7 @@ namespace NexteLite.Services
             {
                 var twoSymbol = asset.hash.Substring(0, 2);
                 var path = Path.Combine(twoSymbol, asset.hash);
-                var url = Url.Combine(_Options.Value.WebFiles.AssetsUrl, twoSymbol, asset.hash);
+                var url = UrlUtil.Combine(_Options.Value.WebFiles.AssetsUrl, twoSymbol, asset.hash);
 
                 totalSize += asset.size;
 
@@ -358,8 +372,8 @@ namespace NexteLite.Services
             DirectoryInfo clientsDir = new DirectoryInfo(clients);
 
             _Logger.LogDebug("Запрос папки ассетов");
-            var assets = _Path.GetClientsPath();
-            DirectoryInfo assetsDir = new DirectoryInfo(clients);
+            var assets = _Path.GetAssetsPath();
+            DirectoryInfo assetsDir = new DirectoryInfo(assets);
 
             var tasks = new List<Task>();
 
@@ -372,6 +386,7 @@ namespace NexteLite.Services
                 }
                 foreach (DirectoryInfo dir in clientsDir.EnumerateDirectories())
                 {
+                    dir.Attributes &= ~FileAttributes.ReadOnly;
                     dir.Delete(true);
                 }
             }));
@@ -384,6 +399,7 @@ namespace NexteLite.Services
                 }
                 foreach (DirectoryInfo dir in assetsDir.EnumerateDirectories())
                 {
+                    dir.Attributes &= ~FileAttributes.ReadOnly;
                     dir.Delete(true);
                 }
             }));
@@ -392,6 +408,8 @@ namespace NexteLite.Services
             await Task.WhenAll(tasks);
 
             _Logger.LogDebug("Удаление завершенно");
+
+            _MessageService.SendInfo("Все клиенты удалены");
         }
 
         /// <summary>
@@ -477,7 +495,7 @@ namespace NexteLite.Services
         string CombineUrlClientFile(string path)
         {
             var baseUrl = _Options.Value.WebFiles.FilesUrl;
-            var url = Url.Combine(baseUrl, path);
+            var url = UrlUtil.Combine(baseUrl, path);
             return url;
         }
 
@@ -572,6 +590,8 @@ namespace NexteLite.Services
         async Task SaveFile(MemoryStream data, string path)
         {
             new FileInfo(path).Directory?.Create();
+
+            SetEveryoneAccess(path);
 
             var buffer = data.ToArray();
 
@@ -682,6 +702,49 @@ namespace NexteLite.Services
             }
 
             throw new ArgumentException("Указанный метод хеширования указан не верно.");
+
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dirName"></param>
+        /// <returns></returns>
+        bool SetEveryoneAccess(string dirName)
+        {
+
+            try
+            {
+                var path = Path.GetDirectoryName(dirName);
+
+                // Make sure directory exists
+                if (Directory.Exists(path) == false)
+                {
+                    _Logger.LogError($"Directory {path} does not exist, so permissions cannot be set.");
+                    return false;
+                }
+
+                // Get directory access info
+                DirectoryInfo dinfo = new DirectoryInfo(path);
+                DirectorySecurity dSecurity = dinfo.GetAccessControl();
+
+                // Add the FileSystemAccessRule to the security settings. 
+                dSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit, PropagationFlags.NoPropagateInherit, AccessControlType.Allow));
+
+                // Set the access control
+                dinfo.SetAccessControl(dSecurity);
+                dinfo.Attributes &= ~FileAttributes.ReadOnly;
+
+                _Logger.LogInformation($"Everyone FullControl Permissions were set for directory {path}");
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex.Message);
+                return false;
+            }
+
 
         }
     }

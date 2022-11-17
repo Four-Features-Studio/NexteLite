@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Win32;
 using NexteLite.Interfaces;
 using NexteLite.Models;
@@ -22,10 +23,12 @@ namespace NexteLite.Services
 
         IOptions<AppSettings> _Options;
         ISettingsLauncher _SettingsLauncher;
-        public PathRepository(IOptions<AppSettings> options, ISettingsLauncher settingsLauncher)
+        ILogger<PathRepository> _Logger;
+        public PathRepository(IOptions<AppSettings> options, ISettingsLauncher settingsLauncher, ILogger<PathRepository> logger)
         {
             _Options = options;
             _SettingsLauncher = settingsLauncher;
+            _Logger = logger;
         }
 
         public string GetAppDataPath()
@@ -79,7 +82,10 @@ namespace NexteLite.Services
             var clientDir = profile.Dir;
 
             if (string.IsNullOrEmpty(clientDir))
-                throw new ArgumentNullException("The server profiles does not contain the path to the settings folder");
+            {
+                _Logger.LogError("В данный профиль не полный, не возможно получить путь");
+                return String.Empty;
+            }
 
             var root = _SettingsLauncher.RootDir;
 

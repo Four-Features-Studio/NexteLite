@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:NexteLite"
+      xmlns:controls="clr-namespace:NexteLite.Controls"
       mc:Ignorable="d" 
       FontSize="14"
       d:DesignHeight="450" d:DesignWidth="770"
@@ -129,9 +130,9 @@
 
             </Grid>
 
-            <local:ServerCarousel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" ItemsCarousel="{Binding ServerProfiles}" PlayClick="ServerCarousel_PlayClick">
+            <controls:ServerCarousel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" ItemsCarousel="{Binding ServerProfiles}" PlayClick="ServerCarousel_PlayClick">
 
-            </local:ServerCarousel>
+            </controls:ServerCarousel>
         </Grid>
     </Grid>
 </Page>
