@@ -152,7 +152,16 @@ namespace NexteLite.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Лаунчер требует обновление, но удаленный сервер не отвечает.
+        ///   Ищет локализованную строку, похожую на .
+        /// </summary>
+        public static string lcl_txt_UpdatePage_CheckUpdate {
+            get {
+                return ResourceManager.GetString("lcl_txt_UpdatePage_CheckUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Не удалось проверить актуальность лаунчера, дальнейшее использование не возможно.
         /// </summary>
         public static string lcl_txt_UpdatePage_NeedUpdate {
             get {

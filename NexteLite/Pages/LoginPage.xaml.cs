@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -170,8 +171,20 @@ namespace NexteLite.Pages
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
+
         #endregion
 
+        bool IsLoaded = false;
 
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+            {
+                Storyboard sb = MainGrid.FindResource("Welcome") as Storyboard;
+                sb.Begin(this);
+
+                IsLoaded = true;
+            }
+        }
     }
 }

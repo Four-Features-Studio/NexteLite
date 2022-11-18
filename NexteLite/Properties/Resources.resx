@@ -154,4 +154,7 @@
   <data name="lcl_txt_UpdatePage_NeedUpdate" xml:space="preserve">
     <value>Не удалось проверить актуальность лаунчера, дальнейшее использование не возможно</value>
   </data>
+  <data name="lcl_txt_UpdatePage_CheckUpdate" xml:space="preserve">
+    <value>Проверка наличия обновлений</value>
+  </data>
 </root>

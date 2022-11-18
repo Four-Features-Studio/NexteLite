@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -21,6 +22,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace NexteLite.Controls
 {
@@ -59,6 +61,7 @@ namespace NexteLite.Controls
                 var newCollection = newValue as IList;
                 if (null != newCollection)
                 {
+                    control.Reset();
                     control.AddItems(newCollection);
                 }
             }
@@ -86,11 +89,24 @@ namespace NexteLite.Controls
         {
             InitializeComponent();
             Loaded += ServerCarousel_Loaded;
-
-
             UpdateButtonRender();
 
             _State = ((App)App.Current).ServiceProvider.GetRequiredService<IMineStat>();
+        }
+
+        public void Reset()
+        {
+            _Servers = new ObservableCollection<ItemServer>();
+            Container.Children.Clear();
+
+            last_margin = 0;
+            Selected = null;
+            SelectedItem = 0;     
+            TranslateTransform resetTransform = new TranslateTransform();
+            resetTransform.X = 0;
+            Container.RenderTransform = resetTransform;
+
+            UpdateRender(0);
         }
 
         private void ServerCarousel_Loaded(object sender, RoutedEventArgs e)

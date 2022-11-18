@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -82,7 +83,7 @@ namespace NexteLite.Pages
         public void SetProfile(Profile profile)
         {
             Profile = profile;
-            Avatar = ImageUtils.GetImageFromBase64(profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/avatar.png");
+            Avatar = ImageUtils.GetImageFromBase64(profile is null ? string.Empty : profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/avatar.png");
         }
 
         public void SetServerProfiles(List<ServerProfile> profiles)
@@ -90,6 +91,7 @@ namespace NexteLite.Pages
             ServerProfiles = new ObservableCollection<ServerProfile>(profiles);
             OnPropertyChanged(nameof(ServerProfiles));
         }
+
 
         /// <summary>
         /// 
@@ -137,6 +139,7 @@ namespace NexteLite.Pages
                     SettingsClick?.Invoke();
                     break;
                 case "logout":
+                    LogoutClick?.Invoke();
                     break;
             }
         }

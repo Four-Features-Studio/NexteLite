@@ -47,6 +47,7 @@ namespace NexteLite.Services
         IConsoleProxy _ConsoleProxy;
         IDownloadingProxy _DownloadingProxy;
         IRunningProxy _RunningProxy;
+        IUpdateProxy _UpdateProxy;
 
         ISettingsLauncher _SettingsLauncher;
 
@@ -90,6 +91,7 @@ namespace NexteLite.Services
             _MainProxy = (IMainProxy)_Pages.GetPage(PageType.Main);
             _SettingsProxy = (ISettingsProxy)_Pages.GetPage(PageType.Settings);
             _ConsoleProxy = (IConsoleProxy)_Pages.GetPage(PageType.Console);
+            _UpdateProxy = (IUpdateProxy)_Pages.GetPage(PageType.Update);
 
             _Minecraft.OnMinecraftStateChanged += Minecraft_OnMinecraftStateChanged;
 
@@ -100,6 +102,7 @@ namespace NexteLite.Services
             _MainProxy.SettingsClick += MainProxy_SettingsClick;
             _MainProxy.SocialClick += MainProxy_SocialClick;
             _MainProxy.PlayClick += MainProxy_PlayClick;
+            _MainProxy.LogoutClick += MainProxy_LogoutClick;
 
             _SettingsProxy.SettingsApplyClick += SettingsProxy_SettingsApplyClick;
             _SettingsProxy.DeleteAllClick += SettingsProxy_DeleteAllClick;
@@ -121,16 +124,22 @@ namespace NexteLite.Services
             _Logger.LogDebug("Ядро инициализированно");
 
             CheckUpdate();
+
+            _Logger.LogInformation("Проверка обновления");
         }
 
         private async void CheckUpdate()
         {
+            ShowPage(PageType.Update);
+
+            _UpdateProxy.SetState(UpdateState.Check);
+
             var hash = _FileService.GetHashsumLeuncher();
             var info = await _Web.CheckUpdates(hash);
 
             if(info is null)
             {
-                ShowPage(PageType.Update);
+                _UpdateProxy.SetState(UpdateState.Error);
                 return;
             }
 
@@ -312,9 +321,9 @@ namespace NexteLite.Services
         /// <summary>
         /// 
         /// </summary>
-        private void LoadServerProfiles()
+        private async void LoadServerProfiles()
         {
-            var profiles = _Web.GetServerProfiles();
+            var profiles = await _Web.GetServerProfiles();
             ServerProfiles = profiles;
             _MainProxy.SetServerProfiles(ServerProfiles);
         }
@@ -353,6 +362,20 @@ namespace NexteLite.Services
 
             StartMinecraft(profile);
 
+        }
+        private void MainProxy_LogoutClick()
+        {
+            _Logger.LogDebug($"Попытка разлогиниться");
+
+            _Web.Logout();
+
+            _MainProxy.SetProfile(null);
+            _SettingsLauncher.Username = String.Empty;
+            _SettingsLauncher.Password = String.Empty;
+            _SettingsLauncher.SaveLoginParams(new ParamsLoginPage(string.Empty, string.Empty, false));
+            _LoginProxy.SetParams(_SettingsLauncher.LoadLoginParams());
+
+            ShowPage(PageType.Login);
         }
 
         /// <summary>

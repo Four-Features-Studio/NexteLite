@@ -20,8 +20,11 @@ namespace NexteLite.Services
     }
 
     public class ApiSettings
-    {
+    {   
         public string BaseApiUrl { get; set; }
+        public string AuthUrl { get; set; }
+        public string LogoutUrl { get; set; }
+        public string ProfilesUrl { get; set; }
         public string FilesClientUrl { get; set; }
         public string AssetsIndexUrl { get; set; }    
         public string CheckUpdateUrl { get; set; }    

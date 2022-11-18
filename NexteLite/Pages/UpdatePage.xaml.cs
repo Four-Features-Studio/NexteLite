@@ -2,7 +2,9 @@
 using NexteLite.Services.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,28 +22,52 @@ namespace NexteLite.Pages
     /// <summary>
     /// Логика взаимодействия для UpdatePage.xaml
     /// </summary>
-    public partial class UpdatePage : Page, IPage, IUpdateProxy
+    public partial class UpdatePage : Page, IPage, IUpdateProxy, INotifyPropertyChanged
     {
         public UpdatePage()
         {
             InitializeComponent();
-            Loaded += UpdatePage_Loaded;
         }
 
-        private void UpdatePage_Loaded(object sender, RoutedEventArgs e)
+        string _TextMessage;
+        public string TextMessage
         {
-            OnLoaded?.Invoke();
-        }
-
-        public void SetState(UpdateState state)
-        {
-            
+            get 
+            { 
+                return _TextMessage; 
+            }
+            set
+            {
+                _TextMessage = value;
+                OnPropertyChanged();
+            }
         }
 
         public PageType Id => PageType.Update;
 
         public bool IsOverlay => false;
 
-        public event OnLoadedHandler OnLoaded;
+        public void SetState(UpdateState state)
+        {
+            switch (state)
+            {
+                case UpdateState.Error:
+                    TextMessage = Properties.Resources.lcl_txt_UpdatePage_NeedUpdate;
+                    break;
+                case UpdateState.Check:
+                    TextMessage = Properties.Resources.lcl_txt_UpdatePage_CheckUpdate;
+                    break;
+            }
+        }
+
+        #region [INotifyPropertyChanged]
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        #endregion
     }
 }

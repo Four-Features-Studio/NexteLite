@@ -12,7 +12,5 @@ namespace NexteLite.Interfaces
     public interface IUpdateProxy
     {
         void SetState(UpdateState state);
-
-        event OnLoadedHandler OnLoaded;
     }
 }

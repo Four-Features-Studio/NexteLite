@@ -41,7 +41,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid DataContext="{Binding ElementName=thisLogin, Path=.}">
+    <Grid x:Name="MainGrid" DataContext="{Binding ElementName=thisLogin, Path=.}" Loaded="Grid_Loaded">
         <Grid.Resources>
             <Storyboard x:Key="Welcome" Completed="Strbrd_Welcome_Completed">
                 <DoubleAnimation Storyboard.TargetName="WelcomLabel" Storyboard.TargetProperty="Opacity" FillBehavior="HoldEnd"
@@ -72,13 +72,6 @@
                 </DoubleAnimation>
             </Storyboard>
         </Grid.Resources>
-        <Grid.Triggers>
-            <EventTrigger RoutedEvent="Grid.Loaded">
-                <BeginStoryboard Storyboard="{StaticResource Welcome}">
-
-                </BeginStoryboard>
-            </EventTrigger>
-        </Grid.Triggers>
         <Border Background="#232532" Name="LoginLabel" Width="270" Height="342" HorizontalAlignment="Left" Margin="250,54">
             <Grid>
                 <Grid Opacity="0" x:Name="FormLabel">
@@ -126,7 +119,7 @@
                     <TextBlock Grid.Row="3" Margin="0" Foreground="#727272" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"  FontFamily="{StaticResource Thin}">Все еще нет учетной записи? <Hyperlink>Создайте</Hyperlink></TextBlock>
                 </Grid>
 
-                <Grid Name="WelcomLabel" Opacity="1" Background="Transparent">
+                <Grid Name="WelcomLabel" Opacity="0" Background="Transparent">
                     <TextBlock FontFamily="{DynamicResource Thin}" FontSize="36" Foreground="LightGray" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center">Welcome to Nexte Launcher</TextBlock>
                 </Grid>
             </Grid>
