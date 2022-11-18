@@ -150,5 +150,24 @@ namespace NexteLite.Properties {
                 return ResourceManager.GetString("lcl_txt_RunningPage_ClientIsRunning", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Лаунчер требует обновление, но удаленный сервер не отвечает.
+        /// </summary>
+        public static string lcl_txt_UpdatePage_NeedUpdate {
+            get {
+                return ResourceManager.GetString("lcl_txt_UpdatePage_NeedUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        public static byte[] NexteAgent {
+            get {
+                object obj = ResourceManager.GetObject("NexteAgent", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

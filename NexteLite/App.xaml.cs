@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using static System.Windows.Forms.AxHost;
@@ -30,6 +31,16 @@ namespace NexteLite
 
         [DllImport("Kernel32")]
         public static extern void FreeConsole();
+
+        public string Args { get; set; }
+
+
+        /// <summary>The event mutex name.</summary>
+        private const string UniqueEventName = "NexteLiteAgentProcess";
+
+        /// <summary>The event wait handle.</summary>
+        private EventWaitHandle eventWaitHandle;
+
         public IServiceProvider ServiceProvider { get; private set; }
 
         public IConfiguration Configuration { get; private set; }
@@ -68,6 +79,8 @@ namespace NexteLite
             services.AddSingleton<MainPage>();
             services.AddSingleton<ConsolePage>();
             services.AddSingleton<SettingsPage>();
+            services.AddSingleton<UpdatePage>();
+
             services.AddSingleton<IMinecraftService, MinecraftService>();
 
             services.AddSingleton<IMessageService, MessageService>();
@@ -122,6 +135,8 @@ namespace NexteLite
 
             if (args.Any(x => x == "-debug" || x == "-d"))
                 AllocConsole();
+
+            Args = string.Join(" ", args);
 
             var services = new ServiceCollection();
 

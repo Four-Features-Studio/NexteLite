@@ -12,6 +12,9 @@ namespace NexteLite.Interfaces
     {
         bool Auth(string username, string password, out Profile profile, ref string message);
         void Logout();
+
+        Task<UpdateInfo> CheckUpdates(string hash);
+
         List<ServerProfile> GetServerProfiles();
         Task<FilesEntity> GetFiles(string dir);
         Task<AssetsIndex> GetAssetsIndex(string version);

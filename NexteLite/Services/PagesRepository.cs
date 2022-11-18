@@ -15,7 +15,12 @@ namespace NexteLite.Services
     {
         private Dictionary<PageType,Page> Pages = new Dictionary<PageType,Page>();
         IServiceProvider _ServiceProvider;
-        public PagesRepository(IServiceProvider services, MainPage mainPage, LoginPage loginPage, ConsolePage consolePage, SettingsPage settingsPage)
+        public PagesRepository(IServiceProvider services,
+            MainPage mainPage, 
+            LoginPage loginPage, 
+            ConsolePage consolePage,
+            SettingsPage settingsPage,
+            UpdatePage updatePage)
         {
             _ServiceProvider = services;
 
@@ -23,6 +28,7 @@ namespace NexteLite.Services
             Pages.Add(((IPage)loginPage).Id, loginPage);
             Pages.Add(((IPage)consolePage).Id, consolePage);
             Pages.Add(((IPage)settingsPage).Id, settingsPage);
+            Pages.Add(((IPage)updatePage).Id, updatePage);
         }
         public Page GetPage(PageType type)
         {

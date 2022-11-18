@@ -8,7 +8,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Title="Nexte Lite" Height="450" Width="770"
-        WindowStartupLocation="CenterScreen" x:Name="test">
+        WindowStartupLocation="CenterScreen" x:Name="thisMain">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,7 +25,7 @@
             
         </ResourceDictionary>
     </Window.Resources>
-    <Grid DataContext="{Binding ElementName=test, Path=.}">
+    <Grid DataContext="{Binding ElementName=thisMain, Path=.}">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>

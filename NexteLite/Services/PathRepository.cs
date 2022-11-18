@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NexteLite.Services
 {
@@ -29,6 +30,11 @@ namespace NexteLite.Services
             _Options = options;
             _SettingsLauncher = settingsLauncher;
             _Logger = logger;
+        }
+
+        public string GetLocalLauncher()
+        {
+            return System.Environment.ProcessPath;
         }
 
         public string GetAppDataPath()
@@ -99,6 +105,13 @@ namespace NexteLite.Services
         {
             var path = GetAppDataPath();
             var fullpath = Path.Combine(path, "injector.jar");
+            return fullpath;
+        }
+
+        public string GetUpdateAgentPath()
+        {
+            var path = GetAppDataPath();
+            var fullpath = Path.Combine(path, "agent.exe");
             return fullpath;
         }
 

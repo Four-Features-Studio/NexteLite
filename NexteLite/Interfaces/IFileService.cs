@@ -16,11 +16,17 @@ namespace NexteLite.Interfaces
     {
         event OnProgressChangedHandler OnProgressChanged;
 
+        string GetHashsumLeuncher();
+
+        Task UpdateLauncher();
+
         Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity files);
 
         Task<List<(string hash, double size)>> CheckAssets(ServerProfile profile, AssetsIndex assets);
 
         Task CheckAndCreateInjector();
+
+        Task CheckAndCreateUpdateAgent();
 
         Task DownloadClient(List<(ActionFile action, FileEntity file)> files, ServerProfile profile);
 

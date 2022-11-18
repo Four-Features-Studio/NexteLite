@@ -9,8 +9,10 @@ namespace NexteLite.Interfaces
 {
     public interface IPathRepository
     {
+        string GetLocalLauncher();
         string GetAppDataPath();
         string GetInjectorPath();
+        string GetUpdateAgentPath();
         string GetProjectPath();
         string GetClientsPath();
         string GetClientPath(ServerProfile profile);

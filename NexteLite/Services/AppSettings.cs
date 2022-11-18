@@ -23,7 +23,9 @@ namespace NexteLite.Services
     {
         public string BaseApiUrl { get; set; }
         public string FilesClientUrl { get; set; }
-        public string AssetsIndexUrl { get; set; }
+        public string AssetsIndexUrl { get; set; }    
+        public string CheckUpdateUrl { get; set; }    
+        public string UpdateUrl { get; set; }    
     }
     public class WebFilesSettings
     {

@@ -148,4 +148,10 @@
   <data name="lcl_txt_DownloadingPage_CurrentSpeed" xml:space="preserve">
     <value>Текущая</value>
   </data>
+  <data name="NexteAgent" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\nexteagent.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lcl_txt_UpdatePage_NeedUpdate" xml:space="preserve">
+    <value>Не удалось проверить актуальность лаунчера, дальнейшее использование не возможно</value>
+  </data>
 </root>

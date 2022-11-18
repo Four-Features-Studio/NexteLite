@@ -55,6 +55,26 @@ namespace NexteLite.Services
             _Logger = logger;
         }
 
+        public string GetHashsumLeuncher()
+        {
+            var path = _Path.GetLocalLauncher();
+            var hash = string.Empty;
+
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var bs = new BufferedStream(fs);
+
+            hash = GetHashsum(ChecksumMethod.SHA1, bs);
+
+            return hash;
+        }
+
+        public async Task UpdateLauncher()
+        {
+            var pathUpdate =_Path.GetAppDataPath();
+            var url = _Options.Value.API.UpdateUrl;
+            await DownloadFiles(pathUpdate, 1, new List<(string url, string path)>() { (url,"new.update") });
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -63,6 +83,7 @@ namespace NexteLite.Services
         {
             if (webFiles is null)
                 return new List<(ActionFile, FileEntity)>();
+
             //1 - Получить все локальные файлы.
             //2 - Отсеить файлы которые не входят в updatelist
             //3 - Получаем хеши локальных файлов
@@ -81,6 +102,13 @@ namespace NexteLite.Services
             var fileIncorect = new List<(ActionFile action, FileEntity file)>();
 
             var pathClient = _Path.GetClientPath(profile);
+
+            if (string.IsNullOrEmpty(pathClient))
+            {
+                _Logger.LogError($"Неверно указан путь к файлам игры");
+                return new List<(ActionFile, FileEntity)>();
+            } 
+                
 
             if (!Directory.Exists(pathClient))
             {
@@ -156,6 +184,7 @@ namespace NexteLite.Services
                 return new List<(string, double)>();
 
             _Logger.LogDebug($"Запущенна проверка ассетов {profile.AssetIndex}");
+
             var objectsPath = _Path.GetAssetsObjectsPath();
             var assetsIncorect = new List<(string hash, double size)>();
 
@@ -216,12 +245,16 @@ namespace NexteLite.Services
             var path = _Path.GetInjectorPath();
             var injector = Properties.Resources.authlib_injector_1_2_1;
 
+            new FileInfo(path).Directory?.Create();
+
             _Logger.LogDebug("Проверка существования инжектора");
 
             if (File.Exists(path))
             {
+
                 var sumCorrect = GetHashsum(ChecksumMethod.SHA1,injector);
                 var sumChecked = string.Empty;
+
                 using (FileStream fstream = new FileStream(path, FileMode.Open))
                 {
                     byte[] buffer = new byte[fstream.Length];
@@ -230,7 +263,7 @@ namespace NexteLite.Services
                     sumChecked = GetHashsum(ChecksumMethod.SHA1, buffer);
                 }
 
-                if (sumChecked == sumChecked)
+                if (sumChecked == sumCorrect)
                 {
                     _Logger.LogDebug("Инжектор прошел проверку успешно");
                     return;
@@ -241,6 +274,45 @@ namespace NexteLite.Services
             using (FileStream fstream = new FileStream(path, FileMode.Create))
             {
                 await fstream.WriteAsync(injector, 0, injector.Length);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task CheckAndCreateUpdateAgent()
+        {
+            var path = _Path.GetUpdateAgentPath();
+            var updateAgent = Properties.Resources.NexteAgent;
+
+            new FileInfo(path).Directory?.Create();
+
+            _Logger.LogDebug("Проверка существования агента");
+
+            if (File.Exists(path))
+            {
+                var sumCorrect = GetHashsum(ChecksumMethod.SHA1, updateAgent);
+
+                var sumChecked = string.Empty;
+                using (FileStream fstream = new FileStream(path, FileMode.Open))
+                {
+                    byte[] buffer = new byte[fstream.Length];
+                    await fstream.ReadAsync(buffer, 0, buffer.Length);
+
+                    sumChecked = GetHashsum(ChecksumMethod.SHA1, buffer);
+                }
+
+                if (sumChecked == sumCorrect)
+                {
+                    _Logger.LogDebug("Агент обновления прошел проверку успешно");
+                    return;
+                }
+            }
+
+            _Logger.LogDebug("Агент обновления не прошел проверку либо не обнаружен. Агент будет распакован из лаунчера");
+            using (FileStream fstream = new FileStream(path, FileMode.Create))
+            {
+                await fstream.WriteAsync(updateAgent, 0, updateAgent.Length);
             }
         }
 
@@ -295,7 +367,6 @@ namespace NexteLite.Services
                 await DownloadFiles(ClientDir, totalSize, filesToDownload);
             }
         }
-
 
 
         /// <summary>
@@ -546,7 +617,7 @@ namespace NexteLite.Services
                     }
                     else
                     {
-                        await Task.Delay(200);
+                        await Task.Delay(100);
                     }
                 }
                 while (!isDownloadEnd || queue.Count != 0);
@@ -556,7 +627,10 @@ namespace NexteLite.Services
             {
                 var path = Path.Combine(folder, file.path);
                 var data = await _WebService.Download(totalSize, file.url, file.path, progress);
-                queue.Enqueue((data, path, file.path));
+                if (data != null)
+                    queue.Enqueue((data, path, file.path));
+                else
+                    _Logger.LogError($"Не удалось скачать файл - {file.path}");
             }
 
             isDownloadEnd = true;
@@ -566,9 +640,16 @@ namespace NexteLite.Services
 
         async Task DeleteFiles(List<string> files)
         {
-            foreach(var item in files)
+            try
             {
-                await DeleteFile(item);
+                foreach (var item in files)
+                {
+                    await DeleteFile(item);
+                }
+            }
+            catch(Exception ex)
+            {
+                _Logger.LogError(ex.ToString());
             }
         }
 
@@ -589,14 +670,21 @@ namespace NexteLite.Services
         /// <returns></returns>
         async Task SaveFile(MemoryStream data, string path)
         {
-            new FileInfo(path).Directory?.Create();
+            try
+            {
+                new FileInfo(path).Directory?.Create();
 
-            SetEveryoneAccess(path);
+                SetEveryoneAccess(path);
 
-            var buffer = data.ToArray();
+                var buffer = data.ToArray();
 
-            using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
-            await fileStream.WriteAsync(buffer, 0, buffer.Length);
+                using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+                await fileStream.WriteAsync(buffer, 0, buffer.Length);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex.ToString());
+            }   
         }
 
         async Task DeleteFile(string path)
@@ -613,6 +701,39 @@ namespace NexteLite.Services
         /// <param name="file"></param>
         /// <returns></returns>
         public string GetHashsum(ChecksumMethod method, byte[] file)
+        {
+            switch (method)
+            {
+                case ChecksumMethod.MD5:
+                    {
+                        using (MD5 md5 = MD5.Create())
+                        {
+                            var result = md5.ComputeHash(file);
+                            return string.Concat(result.Select(b => b.ToString("x2")));
+                        }
+                    }
+                    break;
+                case ChecksumMethod.SHA1:
+                    {
+                        using (SHA1 sha1 = SHA1.Create())
+                        {
+                            var result = sha1.ComputeHash(file);
+                            return string.Concat(result.Select(b => b.ToString("x2")));
+                        }
+                    }
+                    break;
+            }
+
+            throw new ArgumentException("Указанный метод хеширования указан не верно.");
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public string GetHashsum(ChecksumMethod method, BufferedStream file)
         {
             switch (method)
             {
@@ -688,6 +809,10 @@ namespace NexteLite.Services
                                     if (bytesRead > 0)
                                     {
                                         sha1.TransformBlock(buffer, 0, bytesRead, null, 0);
+                                    }
+                                    else
+                                    {
+                                        break;
                                     }
                                 } while (bytesRead > 0);
 

@@ -5,8 +5,10 @@ using NexteLite.Interfaces;
 using NexteLite.Models;
 using NexteLite.Pages;
 using NexteLite.Services.Enums;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -37,6 +39,7 @@ namespace NexteLite.Services
         IWebService _Web;
         IFileService _FileService;
         IAccountService _Account;
+        IPathRepository _Path;
 
         ILoginProxy _LoginProxy;
         IMainProxy _MainProxy;
@@ -62,6 +65,7 @@ namespace NexteLite.Services
             IWebService webService, 
             ISettingsLauncher settingsLauncher, 
             IMinecraftService minecraftService,
+            IPathRepository pathRepository,
             IOptions<AppSettings> options,
             ILogger<CoreLauncher> logger)
         {
@@ -73,8 +77,11 @@ namespace NexteLite.Services
             _SettingsLauncher = settingsLauncher;
             _FileService = fileService;
             _Logger = logger;
+            _Path = pathRepository;
+
 
             _FileService.CheckAndCreateInjector();
+            _FileService.CheckAndCreateUpdateAgent();
 
             _Minecraft = minecraftService;
 
@@ -110,9 +117,31 @@ namespace NexteLite.Services
             });
 
             _Main.Show();
-            ShowPage(PageType.Login);
-
+           
             _Logger.LogDebug("Ядро инициализированно");
+
+            CheckUpdate();
+        }
+
+        private async void CheckUpdate()
+        {
+            var hash = _FileService.GetHashsumLeuncher();
+            var info = await _Web.CheckUpdates(hash);
+
+            if(info is null)
+            {
+                ShowPage(PageType.Update);
+                return;
+            }
+
+            if (info.IsOutdated)
+            {
+                await UpdateLauncher(info.Size);
+            }
+            else
+            {
+                ShowPage(PageType.Login);
+            }
         }
 
         /// <summary>
@@ -374,6 +403,32 @@ namespace NexteLite.Services
             }
 
             _Logger.LogDebug($"Состояние клиента изменено на {state.ToString()}");
+        }
+
+        private async Task UpdateLauncher(double size)
+        {
+            var pathAppData = _Path.GetAppDataPath();
+            var pathLauncher = _Path.GetLocalLauncher();
+            var urlUpdate = _Options.Value.API.UpdateUrl;
+            var agent = _Path.GetUpdateAgentPath();
+
+            var pID = Process.GetCurrentProcess().Id;
+
+            var args = ((App)App.Current).Args;
+
+            ProcessStartInfo info = new ProcessStartInfo();
+
+            info.FileName = agent;
+            info.UserName = null;
+            info.UseShellExecute = false;
+            info.Arguments = $"-pID \"{pID}\" -appdata-path \"{pathAppData}\" -launcher-path \"{pathLauncher}\" -url \"{urlUpdate}\" -size \"{size}\" {args}";
+            var process = new Process();
+            process.StartInfo = info;
+            process.EnableRaisingEvents = true;
+            process.Start();
+
+            App.Current.Shutdown();
+
         }
     }
 }

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Copyright>Four Features Studio</Copyright>
-    <AssemblyVersion>0.0.1.1</AssemblyVersion>
+    <AssemblyVersion>1.1.*</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,7 +24,7 @@
     <None Remove="Resources\avatar.png" />
     <None Remove="Resources\background.png" />
     <None Remove="Resources\logo.png" />
-    <None Remove="Resources\NexteAgent.exe" />
+    <None Remove="Resources\NexteUpdateAgent.exe" />
     <None Remove="Resources\PFBeauSansPro-Light.ttf" />
     <None Remove="Resources\PFBeauSansPro-Regular.ttf" />
     <None Remove="Resources\PFBeauSansPro-Thin.ttf" />
@@ -56,7 +56,7 @@
     <Resource Include="Resources\avatar.png" />
     <Resource Include="Resources\background.png" />
     <Resource Include="Resources\logo.png" />
-    <Resource Include="Resources\NexteAgent.exe" />
+    <Resource Include="Resources\NexteUpdateAgent.exe" />
     <Resource Include="Resources\PFBeauSansPro-Light.ttf" />
     <Resource Include="Resources\PFBeauSansPro-Regular.ttf" />
     <Resource Include="Resources\PFBeauSansPro-Thin.ttf" />

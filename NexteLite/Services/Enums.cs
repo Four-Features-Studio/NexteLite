@@ -13,7 +13,8 @@ namespace NexteLite.Services.Enums
         Console,
         Settings,
         Downloading,
-        Running
+        Running,
+        Update
     }
 
     public enum MinecraftState
@@ -34,6 +35,13 @@ namespace NexteLite.Services.Enums
         DownloadClient,
         HashAssets,
         HashClient
+    }
+
+    public enum UpdateState
+    {
+        Check,
+        Update,
+        Error
     }
 
     public enum ActionFile
