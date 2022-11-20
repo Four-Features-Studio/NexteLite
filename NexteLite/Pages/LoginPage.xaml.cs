@@ -149,11 +149,7 @@ namespace NexteLite.Pages
         {
             if (Validate())
             {
-                if (!LoginClick.Invoke(Username, Password, false, out string message))
-                {
-                    ValidateLoginError(message);
-                    ValidatePassError(message);
-                }
+                LoginClick?.Invoke(Username, Password, false);
             }
         }
 
@@ -185,6 +181,12 @@ namespace NexteLite.Pages
 
                 IsLoaded = true;
             }
+        }
+
+        public void LoginError(string message)
+        {
+            ValidateLoginError(message);
+            ValidatePassError(message);
         }
     }
 }

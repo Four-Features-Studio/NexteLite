@@ -59,6 +59,8 @@ namespace NexteLite.Services
 
         private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
 
+        Profile _Profile { get; set; }
+
         public CoreLauncher(IMainWindow mainWindow, 
             IAccountService accountService,
             IFileService fileService,
@@ -297,25 +299,24 @@ namespace NexteLite.Services
         /// <param name="message"></param>
         /// <returns></returns>
         /// 
-        private bool LoginProxy_LoginClick(string username, string password, bool save, out string message)
+        private async void LoginProxy_LoginClick(string username, string password, bool save)
         {
             _Logger.LogDebug($"Запрос авторизации - Login:{username}");
 
-            message = string.Empty;
-
-            if (_Account.AuthAccount(username, password, out var profile, ref message))
+            var data = await _Account.AuthAccount(username, password);
+            if (data.result)
             {
                 _Logger.LogDebug($"Авторизация успешна");
-                _MainProxy.SetProfile(profile);
+                _Profile = data.profile;
+                _MainProxy.SetProfile(_Profile);
 
                 ShowPage(PageType.Main);
                 LoadServerProfiles();
-                return true;
+                return;
             }
 
-            _Logger.LogDebug($"Ошибка авторизации:{message}");
-
-            return false;
+            _Logger.LogDebug($"Ошибка авторизации:{data.message}");
+            _LoginProxy.LoginError(data.message);
         }
 
         /// <summary>
@@ -366,14 +367,14 @@ namespace NexteLite.Services
         private void MainProxy_LogoutClick()
         {
             _Logger.LogDebug($"Попытка разлогиниться");
-
-            _Web.Logout();
+            _Web.Logout(_Profile.Uuid);
 
             _MainProxy.SetProfile(null);
             _SettingsLauncher.Username = String.Empty;
             _SettingsLauncher.Password = String.Empty;
             _SettingsLauncher.SaveLoginParams(new ParamsLoginPage(string.Empty, string.Empty, false));
             _LoginProxy.SetParams(_SettingsLauncher.LoadLoginParams());
+            _Profile = null;
 
             ShowPage(PageType.Login);
         }

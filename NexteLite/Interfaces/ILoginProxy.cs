@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace NexteLite.Interfaces
 {
-    public delegate bool LoginClickHandler(string username, string password, bool save, out string message);
+    public delegate void LoginClickHandler(string username, string password, bool save);
 
     public interface ILoginProxy
     {
         event LoginClickHandler LoginClick;
         void SetParams(IParamsLoginPage data);
+        void LoginError(string message);
     }
 
 }

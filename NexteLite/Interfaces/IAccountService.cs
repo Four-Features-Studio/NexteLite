@@ -9,7 +9,7 @@ namespace NexteLite.Interfaces
 {
     public interface IAccountService
     {
-        bool AuthAccount(string username, string password, out Profile profile, ref string message);
+        Task<(bool result, Profile profile, string message)> AuthAccount(string username, string password);
         bool Logout();
 
         string GetUsername();

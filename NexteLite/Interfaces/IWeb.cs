@@ -10,9 +10,8 @@ namespace NexteLite.Interfaces
 {
     public interface IWebService: IDisposable
     {
-        bool Auth(string username, string password, out Profile profile, ref string message);
-        void Logout();
-
+        Task<(bool result, Profile profile, string message)> Auth(string username, string password);
+        void Logout(string uuid);
         Task<UpdateInfo> CheckUpdates(string hash);
 
         Task<List<ServerProfile>> GetServerProfiles();

@@ -23,23 +23,23 @@ namespace NexteLite.Services
             _Web = webService;
         }
 
-        public bool AuthAccount(string username, string password, out Profile profile, ref string message)
+        public async Task<(bool result, Profile profile, string message)> AuthAccount(string username, string password)
         {
-            profile = null;
-
             if (_SettingsLauncher.SaveLoginParams(new ParamsLoginPage(username, String.Empty, false)))
             {
-                if (_Web.Auth(username, password, out var prf, ref message))
+                var data = await _Web.Auth(username, password);
+
+                if (data.result)
                 {
-                    profile = prf;
-                    Profile = profile;
-                    return true;
+                    Profile = data.profile;
+                    return new (true, Profile, string.Empty);
                 }
-                return false;
+
+                return new(true, null, data.message);
             }
             else
             {
-                return false;
+                return new(false, null, string.Empty);
             }
         }
 
