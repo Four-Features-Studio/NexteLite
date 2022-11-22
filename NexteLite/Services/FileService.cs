@@ -325,7 +325,7 @@ namespace NexteLite.Services
         public async Task DownloadClient(List<(ActionFile action, FileEntity file)> files, ServerProfile profile)
         {
             _Logger.LogDebug($"Скачивание клиента {profile.Title}");
-            var RootDir = _SettingsLauncher.RootDir;
+            //var RootDir = _SettingsLauncher.RootDir;
             var ClientDir = _Path.GetClientPath(profile);
 
             var totalSize = 0d;
@@ -341,15 +341,15 @@ namespace NexteLite.Services
                     case ActionFile.Update:
                         {
                             totalSize += item.file.Size;
-                            item.file.Url = CombineUrlClientFile(item.file.Path);
+                            var url = CombineUrlClientFile(profile.Dir, item.file.Path);
 
                             var path = item.file.Path;
 
                             if (path.StartsWith("/") || path.StartsWith("\\"))
                                 path = item.file.Path.Substring(1);
 
-                            item.file.Path = Path.Combine(RootDir, path);
-                            filesToDownload.Add((item.file.Url, item.file.Path));
+                            item.file.Path = Path.Combine(ClientDir, path);
+                            filesToDownload.Add((url, item.file.Path));
                         }
                         break;
                     case ActionFile.Delete:
@@ -563,10 +563,10 @@ namespace NexteLite.Services
             return path.Contains(verifyPattern);
         }
 
-        string CombineUrlClientFile(string path)
+        string CombineUrlClientFile(string dir, string path)
         {
             var baseUrl = _Options.Value.WebFiles.FilesUrl;
-            var url = UrlUtil.Combine(baseUrl, path);
+            var url = UrlUtil.Combine(baseUrl, dir, path);
             return url;
         }
 

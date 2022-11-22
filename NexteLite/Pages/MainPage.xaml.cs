@@ -87,8 +87,10 @@ namespace NexteLite.Pages
         }
 
         public void SetServerProfiles(List<ServerProfile> profiles)
+
         {
-            ServerProfiles = new ObservableCollection<ServerProfile>(profiles);
+            var sorted = profiles.OrderByDescending(x => x.SortIndex);
+            ServerProfiles = new ObservableCollection<ServerProfile>(sorted);
             OnPropertyChanged(nameof(ServerProfiles));
         }
 

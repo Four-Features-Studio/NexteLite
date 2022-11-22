@@ -10,14 +10,11 @@ namespace NexteLite.Models
 {
     public class ServerProfile
     {
-        [JsonProperty("nID")]
-        public string NID { get; set; }
+        [JsonProperty("profileId")]
+        public string ProfileId { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }
-
-        [JsonProperty("configVersion")]
-        public string ConfigVersion { get; set; }
 
         [JsonProperty("version")]
         public string Version { get; set; }
@@ -33,9 +30,6 @@ namespace NexteLite.Models
         
         [JsonProperty("dir")]
         public string Dir { get; set; }
-
-        [JsonProperty("assetDir")]
-        public string AssetDir { get; set; }
        
         [JsonProperty("assetIndex")]
         public string AssetIndex { get; set; }

@@ -15,7 +15,7 @@ namespace NexteLite.Interfaces
         Task<UpdateInfo> CheckUpdates(string hash);
 
         Task<List<ServerProfile>> GetServerProfiles();
-        Task<FilesEntity> GetFiles(string dir);
+        Task<FilesEntity> GetFiles(string dir, string profileId);
         Task<AssetsIndex> GetAssetsIndex(string version);
         Task<MemoryStream> Download(double totalSize, string downloadUrl, string name, IProgress<DownloadProgressArguments> progress);
     }

@@ -14,10 +14,7 @@ namespace NexteLite.Models
         
         [JsonProperty("path")]
         public string Path { get; set; }
-        
-        [JsonProperty("url")]
-        public string Url { get; set; }
-        
+
         [JsonProperty("size")]
         public double Size { get; set; }
 

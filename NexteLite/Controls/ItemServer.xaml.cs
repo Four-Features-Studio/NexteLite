@@ -156,7 +156,7 @@ namespace NexteLite.Controls
         public void Initialize(ServerProfile profile)
         {
 
-            NID = profile.NID;
+            NID = profile.ProfileId;
             Title = profile.Title;
 
             if(profile.Server != null)

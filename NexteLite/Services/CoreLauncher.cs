@@ -242,7 +242,7 @@ namespace NexteLite.Services
             
 
             _DownloadingProxy.SetState(DownloadingState.HashClient);
-            var files = await _Web.GetFiles(profile.Dir);
+            var files = await _Web.GetFiles(profile.Dir, profile.ProfileId);
             if (files is null)
             {
                 _Logger.LogError("Не возможно проверить файлы клиента, запуск не возможен");
@@ -354,7 +354,7 @@ namespace NexteLite.Services
         private void MainProxy_PlayClick(string id)
         {
             Console.WriteLine(id);
-            var profile = ServerProfiles.FirstOrDefault(x => x.NID == id);
+            var profile = ServerProfiles.FirstOrDefault(x => x.ProfileId == id);
             if (profile == null)
                 return;
 

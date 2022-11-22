@@ -8,6 +8,7 @@ namespace NexteLite.Models
 {
     public class FilesRequest
     {
+        public string ProfileId { get; set; }
         public string Directory { get; set; }
     }
 }
