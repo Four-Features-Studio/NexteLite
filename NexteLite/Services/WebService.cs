@@ -237,7 +237,6 @@ namespace NexteLite.Services
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
 
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                 var response = await _HttpClient.SendAsync(request);
 
