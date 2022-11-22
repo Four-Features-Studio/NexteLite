@@ -35,11 +35,11 @@ namespace NexteLite.Services
                     return new (true, Profile, string.Empty);
                 }
 
-                return new(true, null, data.message);
+                return new(false, data.profile, data.message);
             }
             else
             {
-                return new(false, null, string.Empty);
+                return new(false, new Profile(), string.Empty);
             }
         }
 

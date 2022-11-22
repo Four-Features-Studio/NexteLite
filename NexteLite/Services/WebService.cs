@@ -76,16 +76,20 @@ namespace NexteLite.Services
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var data = JsonConvert.DeserializeObject<AuthData>(content);
+
+                    if (data.Profile is null)
+                        return (false, new Profile(), data.Message);
+
                     return (true, data.Profile, data.Message);
                 }
 
-                return (false, null, string.Empty);
+                return (false, new Profile(), "Возможно не верный логин или пароль");
             }
             catch (Exception ex)
             {
                 _Messages.SendInfo("Произошла ошибка при авторизации, возможно удаленный сервер не доступен");
                 _Logger.LogError(ex.ToString());
-                return (false, null, string.Empty);
+                return (false, new Profile(), "Произошла ошибка при авторизации");
             }
 
 
