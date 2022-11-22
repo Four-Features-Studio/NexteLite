@@ -52,11 +52,6 @@ namespace NexteLite.Services
             return Profile.AccessToken;
         }
 
-        public string GetServerToken()
-        {
-            return Profile.ServerToken;
-        }
-
         public string GetUsername()
         {
             return Profile.Username;
@@ -67,9 +62,10 @@ namespace NexteLite.Services
             return Profile.Uuid;
         }
 
-        public bool Logout()
+        public void Logout()
         {
-            throw new NotImplementedException();
+            _Web.Logout(Profile.Uuid);
+            Profile = null;
         }
     }
 }

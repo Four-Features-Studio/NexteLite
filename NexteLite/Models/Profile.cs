@@ -19,9 +19,6 @@ namespace NexteLite.Models
         [JsonProperty("accessToken")]
         public string AccessToken { get; set; }
 
-        [JsonProperty("serverToken")]
-        public string ServerToken { get; set; }
-
         [JsonProperty("avatar")]
         public string Avatar { get; set; }
 

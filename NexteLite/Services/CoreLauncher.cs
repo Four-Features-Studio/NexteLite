@@ -59,8 +59,6 @@ namespace NexteLite.Services
 
         private List<ServerProfile> ServerProfiles = new List<ServerProfile>();
 
-        Profile _Profile { get; set; }
-
         public CoreLauncher(IMainWindow mainWindow, 
             IAccountService accountService,
             IFileService fileService,
@@ -307,8 +305,7 @@ namespace NexteLite.Services
             if (data.result)
             {
                 _Logger.LogDebug($"Авторизация успешна");
-                _Profile = data.profile;
-                _MainProxy.SetProfile(_Profile);
+                _MainProxy.SetProfile(_Account.GetProfile());
 
                 ShowPage(PageType.Main);
                 LoadServerProfiles();
@@ -367,14 +364,14 @@ namespace NexteLite.Services
         private void MainProxy_LogoutClick()
         {
             _Logger.LogDebug($"Попытка разлогиниться");
-            _Web.Logout(_Profile.Uuid);
+
+            _Account.Logout();
 
             _MainProxy.SetProfile(null);
             _SettingsLauncher.Username = String.Empty;
             _SettingsLauncher.Password = String.Empty;
             _SettingsLauncher.SaveLoginParams(new ParamsLoginPage(string.Empty, string.Empty, false));
             _LoginProxy.SetParams(_SettingsLauncher.LoadLoginParams());
-            _Profile = null;
 
             ShowPage(PageType.Login);
         }
