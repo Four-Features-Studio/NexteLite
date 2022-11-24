@@ -72,18 +72,15 @@ namespace NexteLite.Services
 
                 var response = await _HttpClient.SendAsync(request);
 
-                if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.BadRequest)
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var data = JsonConvert.DeserializeObject<AuthData>(content);
 
-                    if (data.Profile is null)
-                        return (false, new Profile(), data.Message);
-
-                    return (true, data.Profile, data.Message);
+                    return (data.Successful, data.Profile, data.Message);
                 }
 
-                return (false, new Profile(), "Возможно не верный логин или пароль");
+                return (false, new Profile(), "Возможно произошла ошибка при авторизации");
             }
             catch (Exception ex)
             {

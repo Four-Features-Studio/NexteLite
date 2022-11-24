@@ -8,6 +8,7 @@ namespace NexteLite.Models
 {
     public class AuthData
     {
+        public bool Successful { get; set; }
         public string Message { get; set; }
         public Profile Profile { get; set; }
     }
