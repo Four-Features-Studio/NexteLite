@@ -34,17 +34,14 @@ namespace NexteLite.Models
         [JsonProperty("assetIndex")]
         public string AssetIndex { get; set; }
         
-        [JsonProperty("updatesDir")]
-        public List<string> UpadtesList { get; set; }
+        [JsonProperty("updatesList")]
+        public List<string> UpdatesList { get; set; }
         
-        [JsonProperty("updateIgnore")]
+        [JsonProperty("ignoreList")]
         public List<string> IgnoreList { get; set; }
         
         [JsonProperty("jvmArgs")]
         public List<string> JvmArgs { get; set; }
-
-        [JsonProperty("clientArgs")] 
-        public List<string> ClientArgs { get; set; }
 
         [JsonProperty("mainClass")]
         public string MainClass { get; set; }

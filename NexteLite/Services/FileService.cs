@@ -84,6 +84,13 @@ namespace NexteLite.Services
             if (webFiles is null)
                 return new List<(ActionFile, FileEntity)>();
 
+            if(profile.UpdatesList is null)
+            {
+                _Logger.LogCritical($"ВНИМАНИЕ! Битый профиль {profile.Title}");
+                return new List<(ActionFile, FileEntity)>();
+            }
+                
+
             //1 - Получить все локальные файлы.
             //2 - Отсеить файлы которые не входят в updatelist
             //3 - Получаем хеши локальных файлов
@@ -127,7 +134,7 @@ namespace NexteLite.Services
 
             //2
             _Logger.LogDebug("Фильтрация локальных файлов, которые не входят в список обновления");
-            localFiles = localFiles.Where(x => profile.UpadtesList.Any(u => CheckNameInFileOrFolder(pathClient, x, u))).ToArray();
+            localFiles = localFiles.Where(x => profile.UpdatesList.Any(u => CheckNameInFileOrFolder(pathClient, x, u))).ToArray();
 
             //3
             _Logger.LogDebug("Расчет хешсум локальных файлов");
@@ -142,7 +149,7 @@ namespace NexteLite.Services
             foreach (var local in hashesFiles)
             {
                 //2
-                if (profile.IgnoreList.Any(x => CheckNameInFileOrFolder(pathClient, local.Path, x)))
+                if (profile.IgnoreList is not null && profile.IgnoreList.Any(x => CheckNameInFileOrFolder(pathClient, local.Path, x)))
                     continue;
 
                 if(!verifyFiles.Any(x => x.Name == local.Name))

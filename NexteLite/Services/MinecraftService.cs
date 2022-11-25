@@ -102,11 +102,13 @@ namespace NexteLite.Services
             _Process.EnableRaisingEvents = true;
             _Process.OutputDataReceived += (sender, args) =>
             {
-                OnMinecraftLogRecived?.Invoke(args.Data.ToString());
+                if(args.Data != null)
+                    OnMinecraftLogRecived?.Invoke(args.Data.ToString());
             };
             _Process.ErrorDataReceived += (s, args) =>
             {
-                OnMinecraftLogRecived?.Invoke(args.Data.ToString());
+                if (args.Data != null)
+                    OnMinecraftLogRecived?.Invoke(args.Data.ToString());
             };
             _Process.Exited += (s, arg) =>
             {
@@ -160,7 +162,7 @@ namespace NexteLite.Services
             //
             var jvmArgs = new List<string>()
             { 
-                $"-javaagent:{injectorPath}={injectorUrl}",
+                //$"-javaagent:{injectorPath}={injectorUrl}",
                 $"-Xmx{memory}M",
                 $"-Xms{memory}M",
                 $"-Djava.library.path={nativesDir}"

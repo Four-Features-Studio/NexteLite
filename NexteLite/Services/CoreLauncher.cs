@@ -239,7 +239,6 @@ namespace NexteLite.Services
 
             var localAssets = await _FileService.CheckAssets(profile, assetsIndex);
 
-            
 
             _DownloadingProxy.SetState(DownloadingState.HashClient);
             var files = await _Web.GetFiles(profile.Dir, profile.ProfileId);

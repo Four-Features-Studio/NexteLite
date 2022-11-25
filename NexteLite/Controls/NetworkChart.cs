@@ -103,7 +103,11 @@ namespace NexteLite.Controls
 
                 InvalidateVisual();
             };
-            Dispatcher?.Invoke(dlg, System.Windows.Threading.DispatcherPriority.Normal);
+            try
+            {
+                Dispatcher?.Invoke(dlg, System.Windows.Threading.DispatcherPriority.Normal);
+            }
+            catch { }
         }
 
         private double Average(NetworkChartData[] datas)
