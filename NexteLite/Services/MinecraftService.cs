@@ -162,7 +162,7 @@ namespace NexteLite.Services
             //
             var jvmArgs = new List<string>()
             { 
-                //$"-javaagent:{injectorPath}={injectorUrl}",
+                $"-javaagent:{injectorPath}={injectorUrl}",
                 $"-Xmx{memory}M",
                 $"-Xms{memory}M",
                 $"-Djava.library.path={nativesDir}"
