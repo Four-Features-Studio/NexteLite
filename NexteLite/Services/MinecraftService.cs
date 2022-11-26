@@ -221,7 +221,10 @@ namespace NexteLite.Services
             }
 
             var jwmString = String.Join(" ", jvmArgs.ToArray());
-            var addedJwmStrings = String.Join(" ", profile.JvmArgs);
+
+            var addedJwm = profile.JvmArgs is not null ? profile.JvmArgs : new List<string>();
+            var addedJwmStrings = String.Join(" ", addedJwm);
+
             var cpString = String.Join(" ", classPath.ToArray());
             var gameString = String.Join(" ", gameArgs.ToArray());
 

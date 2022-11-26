@@ -108,6 +108,8 @@ namespace NexteLite.Services
             _SettingsProxy.DeleteAllClick += SettingsProxy_DeleteAllClick;
             _SettingsProxy.SetParams(_SettingsLauncher.LoadSettingsParams());
 
+            _SettingsLauncher.LoadLastSelectedPreset();
+
             _Logger.LogInformation("Расчет максимального количество ОЗУ");
             CalculateMaxRam();
 

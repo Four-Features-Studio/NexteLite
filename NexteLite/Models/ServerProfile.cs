@@ -48,5 +48,8 @@ namespace NexteLite.Models
 
         [JsonProperty("hideProfile")] 
         public bool HideProfile { get; set; }
+
+        [JsonProperty("presets")]
+        public List<ServerPreset> Presets { get; set; }
     }
 }

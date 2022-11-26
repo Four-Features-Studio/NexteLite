@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NexteLite.Interfaces;
 using NexteLite.Models;
 using System;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -24,6 +27,8 @@ namespace NexteLite.Services
         public bool AutoConnect { get; set; }
         public bool Debug { get; set; }
         public bool FullScreen { get; set; }
+
+        public Dictionary<string,string> SelectedPresets { get; set; }
 
         AppSettings _AppSettings;
 
@@ -154,6 +159,59 @@ namespace NexteLite.Services
                 Console.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        public bool SaveLastSelectedPreset(string profileId, string presetId)
+        {
+            try
+            {
+                if (SelectedPresets.ContainsKey(profileId))
+                {
+                    SelectedPresets[profileId] = presetId;
+                }
+                else
+                {
+                    SelectedPresets.Add(profileId, presetId);
+                }
+
+                var path = GetPath();
+                var fullpath = Path.Combine(path, "presets" + _AppSettings.DirParams.SettingsExtension);
+
+                new FileInfo(fullpath).Directory?.Create();
+
+                using (BinaryWriter writer = new BinaryWriter(File.Open(fullpath, FileMode.Create)))
+                {
+                    writer.Flush();
+                    var data = JsonConvert.SerializeObject(path, Formatting.Indented);
+                    writer.Write(data);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public void LoadLastSelectedPreset()
+        {
+            SelectedPresets = new Dictionary<string, string>();
+
+            var path = GetPath();
+            var fullpath = Path.Combine(path, "presets" + _AppSettings.DirParams.SettingsExtension);
+
+            if (!File.Exists(fullpath))
+                return;
+
+            using (BinaryReader reader = new BinaryReader(File.Open(fullpath, FileMode.Open)))
+            {
+                var data = reader.ReadString();
+                SelectedPresets = JsonConvert.DeserializeObject<Dictionary<string, string>>(data);
+            }
+
+            return;
         }
 
         private string GetPath()

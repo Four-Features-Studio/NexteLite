@@ -18,6 +18,8 @@ namespace NexteLite.Interfaces
         bool Debug { get; set; }
         bool FullScreen { get; set; }
 
+        public Dictionary<string, string> SelectedPresets { get; set; }
+
         IParamsLoginPage LoadLoginParams();
 
         bool SaveLoginParams(IParamsLoginPage data);
@@ -25,5 +27,8 @@ namespace NexteLite.Interfaces
         IParamsSettingPage LoadSettingsParams();
 
         bool SaveSettingsParams(IParamsSettingPage data);
+
+        void LoadLastSelectedPreset();
+        bool SaveLastSelectedPreset(string profileId, string selectId);
     }
 }

@@ -84,6 +84,7 @@ namespace NexteLite.Controls
         public ObservableCollection<ItemServer> Servers => _Servers;
 
         IMineStat _State;
+        ISettingsLauncher _Settings;
 
         public ServerCarousel()
         {
@@ -92,6 +93,7 @@ namespace NexteLite.Controls
             UpdateButtonRender();
 
             _State = ((App)App.Current).ServiceProvider.GetRequiredService<IMineStat>();
+            _Settings = ((App)App.Current).ServiceProvider.GetRequiredService<ISettingsLauncher>();
         }
 
         public void Reset()
@@ -126,6 +128,7 @@ namespace NexteLite.Controls
                 {
                     var itemServer = new ItemServer(_State);
                     itemServer.OnPlayClick += ItemServer_OnPlayClick;
+                    itemServer.OnSelectedPreset += ItemServer_OnSelectedPreset;
 
                     var index = servers.IndexOf(item);
 
@@ -140,7 +143,11 @@ namespace NexteLite.Controls
                         itemServer.Hide(true);
                     }
 
-                    itemServer.Initialize(profile);
+                    var selected = string.Empty;
+                    if(_Settings.SelectedPresets.ContainsKey(profile.ProfileId))
+                        selected = _Settings.SelectedPresets[profile.ProfileId];
+
+                    itemServer.Initialize(profile, selected);
                     Servers.Add(itemServer);
                 }
                 else
@@ -180,6 +187,11 @@ namespace NexteLite.Controls
             }
 
             UpdateButtonRender();
+        }
+
+        private void ItemServer_OnSelectedPreset(string profileId, string presetId)
+        {
+            _Settings.SaveLastSelectedPreset(profileId, presetId);
         }
 
         private void ItemServer_OnPlayClick(string nID)

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -140,10 +141,42 @@ namespace NexteLite.Controls
             }
         }
 
+        string _SelectedPreset;
+        public string SelectedPreset
+        {
+            get
+            {
+                return _SelectedPreset;
+            }
+            set
+            {
+                _SelectedPreset = value;
+                OnPropertyChanged();
+            }
+        }
+
+        bool _IsPresetAvailable;
+        public bool IsPresetAvailable
+        {
+            get
+            {
+                return _IsPresetAvailable;
+            }
+            set
+            {
+                _IsPresetAvailable = value;
+                OnPropertyChanged();
+            }
+        }
+
         public SolidColorBrush IsOnlineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#7bb458"));
         public SolidColorBrush IsOfflineColor { get; set; } = (SolidColorBrush)(new BrushConverter().ConvertFrom("#ad4444"));
 
         public event OnPlayClickHandler OnPlayClick;
+
+        public delegate void OnSelectedPresetHandler(string profileId, string presetId);
+        public event OnSelectedPresetHandler OnSelectedPreset;
+
 
         IMineStat _State;
 
@@ -153,7 +186,7 @@ namespace NexteLite.Controls
             _State = state;
         }
 
-        public void Initialize(ServerProfile profile)
+        public void Initialize(ServerProfile profile, string presetId = "")
         {
 
             NID = profile.ProfileId;
@@ -164,6 +197,18 @@ namespace NexteLite.Controls
                 Ip = profile.Server.Ip;
                 Port = profile.Server.Port;
                 IsOnline = false;
+            }
+
+            if(profile.Presets is not null && profile.Presets.Count > 0)
+            {
+                IsPresetAvailable = true;
+
+                if(string.IsNullOrEmpty(presetId))
+                {
+                    SelectedPreset = profile.Presets.First().Id;
+                }
+
+                SelectedPreset = presetId;
             }
 
             ServerAvatar = ImageUtils.GetImageFromBase64(profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/placeholder.jpg");

@@ -20,7 +20,6 @@
 
             <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
             <converters:BoolToBrushConverter x:Key="boolToBrushConverter"/>
-            <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
 
             <Storyboard x:Key="Show">
                 <DoubleAnimation Storyboard.TargetName="ItemGrid" To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
@@ -47,6 +46,9 @@
 
                 <DoubleAnimation Storyboard.TargetName="PlayButton" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
+
+                <DoubleAnimation Storyboard.TargetName="PlayPresetButton" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
                 
                 <DoubleAnimation Storyboard.TargetName="PlayerOnServer" To="1" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
@@ -59,7 +61,7 @@
 
                 <DoubleAnimation Storyboard.TargetName="thisServer" To="332" Duration="0:0:0.2" Storyboard.TargetProperty="Height"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
-                
+
                 <DoubleAnimation Storyboard.TargetName="Border" To="223" Duration="0:0:0.2" Storyboard.TargetProperty="Height"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
@@ -72,6 +74,9 @@
                 <DoubleAnimation Storyboard.TargetName="PlayButton" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
+                <DoubleAnimation Storyboard.TargetName="PlayPresetButton" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
+                </DoubleAnimation>
+
                 <DoubleAnimation Storyboard.TargetName="PlayerOnServer" To="0" Duration="0:0:0.1" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
                 </DoubleAnimation>
 
@@ -79,7 +84,8 @@
                 </DoubleAnimation>
 
             </Storyboard>
-            
+
+
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -111,11 +117,12 @@
             </Image>
         </Grid>
 
-        <Button x:Name="PlayButton"
+        <Button x:Name="PlayButton" Visibility="{Binding IsPresetAvailable, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
                 Content="{Binding IsOnline, Converter={StaticResource BoolToTextConverter}}" 
                 Grid.Row="1" 
                 Click="PlayButton_Click" 
                 BorderThickness="0" 
+                Opacity="0"
                 Foreground="White" FontFamily="{StaticResource Thin}"
                 VerticalAlignment="Bottom" HorizontalAlignment="Center" 
                 Height="24" Width="158" 
@@ -129,12 +136,68 @@
             </Button.Background>
         </Button>
 
+        <Grid x:Name="PlayPresetButton" Grid.Row="1" Opacity="0"
+                VerticalAlignment="Bottom" HorizontalAlignment="Center" 
+                Height="24" Width="158"
+              Visibility="{Binding IsPresetAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="24" Width="24" Padding="2,5" Cursor="Hand" BorderThickness="0" Margin="1,0">
+                <Button.Background>
+                    <MultiBinding Converter="{StaticResource boolToBrushConverter}">
+                        <Binding Path="IsOnline"/>
+                        <Binding Path="IsOnlineColor"/>
+                        <Binding Path="IsOfflineColor"/>
+                    </MultiBinding>
+                </Button.Background>
+                <Image VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image.Source>
+                        <DrawingImage>
+                            <DrawingImage.Drawing>
+                                <DrawingGroup ClipGeometry="M0,0 V20 H20 V0 H0 Z">
+                                    <GeometryDrawing Geometry="F1 M20,20z M0,0z M5,8L10,12 15,8">
+                                        <GeometryDrawing.Pen>
+                                            <Pen Brush="White" Thickness="1" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+                                        </GeometryDrawing.Pen>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                            </DrawingImage.Drawing>
+                        </DrawingImage>
+                    </Image.Source>
+                </Image>
+            </Button>
+            
+            <Button Visibility="{Binding IsPresetAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="1,0"
+                Grid.Column="1" 
+                Content="{Binding SelectedPreset}"
+                Click="PlayButton_Click" 
+                BorderThickness="0" 
+                Opacity="1"
+                VerticalAlignment="Center"
+                Height="24"
+                Foreground="White" FontFamily="{StaticResource Thin}"
+                Cursor="Hand">
+                <Button.Background>
+                    <MultiBinding Converter="{StaticResource boolToBrushConverter}">
+                        <Binding Path="IsOnline"/>
+                        <Binding Path="IsOnlineColor"/>
+                        <Binding Path="IsOfflineColor"/>
+                    </MultiBinding>
+                </Button.Background>
+            </Button>
+        </Grid>
+        
+        
         <TextBlock x:Name="PlayerOnServer"
                    Grid.Row="2"
                    Opacity="1"
                    FontSize="14" FontFamily="{StaticResource Thin}"
                    Foreground="#898989"
-                   Visibility="{Binding IsOnline, Converter={StaticResource booleanToVisibilityConverter}}"
+                   Visibility="{Binding IsOnline, Converter={StaticResource BooleanToVisibilityConverter}}"
                    HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock.Text>
                 <MultiBinding StringFormat="Игроков на сервере {0} из {1}">
