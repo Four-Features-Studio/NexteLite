@@ -3,7 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NexteLite" xmlns:converters="clr-namespace:NexteLite.Converters"
+             xmlns:local="clr-namespace:NexteLite.Controls" 
+             xmlns:models="clr-namespace:NexteLite.Models" 
+             xmlns:converters="clr-namespace:NexteLite.Converters"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              Height="394" Width="300"
              x:Name="thisServer">
@@ -20,6 +23,7 @@
 
             <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
             <converters:BoolToBrushConverter x:Key="boolToBrushConverter"/>
+            <converters:PresetIdToTitleConverter x:Key="presetIdToTitleConverter"/>
 
             <Storyboard x:Key="Show">
                 <DoubleAnimation Storyboard.TargetName="ItemGrid" To="1" Duration="0:0:0.15" Storyboard.TargetProperty="Opacity"  FillBehavior="HoldEnd">
@@ -115,6 +119,7 @@
 
             <Image x:Name="BackgroundImage" Stretch="UniformToFill" Source="{Binding ServerAvatar}">
             </Image>
+
         </Grid>
 
         <Button x:Name="PlayButton" Visibility="{Binding IsPresetAvailable, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
@@ -136,17 +141,24 @@
             </Button.Background>
         </Button>
 
+        
         <Grid x:Name="PlayPresetButton" Grid.Row="1" Opacity="0"
                 VerticalAlignment="Bottom" HorizontalAlignment="Center" 
                 Height="24" Width="158"
               Visibility="{Binding IsPresetAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-
-            <Button HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="24" Width="24" Padding="2,5" Cursor="Hand" BorderThickness="0" Margin="1,0">
+            
+            <Button Grid.Column="1"
+                    HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                    Height="24" Width="16" 
+                    Padding="0" 
+                    Cursor="Hand" 
+                    BorderThickness="0"
+                    Margin="1,0">
                 <Button.Background>
                     <MultiBinding Converter="{StaticResource boolToBrushConverter}">
                         <Binding Path="IsOnline"/>
@@ -154,7 +166,11 @@
                         <Binding Path="IsOfflineColor"/>
                     </MultiBinding>
                 </Button.Background>
-                <Image VerticalAlignment="Center" HorizontalAlignment="Center">
+                <behaviors:Interaction.Behaviors>
+                    <local:DropDownBehaviour/>
+                </behaviors:Interaction.Behaviors>
+
+                <Image VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2">
                     <Image.Source>
                         <DrawingImage>
                             <DrawingImage.Drawing>
@@ -169,11 +185,27 @@
                         </DrawingImage>
                     </Image.Source>
                 </Image>
+
+                <Button.ContextMenu>
+                    <ContextMenu ItemsSource="{Binding Presets}">
+                        <ContextMenu.ItemContainerStyle>
+                            <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MaterialDesignMenuItem}">
+                                <Setter Property="Tag" Value="{Binding Id}"/>
+                                <EventSetter Event="Click" Handler="Selector_Click"/>
+                            </Style>
+                        </ContextMenu.ItemContainerStyle>
+                        <ContextMenu.ItemTemplate>
+                            <DataTemplate DataType="{x:Type models:ServerPreset}">
+                                <TextBlock Text="{Binding Title}"/>
+                            </DataTemplate>
+                        </ContextMenu.ItemTemplate>
+                    </ContextMenu>
+                </Button.ContextMenu>
+
             </Button>
-            
+
             <Button Visibility="{Binding IsPresetAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="1,0"
-                Grid.Column="1" 
-                Content="{Binding SelectedPreset}"
+                Grid.Column="0" 
                 Click="PlayButton_Click" 
                 BorderThickness="0" 
                 Opacity="1"
@@ -188,6 +220,13 @@
                         <Binding Path="IsOfflineColor"/>
                     </MultiBinding>
                 </Button.Background>
+
+                <Button.Content>
+                    <MultiBinding Converter="{StaticResource presetIdToTitleConverter}">
+                        <Binding Path="SelectedPreset"/>
+                        <Binding Path="Presets"/>
+                    </MultiBinding>
+                </Button.Content>
             </Button>
         </Grid>
         

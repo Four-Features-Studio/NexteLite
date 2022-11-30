@@ -20,7 +20,7 @@ namespace NexteLite.Interfaces
 
         Task UpdateLauncher();
 
-        Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity files);
+        Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity files, string presetId = "");
 
         Task<List<(string hash, double size)>> CheckAssets(ServerProfile profile, AssetsIndex assets);
 

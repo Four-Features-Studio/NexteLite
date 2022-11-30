@@ -36,7 +36,7 @@ namespace NexteLite.Controls
         private int SelectedItem = 0;
         private ItemServer Selected;
 
-        public delegate void OnPlayClickHandler(string nID);
+        public delegate void OnPlayClickHandler(string nID, string presetId);
         public event OnPlayClickHandler PlayClick;
 
         public static readonly DependencyProperty ItemsCarouselProperty = DependencyProperty.Register("ItemsCarousel", typeof(IEnumerable), typeof(ServerCarousel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnItemsCollectionChanged)) { AffectsRender = true });
@@ -194,9 +194,9 @@ namespace NexteLite.Controls
             _Settings.SaveLastSelectedPreset(profileId, presetId);
         }
 
-        private void ItemServer_OnPlayClick(string nID)
+        private void ItemServer_OnPlayClick(string nID, string presetId)
         {
-            PlayClick?.Invoke(nID);
+            PlayClick?.Invoke(nID, presetId);
         }
 
         private void UpdateButtonRender()

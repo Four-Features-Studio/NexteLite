@@ -12,7 +12,7 @@ namespace NexteLite.Interfaces
     public delegate void SocialClickHandler(string url);
     public delegate void SettingsClickHandler();
 
-    public delegate void PlayClickHandler(string id);
+    public delegate void PlayClickHandler(string id, string presetId);
 
     public interface IMainProxy
     {

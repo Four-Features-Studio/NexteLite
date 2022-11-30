@@ -160,9 +160,9 @@ namespace NexteLite.Pages
         /// 
         /// </summary>
         /// <param name="nID"></param>
-        private void ServerCarousel_PlayClick(string nID)
+        private void ServerCarousel_PlayClick(string nID, string presetId)
         {
-            PlayClick?.Invoke(nID);
+            PlayClick?.Invoke(nID, presetId);
         }
     }
 }

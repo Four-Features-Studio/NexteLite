@@ -5,6 +5,7 @@ using NexteLite.Models;
 using NexteLite.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -177,6 +178,20 @@ namespace NexteLite.Controls
         public delegate void OnSelectedPresetHandler(string profileId, string presetId);
         public event OnSelectedPresetHandler OnSelectedPreset;
 
+        List<ServerPreset> _Presets = new List<ServerPreset>();
+        public List<ServerPreset> Presets
+        {
+            get
+            {
+                return _Presets;
+            }
+            set
+            {
+                _Presets = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         IMineStat _State;
 
@@ -202,13 +217,20 @@ namespace NexteLite.Controls
             if(profile.Presets is not null && profile.Presets.Count > 0)
             {
                 IsPresetAvailable = true;
+                Presets = profile.Presets.OrderByDescending(x => x.Index).ToList();
 
-                if(string.IsNullOrEmpty(presetId))
+                if (string.IsNullOrEmpty(presetId))
+                {
+                    SelectedPreset = profile.Presets.First().Id;
+                } 
+                else if(Presets.Any(x => x.Id == presetId))
+                {
+                    SelectedPreset = presetId;
+                }
+                else
                 {
                     SelectedPreset = profile.Presets.First().Id;
                 }
-
-                SelectedPreset = presetId;
             }
 
             ServerAvatar = ImageUtils.GetImageFromBase64(profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/placeholder.jpg");
@@ -310,7 +332,15 @@ namespace NexteLite.Controls
         /// <param name="e"></param>
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            OnPlayClick?.Invoke(NID);
+            OnPlayClick?.Invoke(NID, SelectedPreset);
+        }
+
+        private void Selector_Click(object sender, RoutedEventArgs e)
+        {
+            if(sender is MenuItem item && item.Tag is string id)
+            {
+                SelectedPreset = id;
+            }
         }
     }
 }

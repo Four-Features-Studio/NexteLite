@@ -26,6 +26,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Markup;
 
+
 namespace NexteLite.Services
 {
     public class FileService : IFileService
@@ -79,8 +80,23 @@ namespace NexteLite.Services
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity webFiles)
+        public async Task<List<(ActionFile action, FileEntity file)>> CheckFilesClient(ServerProfile profile, FilesEntity webFiles, string presetId = "")
         {
+            void RemoveAllPresets()
+            {
+                var presets = profile.Presets.Select(x => x.Dir).ToList();
+                if (presets.Count > 0)
+                {
+                    foreach (var preset in presets)
+                    {
+                        var toDelete = webFiles.Files.Where(x => CheckPreset(preset, x.Path, out _)).ToList();
+
+                        webFiles.Files.RemoveAll(x => toDelete.Select(h => h.Hash).Contains(x.Hash) && toDelete.Select(h => h.Path).Contains(x.Path));
+                    }
+                }
+            }
+
+
             if (webFiles is null)
                 return new List<(ActionFile, FileEntity)>();
 
@@ -103,8 +119,7 @@ namespace NexteLite.Services
             _Logger.LogDebug($"Запущенна проверка файлов клиента {profile.Title}");
 
             var typeHash = (ChecksumMethod)webFiles.TypeHash;
-            var verifyFiles = webFiles.Files;
-
+            var verifyFiles = new List<FileEntity>();
             var hashesFiles = new List<FileEntity>();
             var fileIncorect = new List<(ActionFile action, FileEntity file)>();
 
@@ -114,8 +129,45 @@ namespace NexteLite.Services
             {
                 _Logger.LogError($"Неверно указан путь к файлам игры");
                 return new List<(ActionFile, FileEntity)>();
-            } 
-                
+            }
+
+            if (string.IsNullOrEmpty(presetId))
+            {
+                RemoveAllPresets();
+            }
+            else
+            {
+                var presets = profile.Presets.Where(x => x.Id != presetId).Select(x => x.Dir).ToList();
+                if (presets.Count > 0)
+                {
+                    foreach (var preset in presets)
+                    {
+                        var toDelete = webFiles.Files.Where(x => CheckPreset(preset, x.Path, out _)).ToList();
+
+                        webFiles.Files.RemoveAll(x => toDelete.Select(h => h.Hash).Contains(x.Hash) && toDelete.Select(h => h.Path).Contains(x.Path));
+                    }
+                }
+ 
+            }
+
+            verifyFiles = webFiles.Files;
+
+            if (!string.IsNullOrEmpty(presetId) && profile.Presets.Any(x => x.Id == presetId))
+            {
+                var preset = profile.Presets.FirstOrDefault();
+                foreach (var file in verifyFiles)
+                {
+                    if (CheckPreset(preset.Dir, file.Path, out var dir))
+                    {
+                        file.Path = file.Path.Replace(dir, GetDirectorySeparatorUsedInPath(dir).ToString());
+                    }
+                }
+            }
+            else
+            {
+                RemoveAllPresets();
+            }
+
 
             if (!Directory.Exists(pathClient))
             {
@@ -134,7 +186,7 @@ namespace NexteLite.Services
 
             //2
             _Logger.LogDebug("Фильтрация локальных файлов, которые не входят в список обновления");
-            localFiles = localFiles.Where(x => profile.UpdatesList.Any(u => CheckNameInFileOrFolder(pathClient, x, u))).ToArray();
+            localFiles = localFiles.Where(x => profile.UpdatesList.Any(u => CheckNameInFileOrFolder(pathClient,u,x))).ToArray();
 
             //3
             _Logger.LogDebug("Расчет хешсум локальных файлов");
@@ -149,7 +201,7 @@ namespace NexteLite.Services
             foreach (var local in hashesFiles)
             {
                 //2
-                if (profile.IgnoreList is not null && profile.IgnoreList.Any(x => CheckNameInFileOrFolder(pathClient, local.Path, x)))
+                if (profile.IgnoreList is not null && profile.IgnoreList.Any(x => CheckNameInFileOrFolder(pathClient, x, local.Path)))
                     continue;
 
                 if(!verifyFiles.Any(x => x.Name == local.Name))
@@ -503,15 +555,15 @@ namespace NexteLite.Services
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="clientDir">Параметр указывающий название папки, а не путь</param>
-        /// <param name="path"></param>
-        /// <param name="pathPart"></param>
+        /// <param name="clientDirPath">Пусть к папке клиента</param>
+        /// <param name="path">Полный путь, в котором будет искаться соответсвие</param>
+        /// <param name="pathName">Часть пути, которую нужно найти в полном формате пути</param>
         /// <returns></returns>
-        bool CheckNameInFileOrFolder(string clientDirPath, string path, string pathPart)
+        bool CheckNameInFileOrFolder(string clientDirPath, string pathName,  string path)
         {
             //1 - Приводим путь проверки к формату пути ОС
             //2 - Получаем название папки игрового клиента из пути.
-            //3 - Создаем путь до условной папки/файла и проверяем, существует ли он, если нет то проверку завершаем возвращая false
+            //3 - Создаем путь до условной папки/файла и проверяем, существует ли в пути расширение файла
             //4 - Проверяем условный путь, является ли это файлом или папкой, если папка то добавляем разделитель в конец
             //5 - Создаем паттерн пути для проверки
             //6 - Превращаем путь в относительный путь от папки Updates (прим. D://.nexte//Updates//HiTech//minecraft.jar -> HiTech//minecraft.jar)
@@ -520,13 +572,6 @@ namespace NexteLite.Services
             //  | 3 - Удаляем из пути все лишнее, чтоб получился относительный путь от папки Updates
             //7 - Проверяем, есть ли в пути наш паттерн
 
-            char GetDirectorySeparatorUsedInPath()
-            {
-                if (path.Contains(Path.AltDirectorySeparatorChar))
-                    return Path.AltDirectorySeparatorChar;
-
-                return Path.DirectorySeparatorChar;
-            }
 
             string NormalizePath(string path)
             {
@@ -535,23 +580,20 @@ namespace NexteLite.Services
             }
 
             //1 
-            pathPart = NormalizePath(pathPart);
+            pathName = NormalizePath(pathName);
 
             //2
             var nameClientDir = Path.GetFileName(clientDirPath);
 
             //3
-            var checkedPath = Path.Combine(clientDirPath, pathPart);
-            if(!Directory.Exists(checkedPath))
-                return false;
+            var checkedPath = Path.Combine(clientDirPath, pathName);
 
             //4
-            FileAttributes attr = File.GetAttributes(checkedPath);
-            if (attr.HasFlag(FileAttributes.Directory))
-                pathPart = pathPart + GetDirectorySeparatorUsedInPath();
+            if (string.IsNullOrEmpty(Path.GetExtension(checkedPath)))
+                pathName = pathName + GetDirectorySeparatorUsedInPath(path);
 
             //5
-            var verifyPattern = Path.Combine(nameClientDir, pathPart);
+            var verifyPattern = Path.Combine(nameClientDir, pathName);
 
             //6
 
@@ -570,13 +612,40 @@ namespace NexteLite.Services
             return path.Contains(verifyPattern);
         }
 
+        bool CheckPreset(string presetsDir, string path, out string dir)
+        {
+
+            string NormalizePath(string path)
+            {
+                var pathParts = path.Split(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+                return GetDirectorySeparatorUsedInPath(path) + Path.Combine(pathParts) + GetDirectorySeparatorUsedInPath(path);
+            }
+
+            dir = string.Empty;
+
+            //1 
+            presetsDir = NormalizePath(presetsDir);
+
+            var resutl = path.Contains(presetsDir);
+
+            dir = presetsDir;
+
+            return resutl;
+        }
+
         string CombineUrlClientFile(string dir, string path)
         {
             var baseUrl = _Options.Value.WebFiles.FilesUrl;
             var url = UrlUtil.Combine(baseUrl, dir, path);
             return url;
         }
+        char GetDirectorySeparatorUsedInPath(string path)
+        {
+            if (path.Contains(Path.AltDirectorySeparatorChar))
+                return Path.AltDirectorySeparatorChar;
 
+            return Path.DirectorySeparatorChar;
+        }
 
         NetworkSpeeder speeder;
 

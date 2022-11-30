@@ -220,7 +220,7 @@ namespace NexteLite.Services
             return page;
         }
 
-        private async void StartMinecraft(ServerProfile profile)
+        private async void StartMinecraft(ServerProfile profile, string presetId)
         {
             _Logger.LogDebug($"Запрос на запуск игрового клиента {profile.Title}");
             ShowPage(PageType.Downloading);
@@ -252,7 +252,7 @@ namespace NexteLite.Services
             }
                 
 
-            var localFiles = await _FileService.CheckFilesClient(profile, files);
+            var localFiles = await _FileService.CheckFilesClient(profile, files, presetId);
 
             _DownloadingProxy.SetState(DownloadingState.DownloadAssets);
             await _FileService.DownloadAssets(assetsIndex, localAssets, profile.AssetIndex);
@@ -352,14 +352,14 @@ namespace NexteLite.Services
         /// </summary>
         /// <param name="id"></param>
         /// <exception cref="NotImplementedException"></exception>
-        private void MainProxy_PlayClick(string id)
+        private void MainProxy_PlayClick(string id, string presetId)
         {
             Console.WriteLine(id);
             var profile = ServerProfiles.FirstOrDefault(x => x.ProfileId == id);
             if (profile == null)
                 return;
 
-            StartMinecraft(profile);
+            StartMinecraft(profile, presetId);
 
         }
         private void MainProxy_LogoutClick()
