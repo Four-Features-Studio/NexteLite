@@ -23,6 +23,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Net.WebRequestMethods;
 
 namespace NexteLite.Pages
 {
@@ -83,7 +84,7 @@ namespace NexteLite.Pages
         public void SetProfile(Profile profile)
         {
             Profile = profile;
-            Avatar = ImageUtils.GetImageFromBase64(profile is null ? string.Empty : profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/avatar.png");
+            Avatar = ImageUtils.GetAvatar(profile is null ? string.Empty : profile.Avatar, "pack://application:,,,/NexteLite;component/Resources/avatar.png");
         }
 
         public void SetServerProfiles(List<ServerProfile> profiles)

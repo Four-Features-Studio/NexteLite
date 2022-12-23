@@ -11,10 +11,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Deterministic>False</Deterministic>
+    <DefineConstants>$(DefineConstants)TRACE;DEVMODE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Deterministic>False</Deterministic>
+    <DefineConstants>$(DefineConstants)TRACE;DEVMODE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

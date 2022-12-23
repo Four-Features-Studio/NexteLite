@@ -64,7 +64,7 @@ namespace NexteLite.Services
 
         public void Logout()
         {
-            _Web.Logout(Profile.Uuid);
+            _Web.Logout(Profile.AccessToken);
             Profile = null;
         }
     }

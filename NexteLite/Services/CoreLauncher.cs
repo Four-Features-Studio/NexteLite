@@ -132,6 +132,7 @@ namespace NexteLite.Services
 
         private async void CheckUpdate()
         {
+#if !DEVMODE
             ShowPage(PageType.Update);
 
             _UpdateProxy.SetState(UpdateState.Check);
@@ -153,6 +154,9 @@ namespace NexteLite.Services
             {
                 ShowPage(PageType.Login);
             }
+#else
+            ShowPage(PageType.Login);
+#endif
         }
 
         /// <summary>

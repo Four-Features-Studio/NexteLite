@@ -8,6 +8,6 @@ namespace NexteLite.Models
 {
     public class LogoutRequest
     {
-        public string Uuid { get; set; }
+        public string AccessToken { get; set; }
     }
 }

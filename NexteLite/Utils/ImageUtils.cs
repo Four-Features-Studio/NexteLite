@@ -18,6 +18,42 @@ namespace NexteLite.Utils
         /// <param name="base64">Закодированная картинка в BASE64</param>
         /// <param name="placeholder"></param>
         /// <returns></returns>
+        public static ImageSource GetAvatar(string uri, string placeholder)
+        {
+            ImageSource ReturnDefault()
+            {
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri(placeholder);
+                bi.EndInit();
+                return bi;
+            }
+
+            try
+            {
+                if (string.IsNullOrEmpty(uri))
+                {
+                    return ReturnDefault();
+                }
+
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.UriSource = new Uri(uri);
+                bi.EndInit();
+                return bi;
+            }
+            catch (Exception ex)
+            {
+                return ReturnDefault();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="base64">Закодированная картинка в BASE64</param>
+        /// <param name="placeholder"></param>
+        /// <returns></returns>
         public static ImageSource GetImageFromBase64(string base64, string placeholder)
         {
             ImageSource ReturnDefault()
