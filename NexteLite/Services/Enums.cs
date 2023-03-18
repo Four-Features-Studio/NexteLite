@@ -25,8 +25,8 @@ namespace NexteLite.Services.Enums
 
     public enum ChecksumMethod
     {
-        MD5,
-        SHA1
+        SHA1 = 0,
+        MD5
     }
 
     public enum DownloadingState

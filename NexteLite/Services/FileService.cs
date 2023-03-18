@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -84,8 +85,8 @@ namespace NexteLite.Services
         {
             void RemoveAllPresets()
             {
-                var presets = profile.Presets.Select(x => x.Dir).ToList();
-                if (presets.Count > 0)
+                var presets = profile.Presets?.Select(x => x.Dir).ToList();
+                if (presets != null && presets.Count > 0)
                 {
                     foreach (var preset in presets)
                     {
@@ -820,11 +821,10 @@ namespace NexteLite.Services
                     break;
                 case ChecksumMethod.SHA1:
                     {
-                        using (SHA1 sha1 = SHA1.Create())
-                        {
-                            var result = sha1.ComputeHash(file);
-                            return string.Concat(result.Select(b => b.ToString("x2")));
-                        }
+                        var data_file = new byte[file.Length];
+                        file.Read(data_file, 0, data_file.Length);
+
+                        return Hasher.ComputeSHA1(data_file);
                     }
                     break;
             }
@@ -869,30 +869,12 @@ namespace NexteLite.Services
                     break;
                 case ChecksumMethod.SHA1:
                     {
-                        using (SHA1 sha1 = SHA1.Create())
+                        using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
                         {
-                            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
-                            {
-                                byte[] buffer = new byte[4096];
-                                int bytesRead;
-                                do
-                                {
-                                    bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                                    if (bytesRead > 0)
-                                    {
-                                        sha1.TransformBlock(buffer, 0, bytesRead, null, 0);
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                } while (bytesRead > 0);
+                            byte[] buffer = new byte[stream.Length];
+                            await stream.ReadAsync(buffer, 0, buffer.Length);
 
-                                sha1.TransformFinalBlock(buffer, 0, 0);
-                                return BitConverter.ToString(sha1.Hash).Replace("-", "").ToLowerInvariant();
-                            }
-                            //var result = sha1.ComputeHash(file);
-                            //return string.Concat(result.Select(b => b.ToString("x2")));
+                            return Hasher.ComputeSHA1(buffer);
                         }
                     }
                     break;
