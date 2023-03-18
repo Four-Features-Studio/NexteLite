@@ -20,5 +20,8 @@ namespace NexteLite.Models
 
         [JsonProperty("hash")]
         public string Hash { get; set; }
+
+        [JsonProperty("url")]
+        public string Url { get; set; }
     }
 }

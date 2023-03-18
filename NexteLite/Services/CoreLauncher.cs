@@ -235,7 +235,9 @@ namespace NexteLite.Services
             _FileService.OnProgressChanged += _DownloadingProxy.OnDownloadingProgress;
 
             _DownloadingProxy.SetState(DownloadingState.HashAssets);
+
             var assetsIndex = await _Web.GetAssetsIndex(profile.AssetIndex);
+
             if (assetsIndex is null)
             {
                 _Logger.LogError("Не возможно проверить ассеты клиента, запуск не возможен");
@@ -244,7 +246,6 @@ namespace NexteLite.Services
             }
 
             var localAssets = await _FileService.CheckAssets(profile, assetsIndex);
-
 
             _DownloadingProxy.SetState(DownloadingState.HashClient);
             var files = await _Web.GetFiles(profile.Dir, profile.ProfileId);

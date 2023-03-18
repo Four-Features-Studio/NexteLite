@@ -400,7 +400,7 @@ namespace NexteLite.Services
                     case ActionFile.Update:
                         {
                             totalSize += item.file.Size;
-                            var url = CombineUrlClientFile(profile.Dir, item.file.Path);
+                            var url = CombineUrlClientFile(item.file.Url);
 
                             var path = item.file.Path;
 
@@ -633,10 +633,10 @@ namespace NexteLite.Services
             return resutl;
         }
 
-        string CombineUrlClientFile(string dir, string path)
+        string CombineUrlClientFile(string file_url)
         {
             var baseUrl = _Options.Value.WebFiles.FilesUrl;
-            var url = UrlUtil.Combine(baseUrl, dir, path);
+            var url = UrlUtil.Combine(baseUrl, file_url);
             return url;
         }
         char GetDirectorySeparatorUsedInPath(string path)
@@ -791,11 +791,7 @@ namespace NexteLite.Services
                     break;
                 case ChecksumMethod.SHA1:
                     {
-                        using (SHA1 sha1 = SHA1.Create())
-                        {
-                            var result = sha1.ComputeHash(file);
-                            return string.Concat(result.Select(b => b.ToString("x2")));
-                        }
+                        return Hasher.ComputeSHA1(file);
                     }
                     break;
             }
