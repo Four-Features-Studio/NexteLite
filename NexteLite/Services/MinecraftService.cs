@@ -161,8 +161,8 @@ namespace NexteLite.Services
             //TODO - не забывать вернуть этот аргумент
             // $"-javaagent:{injectorPath}={injectorUrl}",
             var jvmArgs = new List<string>()
-            { 
-                
+            {
+                $"-javaagent:{injectorPath}={injectorUrl}",
                 $"-Xmx{memory}M",
                 $"-Xms{memory}M",
                 $"-Djava.library.path={nativesDir}"
