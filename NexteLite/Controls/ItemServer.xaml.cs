@@ -258,6 +258,7 @@ namespace NexteLite.Controls
 
                 ServerName.Opacity = 1;
                 PlayButton.Opacity = 1;
+                PlayPresetButton.Opacity = 1;
                 PlayerOnServer.Opacity = 1;
                 BackgroundShadow.Opacity = 0;
 
@@ -280,6 +281,7 @@ namespace NexteLite.Controls
 
                 ServerName.Opacity = 0;
                 PlayButton.Opacity = 0;
+                PlayPresetButton.Opacity = 0;
                 PlayerOnServer.Opacity = 0;
                 BackgroundShadow.Opacity = 0.3;
 
