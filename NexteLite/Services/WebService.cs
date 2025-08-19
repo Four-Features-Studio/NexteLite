@@ -349,9 +349,6 @@ namespace NexteLite.Services
 
                 var networkSpeed = 0;
 
-                Stopwatch st = new Stopwatch();
-                st.Start();
-
                 do
                 {
                     var bytesRead = await contentStream.ReadAsync(buffer);
@@ -385,4 +382,6 @@ namespace NexteLite.Services
             _HttpClient.Dispose();
         }
     }
+
+
 }
